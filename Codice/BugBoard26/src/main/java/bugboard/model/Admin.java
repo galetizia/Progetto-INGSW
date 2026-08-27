@@ -1,4 +1,4 @@
-package model;
+package bugboard.model;
 
 public class Admin extends AuthUser {
 
