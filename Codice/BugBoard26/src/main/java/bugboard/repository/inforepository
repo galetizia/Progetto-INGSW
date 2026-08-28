@@ -1,0 +1,3 @@
+In questa cartella verranno create delle interfacce che permettono a Java di parlare con il database in modo diretto e automatizzato.
+Fornendo metodi preimpostati come save(), findAll() o deleteById().
+Permettendo di generare query semplicemente nominando correttamente il metodo.

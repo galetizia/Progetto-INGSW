@@ -1,0 +1,8 @@
+Il vero "cervello" dell'applicazione.
+Un Controller NON DEVE MAI comunicare direttamente col Repository, ma passare sempre dal Service per garantire sicurezza e coerenza.
+
+Verificano le regole fondamentali prima di toccare i dati (ad esempio, controllare che un utente abbia i permessi o che un'email non esista già).
+
+Eseguono l'elaborazione pratica, come l'operazione di hashing della password prima del salvataggio.
+
+Gestiscono le transazioni: se un'operazione complessa fallisce a metà, il Service annulla tutto per evitare di salvare dati incompleti o corrotti.

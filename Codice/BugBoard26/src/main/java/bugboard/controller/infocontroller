@@ -1,0 +1,7 @@
+I Controller sono le porte d'accesso aperte verso il mondo esterno (es. verso il frontend).
+
+Rispondono alle richieste di rete esponendo indirizzi web (chiamati endpoint, come ad esempio http://localhost:8080/api/utenti).
+
+Smistano le operazioni in base al metodo HTTP ricevuto (GET per richiedere dati, POST per inviarne di nuovi, DELETE per cancellarli).
+
+Traducono automaticamente i messaggi dal formato di internet (JSON) verso le tue classi Java e viceversa.
