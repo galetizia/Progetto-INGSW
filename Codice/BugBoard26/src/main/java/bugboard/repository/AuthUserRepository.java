@@ -9,6 +9,8 @@ import java.util.Optional;
 @Repository
 public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
 
+    // Serve per evitare i NullPointerException costringendo chi chiama questo metodo
+    // a gestire obbligatoriamente il caso in cui l'utente non esista nel DB
     Optional<AuthUser> findByEmail(String email);
 
     boolean existsByEmail(String email);

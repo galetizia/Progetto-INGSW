@@ -1,12 +1,27 @@
 package bugboard.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "issue")
 public class Issue {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
     private String titolo;
+    @Column(nullable = false)
     private String descrizione;
-    private String priorita;
-    private String urlImmagine;
+    @Column
+    private String priorita = "no";
+    @Column
+    private String urlImmagine = "no";
+    @Column(nullable = false)
     private String stato = "todo";
+
+    public Issue() {}
 
     public Issue(String titolo, String descrizione) {
         this.titolo = titolo;
@@ -50,4 +65,6 @@ public class Issue {
     public void setStato(String stato) {
         this.stato = stato;
     }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 }
