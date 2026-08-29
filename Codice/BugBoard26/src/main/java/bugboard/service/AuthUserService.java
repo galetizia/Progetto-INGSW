@@ -16,7 +16,7 @@ public class AuthUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthUser registerAuthUser(String email, String password) {
+    public void registerAuthUser(String email, String password) {
         if (authUserRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email già in uso");
         }
@@ -24,7 +24,7 @@ public class AuthUserService {
         String hashedPass = passwordEncoder.encode(password);
         AuthUser newUser = new AuthUser(email, hashedPass);
 
-        return authUserRepository.save(newUser);
+        authUserRepository.save(newUser);
 
 
     }

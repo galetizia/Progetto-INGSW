@@ -4,8 +4,6 @@ import bugboard.model.Issue;
 import bugboard.repository.IssueRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class IssueService {
     private final IssueRepository issueRepository;
@@ -14,7 +12,7 @@ public class IssueService {
         this.issueRepository = issueRepository;
     }
 
-    public Issue createIssue(String titolo, String descrizione, String priorita, String urlImmagine) {
+    public void createIssue(String titolo, String descrizione, String priorita, String urlImmagine) {
         Issue issue = new Issue();
 
         issue.setTitolo(titolo);
@@ -26,6 +24,6 @@ public class IssueService {
 
 
         //stato to-do di default
-        return issueRepository.save(issue);
+        issueRepository.save(issue);
     }
 }
