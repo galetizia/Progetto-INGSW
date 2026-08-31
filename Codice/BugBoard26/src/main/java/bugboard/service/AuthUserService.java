@@ -25,7 +25,13 @@ public class AuthUserService {
         AuthUser newUser = new AuthUser(email, hashedPass);
 
         authUserRepository.save(newUser);
+    }
 
+    public void login (String email, String password) {
+        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Email non valida"));
+        if(!passwordEncoder.matches(password,user.getPassword())) {
+            throw new IllegalArgumentException("Password non valida");
+        }
 
     }
 }

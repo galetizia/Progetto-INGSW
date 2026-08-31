@@ -16,18 +16,11 @@ public class AuthUserController {
         this.authUserService = authUserService;
     }
 
-    // Gestisce le richieste POST in arrivo per registrare un nuovo utente
-    @PostMapping("/registrazione")
-    // @RequestBody converte automaticamente il JSON ricevuto in un oggetto AuthRequest
-    public ResponseEntity<String> registrazione(@RequestBody AuthRequest request) {
+    public ResponseEntity<String> login(String email, String password) {
         try{
-            // Delega la logica al Service
-            authUserService.registerAuthUser(request.email(), request.password());
-            // Restituisce stato HTTP 200 (OK) se va tutto a buon fine
-            return ResponseEntity.ok("Registrazione avvenuta con successo");
-        } catch (IllegalArgumentException e){
-            // Cattura gli errori (es. email duplicata) e restituisce HTTP 400 (Bad Request)
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (IllegalArgumentException e) {
+
         }
     }
 
