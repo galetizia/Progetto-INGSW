@@ -1,5 +1,7 @@
 package bugboard.controller;
 
+import bugboard.model.AuthUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import bugboard.service.AuthUserService;
@@ -17,14 +19,17 @@ public class AuthUserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(String email, String password) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try{
+            String token = authUserService.login(request.email(), request.password());
+            return ResponseEntity.ok(new LoginResponse(token));
 
         } catch (IllegalArgumentException e) {
-
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
 
 }
 //un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
-record AuthRequest(String email, String password) {}
+record LoginRequest(String email, String password) {}
+record LoginResponse(String token) {}

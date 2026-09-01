@@ -12,6 +12,9 @@ target/
 *.iml
 *.ipr
 
+# JWT RSA keys
+/Keys/
+
 ### Eclipse ###
 .apt_generated
 .classpath

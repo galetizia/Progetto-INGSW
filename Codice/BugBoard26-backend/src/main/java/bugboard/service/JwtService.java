@@ -20,9 +20,7 @@ public class JwtService {
         this.adminRepository = adminRepository;
     }
 
-    public String generateToken(AuthUser user) {
-        boolean isAdmin = adminRepository.existsById(user.getId());
-        String ruolo = isAdmin ? "ADMIN" : "USER";
+    public String generateToken(AuthUser user, String ruolo) {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
