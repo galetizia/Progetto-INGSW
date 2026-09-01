@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Codice/BugBoard26/BugBoard26.iml" filepath="$PROJECT_DIR$/Codice/BugBoard26/BugBoard26.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Progetto-INGSW.iml" filepath="$PROJECT_DIR$/.idea/Progetto-INGSW.iml" />
     </modules>
   </component>

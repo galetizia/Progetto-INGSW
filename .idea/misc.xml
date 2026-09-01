@@ -5,6 +5,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Codice/BugBoard26/pom.xml" />
+        <option value="$PROJECT_DIR$/Codice/BugBoard26-frontend/pom.xml" />
+        <option value="$PROJECT_DIR$/Codice/BugBoard26-backend/pom.xml" />
       </list>
     </option>
   </component>
