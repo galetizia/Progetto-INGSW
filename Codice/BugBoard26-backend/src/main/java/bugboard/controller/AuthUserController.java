@@ -29,6 +29,11 @@ public class AuthUserController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok("Logout effettuato");
+    }
+
 }
 //un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
 record LoginRequest(String email, String password) {}

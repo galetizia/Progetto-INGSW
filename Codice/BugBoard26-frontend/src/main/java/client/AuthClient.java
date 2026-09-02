@@ -39,6 +39,20 @@ public class AuthClient {
         return false;
     }
 
+    public void logout() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/api/auth/logout"))
+                    .POST(HttpRequest.BodyPublishers.noBody()).build();
+
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            AuthSession.setToken(null);
+        }
+    }
+
     private static String extractToken(String json) {
         return json.replace("{\"token\":\"", "").replace("\"", "");
     }
