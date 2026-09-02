@@ -1,7 +1,13 @@
 package org.example.bugboard26frontend;
 
+import client.AuthClient;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import client.AuthSession;
+import javafx.stage.Stage;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,7 +27,8 @@ public class HelloController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        System.out.println(email);
+        AuthClient authClient = new AuthClient();
+
         if(email.isEmpty() || password.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Attenzione!");
@@ -47,37 +54,23 @@ public class HelloController {
             return;
         }
 
-        String jsonBody = """
-                {
-                    "email": "%s",
-                    "password": "%s"
-                }
-                """.formatted(email,password);
-
         try{
-            // Crea il "motore" che gestirà la connessione
-            HttpClient client = HttpClient.newHttpClient();
-
-            // Prepara il pacco: imposta l'indirizzo, specifica che è un JSON e inserisce i dati (POST)
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://localhost:8080/api/auth/login")).header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody)).build();
-
-            // Invia il pacco a Spring Boot e aspetta di ricevere la risposta sotto forma di testo
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            boolean success = authClient.login(email, password);
 
             // Controlla il codice di stato: 200 significa che è andato tutto bene
-            if(response.statusCode() == 200) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Login");
-                alert.setHeaderText(null);
-                alert.setContentText("Benvenuto!"+ response.body());
-                alert.showAndWait();
+            if(success) {
+                Stage stage = (Stage) emailField.getScene().getWindow();
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("user-home-view.fxml"));
+                Scene scene = new Scene(loader.load(), 800, 600);
+                stage.setTitle("Home");
+                stage.setScene(scene);
             } else {
                 // Se il codice non è 200, le credenziali sono errate
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Errore!");
                 alert.setHeaderText(null);
-                alert.setContentText("Errore"+response.body());
+                alert.setContentText("Credenziali non valide");
                 alert.showAndWait();
             }
         }catch (Exception e) {

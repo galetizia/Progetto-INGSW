@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name ="auth_user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class AuthUser {
     //scelto di aggiungere un id numerico per non esporre l'email in ogni operazione
     @Id

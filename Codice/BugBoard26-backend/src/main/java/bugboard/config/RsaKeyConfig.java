@@ -17,7 +17,10 @@ public class RsaKeyConfig {
 
     @Bean
     public RSAPublicKey publicKey() throws Exception {
-        String key = Files.readString(Path.of("Keys/public.pem"));
+
+        String key = Files.readString(
+                Path.of("Keys", "public.pem")
+        );
 
         key = key.replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
@@ -32,7 +35,10 @@ public class RsaKeyConfig {
 
     @Bean
     public RSAPrivateKey privateKey() throws Exception {
-        String key = Files.readString(Path.of("Keys/private.pem"));
+
+        String key = Files.readString(
+                Path.of("Keys", "private.pem")
+        );
 
         key = key.replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
