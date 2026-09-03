@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 @Table(name="admin")
 public class Admin extends AuthUser {
 
-    public Admin() {
-        super();
+    public Admin() {}
+    public Admin(String email, String password) {
+        super(email, password);
     }
 }

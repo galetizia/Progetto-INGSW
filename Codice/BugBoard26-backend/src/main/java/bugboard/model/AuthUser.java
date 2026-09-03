@@ -17,7 +17,6 @@ public class AuthUser {
     @Column(nullable = false)
     private String password;
 
-
     public AuthUser() {}
 
     public AuthUser(String password, String email) {

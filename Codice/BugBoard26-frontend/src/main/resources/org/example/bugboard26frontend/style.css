@@ -1,0 +1,70 @@
+.root{
+    -fx-background-color: #0b0914;
+}
+
+.vbox {
+    -fx-background-color: #151122;
+    -fx-background-radius: 15; /* Bordi arrotondati */
+    -fx-padding: 40; /* Spazio interno */
+    -fx-border-color: #2a2240;
+    -fx-border-radius: 12;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 20, 0, 0, 10);
+}
+.title-bugboard {
+    -fx-text-fill: #151122; /* Esattamente lo stesso colore del VBox */
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.7), 20, 0.5, 0, 0);
+}
+
+
+.subtitle {
+    -fx-text-fill: #a29bb8;
+    -fx-font-weight: normal;
+}
+
+.error-label {
+    -fx-text-fill: #ff2a7a;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Stile per i campi di testo e password */
+.text-field, .password-field {
+    -fx-background-color: #0b0914;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #61567d;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-border-color: #3b2d59;
+    -fx-border-radius: 8;
+    -fx-border-width: 1.5;
+}
+
+/* Effetto quando si clicca sul campo di testo */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #bf5afe;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0.2, 0, 0);
+}
+
+/* Stile del pulsante di Login */
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #bf5afe;
+    -fx-border-color: #bf5afe;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 12 20 12 20;
+    -fx-cursor: hand;
+}
+
+/* Effetto quando passi il mouse sul pulsante */
+.button:hover {
+    -fx-background-color: #bf5afe;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.6), 15, 0.3, 0, 0);
+}

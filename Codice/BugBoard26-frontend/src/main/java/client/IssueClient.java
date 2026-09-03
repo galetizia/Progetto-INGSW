@@ -25,7 +25,6 @@ public class IssueClient {
                     }
                     """.formatted(titolo, descrizione, priorita, urlImmagine);
 
-            System.out.println("IL MIO TOKEN AL MOMENTO DEL CLICK E': " + AuthSession.getToken());
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "/api/home/nuovaIssue"))
@@ -35,7 +34,7 @@ public class IssueClient {
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("CODICE RISPOSTA SERVER: " + response.statusCode());
+
             return response.statusCode() == 200 || response.statusCode() == 201;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

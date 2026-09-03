@@ -16,7 +16,7 @@ public class AdminController {
         this.authUserService = authUserService;
     }
 
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/utenti")
     // @RequestBody converte automaticamente il JSON ricevuto in un oggetto RegisterRequest
     public ResponseEntity<String> createUser(@RequestBody RegisterRequest request) {

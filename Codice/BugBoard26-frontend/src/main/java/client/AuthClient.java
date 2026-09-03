@@ -49,7 +49,7 @@ public class AuthClient {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            AuthSession.setToken(null);
+            AuthSession.clearToken();
         }
     }
 
