@@ -54,6 +54,6 @@ public class AuthClient {
     }
 
     private static String extractToken(String json) {
-        return json.replace("{\"token\":\"", "").replace("\"", "");
+        return json.replace("{\"token\":\"", "").replace("\"", "").replace("}", "").trim();
     }
 }

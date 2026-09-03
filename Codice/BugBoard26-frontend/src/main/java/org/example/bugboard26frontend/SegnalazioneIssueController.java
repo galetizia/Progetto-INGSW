@@ -1,6 +1,7 @@
 package org.example.bugboard26frontend;
 
 import client.AuthClient;
+import client.IssueClient;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -31,8 +32,42 @@ public class SegnalazioneIssueController {
     @FXML
     private TextField prioritaField;
 
+    IssueClient issueClient = new IssueClient();
+
+
     @FXML
     protected void onConfermaButtonClick(){
+        String titolo = titoloField.getText();
+        String descrizione = descrizioneField.getText();
+        String priorita = prioritaField.getText();
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Conferma operazione");
+            alert.setHeaderText("Stai per creare una nuova issue");
+            alert.setContentText("Procedere?");
+            alert.showAndWait().ifPresent(response -> {
+                if(response == ButtonType.OK){
+                    System.out.println("Salvataggio in corso");
+                    boolean success = issueClient.createIssue(titolo, descrizione, priorita, null);
+                    if(success){
+                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+                        alert2.setTitle("Issue creata");
+                        alert2.setHeaderText(null);
+                        alert2.setContentText("Issue creata con successo");
+                        alert2.showAndWait();
+                    } else {
+                        Alert alert2 = new Alert(Alert.AlertType.ERROR);
+                        alert2.setTitle("Errore!");
+                        alert2.setHeaderText(null);
+                        alert2.setContentText("Errore nella creazione dell'issue!");
+                        alert2.showAndWait();
+                    }
+                } else {
+                    System.out.println("Operazione annullata");
+                }
+            });
+
+
 
     }
 }

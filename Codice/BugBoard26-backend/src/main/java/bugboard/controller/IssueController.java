@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import bugboard.service.IssueService;
 
 @RestController
-@RequestMapping("/api/issue")
+@RequestMapping("/api/home")
 public class IssueController {
 
     private final IssueService issueService;
