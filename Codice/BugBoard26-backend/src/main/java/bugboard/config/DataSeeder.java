@@ -18,17 +18,16 @@ public class DataSeeder {
         return args -> {
             String emailTest = "admin@bugboard.com";
 
-            if (authUserRepository.findByEmail(emailTest).isEmpty()) {
+            AuthUser utente = authUserRepository.findByEmail(emailTest).orElseGet(() -> {
+                AuthUser nuovoUtente = new AuthUser();
+                nuovoUtente.setEmail(emailTest);
+                return nuovoUtente;
+            });
 
-            AuthUser utent = new AuthUser();
-            utent.setEmail(emailTest);
+            utente.setPassword(passwordEncoder.encode("Password123!"));
 
-            utent.setPassword(passwordEncoder.encode("Password123!"));
+            authUserRepository.save(utente);
 
-            authUserRepository.save(utent);
-
-            System.out.println("Utente creato con successo!");
-            }
         };
     }
 }

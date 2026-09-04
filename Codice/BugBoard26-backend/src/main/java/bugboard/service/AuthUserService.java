@@ -43,6 +43,21 @@ public class AuthUserService {
         String ruolo = adminRepository.existsById(user.getId()) ? "ADMIN" : "USER";
 
         return jwtService.generateToken(user, ruolo);
+    }
 
+    public void changePassword (String email, String oldPassword, String newPassword) {
+
+        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Email non valida"));
+
+        if(!passwordEncoder.matches(oldPassword,user.getPassword())) {
+            throw new IllegalArgumentException("Inserire la vecchia password corretta");
+        }
+
+        if(newPassword.equals(oldPassword)) {
+            throw new IllegalArgumentException("La nuova password non può essere uguale alla precedente");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        authUserRepository.save(user);
     }
 }

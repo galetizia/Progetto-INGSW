@@ -53,6 +53,34 @@ public class AuthClient {
         }
     }
 
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+
+        String json = """
+                {
+                    "email": "%s",
+                    "oldPassword": "%s",
+                    "newPassword": "%s"
+                }
+        """.formatted(email, newPassword, oldPassword);
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/api/auth/change_password"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     private static String extractToken(String json) {
         return json.replace("{\"token\":\"", "").replace("\"", "").replace("}", "").trim();
     }

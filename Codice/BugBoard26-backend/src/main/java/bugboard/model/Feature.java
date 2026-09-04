@@ -1,7 +1,11 @@
 package bugboard.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Feature extends Issue {
 
+    public Feature() {}
     public Feature(String titolo, String descrizione) {
         super(titolo, descrizione);
     }

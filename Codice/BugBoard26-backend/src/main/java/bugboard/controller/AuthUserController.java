@@ -34,7 +34,19 @@ public class AuthUserController {
         return ResponseEntity.ok("Logout effettuato");
     }
 
+    @PostMapping("/change_password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            authUserService.changePassword(request.email(), request.newPassword(), request.oldPassword());
+            return ResponseEntity.ok("Password cambiata con successo");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
 //un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
 record LoginRequest(String email, String password) {}
 record LoginResponse(String token) {}
+record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}
