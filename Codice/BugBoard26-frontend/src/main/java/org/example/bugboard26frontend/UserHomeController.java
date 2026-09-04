@@ -49,7 +49,7 @@ public class UserHomeController {
     }
 
     @FXML
-    protected void onVisualizzaElencoIssueButtonClick(){
+    protected void onElencoIssueButtonClick(){
 
     }
 

@@ -1,0 +1,125 @@
+/* =========================================
+   1. SFONDO PRINCIPALE E TITOLI
+   ========================================= */
+.root {
+    -fx-background-color: #0b0914;
+}
+
+/* Logo "BugBoard" (Eclissi Neon scura) */
+.logo {
+    -fx-text-fill: #151122;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.8), 20, 0.5, 0, 0);
+}
+
+/* Titolo "Elenco Issue" (Bianco e pulito) */
+.page-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* =========================================
+   2. NAVIGAZIONE (Il tuo stile)
+   ========================================= */
+.nav-button{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #a29bb8;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-alignment: CENTER;
+    -fx-padding: 15 20 15 20;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+.nav-button:hover, .nav-button:focused {
+    -fx-background-color: #151122;
+    -fx-text-fill: #bf5afe;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
+}
+
+/* =========================================
+   3. AREA DESCRIZIONE ISSUE (Il tuo stile)
+   ========================================= */
+.text-area {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #2a2240; /* Bordo spento */
+    -fx-border-radius: 8;
+    -fx-padding: 5;
+}
+
+/* Sfondo interno della TextArea */
+.text-area .content {
+    -fx-background-color: #0b0914; /* Sfondo scurissimo */
+    -fx-background-radius: 8;
+}
+
+/* Togliamo lo sfondo di default che JavaFX mette intorno al testo */
+.text-area .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Quando ci clicchi o selezioni il testo dentro */
+.text-area:focused {
+    -fx-border-color: #bf5afe; /* Si accende di Viola Neon */
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
+}
+
+/* =========================================
+   4. TABELLA (Il tuo stile)
+   ========================================= */
+.table-view {
+    -fx-background-color: #0b0914; /* Sfondo scurissimo */
+    -fx-border-color: #2a2240; /* Bordo prugna spento */
+    -fx-border-radius: 8;
+    -fx-padding: 0; /* Rimuove spazi bianchi fastidiosi */
+}
+
+/* 2. Sfondo dell'intestazione (Risolve il problema della barra bianca) */
+.table-view .column-header-background {
+    -fx-background-color: #151122; /* Scuro, uguale alle card */
+    -fx-background-radius: 8 8 0 0;
+}
+
+/* 3. Stile delle singole celle di intestazione */
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35px; /* Altezza della barra dei titoli */
+    -fx-border-color: transparent transparent #2a2240 transparent; /* Solo una linea sotto */
+}
+
+/* 4. Testo dell'intestazione (ID, Titolo, ecc.) */
+.table-view .column-header .label {
+    -fx-text-fill: #a29bb8; /* Un grigio/viola rilassante, non fluo */
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+}
+
+/* 5. Le righe dei dati */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-cell-size: 30px; /* Altezza righe */
+}
+
+/* 6. Nasconde le righe vuote in basso che JavaFX crea di default */
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+/* 7. Riga selezionata o hover */
+.table-row-cell:hover {
+    -fx-background-color: #1a152e;
+}
+.table-row-cell:selected {
+    -fx-background-color: #3b2d59; /* Un viola scuro opaco, niente neon qui */
+}
+.table-row-cell .table-cell {
+    -fx-padding: 0 10 0 10;
+}
