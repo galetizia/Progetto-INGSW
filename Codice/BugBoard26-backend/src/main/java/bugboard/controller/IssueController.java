@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import bugboard.service.IssueService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/home")
 public class IssueController {
@@ -24,6 +26,13 @@ public class IssueController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/elenco_issue")
+    public ResponseEntity<List<Issue>> elencoIssue() {
+            return ResponseEntity.ok(issueService.elencoIssue());
+    }
 }
+
+
 
 record IssueRequest(String titolo, String descrizione, String priorita, String urlImmagine) {}
