@@ -50,7 +50,7 @@ public class UserHomeController {
 
     @FXML
     protected void onElencoIssueButtonClick(){
-
+        //codice di implementazione della visualizzazione di tutte le issue
     }
 
     @FXML
