@@ -1,27 +1,60 @@
 package org.example.bugboard26frontend;
 
 import client.AuthClient;
+import client.IssueClient;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import client.AuthSession;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Issue;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class UserHomeController {
     @FXML
     private MenuItem logoutButton;
-    AuthClient authClient = new AuthClient();
 
+    @FXML
+    private Button elencoButton;
+
+    AuthClient authClient = new AuthClient();
+    IssueClient issueClient = new IssueClient();
+
+    @FXML
+    private TableView<Issue> issueTable;
+
+    @FXML
+    private StackPane contentArea;
+    @FXML
+    private TableColumn<Issue, Integer> idColumn;
+    @FXML
+    private TableColumn<Issue, String> titoloColumn;
+    @FXML
+    private TableColumn<Issue, String> statoColumn;
+    @FXML
+    private TableColumn<Issue, String> prioritaColumn;
+    @FXML
+    private TableColumn<Issue, String> dataColumn;
+
+    @FXML
+    public void initialize()
+    {
+        contentArea.setVisible(false);
+    }
     @FXML
     protected void onSegnalaIssueButtonClick(){
         try {
@@ -50,7 +83,25 @@ public class UserHomeController {
 
     @FXML
     protected void onElencoIssueButtonClick(){
-        //codice di implementazione della visualizzazione di tutte le issue
+        if(issueTable.getItems().isEmpty()){
+            idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+            titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
+            statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+            prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
+            dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+            loadOnTable();
+            contentArea.setVisible(true);
+        } else{
+            issueTable.getItems().clear();
+            contentArea.setVisible(false);
+        }
+    }
+
+    private void loadOnTable() {
+        List<Issue> issues = issueClient.elencoIssue();
+        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
+        issueTable.setItems(observableList);
     }
 
     @FXML

@@ -25,7 +25,7 @@
                   <Font name="Segoe UI Bold" size="28.0" />
                </font>
             </Label>
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElencoIssueButtonClick" prefHeight="45.0" prefWidth="114.0" styleClass="nav-button" text="Elenco Issue" />
+            <Button fx:id="elencoButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElencoIssueButtonClick" prefHeight="45.0" prefWidth="114.0" styleClass="nav-button" text="Elenco Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaIssueButtonClick" styleClass="nav-button" text="Segnala Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="nav-button" text="Bug archiviati" />
             <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Impostazioni" textFill="WHITE">
@@ -52,12 +52,12 @@
                   </Label>
                   <TableView fx:id="issueTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                     <columns>
-                      <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
-                      <TableColumn maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Titolo" />
-                        <TableColumn maxWidth="80.0" minWidth="80.0" text="Priorità" />
-                        <TableColumn maxWidth="80.0" minWidth="80.0" text="Stato" />
-                        <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Tipo" />
-                        <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Data" />
+                      <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="ID" />
+                      <TableColumn fx:id="titoloColumn" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" text="Titolo" />
+                        <TableColumn fx:id="prioritaColumn" maxWidth="80.0" minWidth="80.0" text="Priorità" />
+                        <TableColumn fx:id="statoColumn" maxWidth="80.0" minWidth="80.0" text="Stato" />
+                        <TableColumn fx:id="tipoColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Tipo" />
+                        <TableColumn fx:id="dataColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" text="Data" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
