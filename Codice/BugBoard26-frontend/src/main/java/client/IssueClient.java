@@ -16,7 +16,7 @@ import java.util.List;
 public class IssueClient {
 
 
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://localhost:8080/api/user/";
 
     private final HttpClient client = ApiClient.getClient();
 
@@ -34,7 +34,7 @@ public class IssueClient {
 
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/api/home/nuovaIssue"))
+                    .uri(URI.create(BASE_URL + "nuovaIssue"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + AuthSession.getToken())
                     .POST(HttpRequest.BodyPublishers.ofString(json))
@@ -53,7 +53,7 @@ public class IssueClient {
     public List<Issue> elencoIssue() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/api/home/elenco_issue"))
+                    .uri(URI.create(BASE_URL + "elenco_issue"))
                     .header("Authorization", "Bearer " + AuthSession.getToken())
                     .GET()
                     .build();

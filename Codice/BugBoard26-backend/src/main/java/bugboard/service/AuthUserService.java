@@ -1,7 +1,6 @@
 package bugboard.service;
 
 import bugboard.model.AuthUser;
-import bugboard.repository.AdminRepository;
 import bugboard.repository.AuthUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,13 +11,11 @@ public class AuthUserService {
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final AdminRepository adminRepository;
 
-    public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AdminRepository adminRepository) {
+    public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.authUserRepository = authUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.adminRepository = adminRepository;
     }
 
     public void registerAuthUser(String email, String password) {
@@ -40,9 +37,7 @@ public class AuthUserService {
             throw new IllegalArgumentException("Email/Password non valide");
         }
 
-        String ruolo = adminRepository.existsById(user.getId()) ? "ADMIN" : "USER";
-
-        return jwtService.generateToken(user, ruolo);
+        return jwtService.generateToken(user, user.getRuolo().name());
     }
 
     public void changePassword (String email, String oldPassword, String newPassword) {

@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 
 public class AuthClient {
 
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://localhost:8080/api/user/";
 
     private final HttpClient client = ApiClient.getClient();
 
@@ -22,7 +22,7 @@ public class AuthClient {
                 """.formatted(email, password);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/api/auth/login")).header("Content-Type", "application/json")
+                .uri(URI.create(BASE_URL + "login")).header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json)).build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -42,7 +42,7 @@ public class AuthClient {
     public void logout() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/api/auth/logout"))
+                    .uri(URI.create(BASE_URL + "logout"))
                     .POST(HttpRequest.BodyPublishers.noBody()).build();
 
             client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -65,7 +65,7 @@ public class AuthClient {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/api/auth/change_password"))
+                    .uri(URI.create(BASE_URL + "change_password"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + AuthSession.getToken())
                     .POST(HttpRequest.BodyPublishers.ofString(json))

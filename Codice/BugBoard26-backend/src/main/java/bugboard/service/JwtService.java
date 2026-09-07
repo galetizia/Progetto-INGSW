@@ -5,7 +5,6 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import bugboard.repository.AdminRepository;
 
 import java.time.Instant;
 
@@ -13,11 +12,9 @@ import java.time.Instant;
 public class JwtService {
 
     private final JwtEncoder jwtEncoder;
-    private final AdminRepository adminRepository;
 
-    public JwtService(JwtEncoder jwtEncoder, AdminRepository adminRepository) {
+    public JwtService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
-        this.adminRepository = adminRepository;
     }
 
     public String generateToken(AuthUser user, String ruolo) {

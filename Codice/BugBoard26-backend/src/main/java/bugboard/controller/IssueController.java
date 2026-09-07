@@ -8,7 +8,7 @@ import bugboard.service.IssueService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/home")
+@RequestMapping("/api/user")
 public class IssueController {
 
     private final IssueService issueService;
