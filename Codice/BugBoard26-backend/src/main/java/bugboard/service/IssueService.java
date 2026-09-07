@@ -1,9 +1,12 @@
 package bugboard.service;
 
+import bugboard.enums.StatoIssue;
+import bugboard.model.AuthUser;
 import bugboard.model.Issue;
 import bugboard.repository.IssueRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,15 +17,13 @@ public class IssueService {
         this.issueRepository = issueRepository;
     }
 
-    public void createIssue(String titolo, String descrizione, String priorita, String urlImmagine) {
+    public void createIssue(String titolo, String descrizione, String priorita) {
         Issue issue = new Issue();
 
         issue.setTitolo(titolo);
         issue.setDescrizione(descrizione);
 
         if(priorita!=null && !priorita.isBlank()) issue.setPriorita(priorita);
-
-        if(urlImmagine!=null && !urlImmagine.isBlank()) issue.setUrlImmagine(urlImmagine);
 
 
         //stato to-do di default
@@ -40,5 +41,30 @@ public class IssueService {
             );
         }
         return issues;
+    }
+
+    public void prendiInCaricoIssue(int issueId, AuthUser sviluppatore) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new RuntimeException("Issue non trovata"));
+
+        // Cambia lo stato e assegna l'utente
+        issue.setStato(StatoIssue.ASSEGNATO);
+        issue.setAssignee(sviluppatore);
+
+        issueRepository.save(issue);
+    }
+
+    // 2. L'utente ha finito e risolve l'issue
+    public void risolviIssue(int issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new RuntimeException("Issue non trovata"));
+
+        // Cambia lo stato a RISOLTO
+        issue.setStato(StatoIssue.RISOLTO);
+
+        // SALVA LA DATA E L'ORA ESATTA
+        issue.setDataRisoluzione(LocalDateTime.now());
+
+        issueRepository.save(issue);
     }
 }
