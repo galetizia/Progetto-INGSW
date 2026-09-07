@@ -68,3 +68,48 @@
     -fx-text-fill: #ffffff;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.6), 15, 0.3, 0, 0);
 }
+
+.menu-button {
+    -fx-background-color: #0b0914;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-border-color: #3b2d59;
+    -fx-border-radius: 8;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+}
+
+/* Colore del testo all'interno del MenuButton */
+.menu-button > .label {
+    -fx-text-fill: #61567d; /* Usa #ffffff se preferisci il bianco acceso */
+}
+
+/* Colore della freccina del menu a tendina per renderla visibile */
+.menu-button > .arrow-button > .arrow {
+    -fx-background-color: #61567d;
+}
+
+/* Effetto quando ci passi sopra col mouse o clicchi */
+.menu-button:hover, .menu-button:showing, .menu-button:focused {
+    -fx-border-color: #bf5afe;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0.2, 0, 0);
+}
+
+.button-image {
+    -fx-background-color: #0b0914;
+    -fx-text-fill: #61567d;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20 10 20;
+    -fx-border-color: #3b2d59;
+    -fx-border-radius: 8;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+}
+
+/* Effetto neon quando ci passi sopra col mouse (hover) o lo clicchi */
+.button-image:hover, .button-image:pressed, .button-image:focused {
+    -fx-background-color: #0b0914;
+    -fx-border-color: #bf5afe;
+    -fx-text-fill: #61567d;
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
+}

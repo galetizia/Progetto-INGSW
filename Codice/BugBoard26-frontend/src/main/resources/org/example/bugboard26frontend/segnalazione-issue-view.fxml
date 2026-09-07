@@ -1,14 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.SegnalazioneIssueController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.SegnalazioneIssueController">
    <children>
-      <TextField fx:id="titoloField" layoutX="226.0" layoutY="87.0" />
-      <TextField fx:id="descrizioneField" layoutX="227.0" layoutY="127.0" />
-      <TextField fx:id="prioritaField" layoutX="226.0" layoutY="175.0" />
-      <Button fx:id="confermaButton" layoutX="271.0" layoutY="232.0" mnemonicParsing="false" onAction="#onConfermaButtonClick" text="Conferma" />
+      <VBox alignment="CENTER" layoutX="225.0" layoutY="75.0" prefHeight="450.0" prefWidth="350.0" spacing="20.0" styleClass="vbox" stylesheets="@style.css" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="75.0">
+         <children>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="58.0" prefWidth="286.0" styleClass="title-bugboard" text="Segnalazione" textAlignment="CENTER">
+               <font>
+                  <Font name="Segoe UI Bold" size="36.0" />
+               </font>
+            </Label>
+            <TextField fx:id="emailField" promptText="Titolo" />
+            <PasswordField fx:id="passwordField" prefHeight="100.0" prefWidth="317.0" promptText="Descrizione" />
+            <HBox alignment="CENTER" spacing="20">
+               <MenuButton fx:id="prioritaMenuButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Priorità">
+                 <items>
+                   <MenuItem mnemonicParsing="false" onAction="#onPrioritaBassaSelezionata" text="Bassa" />
+                   <MenuItem mnemonicParsing="false" onAction="#onPrioritaMediaSelezionata" text="Media" />
+                     <MenuItem mnemonicParsing="false" onAction="#onPrioritaAltaSelezionata" text="Alta" />
+                 </items>
+               </MenuButton>
+               <MenuButton fx:id="tipologiaMenuButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Tipologia">
+                 <items>
+                     <MenuItem mnemonicParsing="false" onAction="#onBugSelezionato" text="Bug" />
+                   <MenuItem mnemonicParsing="false" onAction="#onFeatureSelezionato" text="Feature" />
+                     <MenuItem mnemonicParsing="false" onAction="#onQuestionSelezionato" text="Question" />
+                   <MenuItem mnemonicParsing="false" onAction="#onDocumentationSelezionato" text="Documentation" />
+                 </items>
+               </MenuButton>
+            </HBox>
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAllegaButtonClick" styleClass="button-image" text="Allega Immagine" />
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfermaButtonClick" prefHeight="28.0" prefWidth="124.0" text="Crea">
+               <font>
+                  <Font name="Segoe UI" size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

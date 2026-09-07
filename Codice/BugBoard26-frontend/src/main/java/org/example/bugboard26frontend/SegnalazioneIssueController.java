@@ -9,8 +9,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import client.AuthSession;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,8 +34,72 @@ public class SegnalazioneIssueController {
     @FXML
     private TextField prioritaField;
 
+    @FXML
+    private MenuButton prioritaMenuButton;
+    private String prioritaScelta= "";
+
+    @FXML
+    private MenuButton tipologiaMenuButton;
+    private String tipologiaScelta = "";
+
     IssueClient issueClient = new IssueClient();
 
+    @FXML
+    protected void onPrioritaAltaSelezionata(){
+        prioritaScelta = "Alta";
+        prioritaMenuButton.setText("Priorità: Alta");
+    }
+
+    @FXML
+    protected void onPrioritaMediaSelezionata(){
+        prioritaScelta = "Media";
+        prioritaMenuButton.setText("Priorità: Media");
+    }
+
+    @FXML
+    protected void onPrioritaBassaSelezionata(){
+        prioritaScelta = "Bassa";
+        prioritaMenuButton.setText("Priorità: Bassa");
+    }
+
+    @FXML
+    protected void onBugSelezionato(){
+        tipologiaScelta = "Bug";
+        tipologiaMenuButton.setText("Tipologia: Bug");
+    }
+
+    @FXML
+    protected void onFeatureSelezionato(){
+        tipologiaScelta = "Feature";
+        tipologiaMenuButton.setText("Tipologia: Feature");
+    }
+
+    @FXML
+    protected void onDocumentationSelezionato(){
+        tipologiaScelta = "Documentation";
+        tipologiaMenuButton.setText("Tipologia: Documentation");
+    }
+
+    @FXML
+    protected void onQuestionSelezionato(){
+        tipologiaScelta = "Question";
+        tipologiaMenuButton.setText("Tipologia: Question");
+    }
+
+    @FXML
+    protected void onAllegaButtonClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona un'immagine da allegare");
+
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Immagini", "*.png", "*.jpg", "*.jpeg"));
+
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            System.out.println("File scelto: " + file.getAbsolutePath());
+        } else {
+            System.out.println("Nessun file selezionato");
+        }
+    }
 
     @FXML
     protected void onConfermaButtonClick(){
