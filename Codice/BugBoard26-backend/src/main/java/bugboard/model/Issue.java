@@ -1,8 +1,11 @@
 package bugboard.model;
 
+import bugboard.enums.StatoIssue;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "issue")
@@ -19,14 +22,20 @@ public class Issue {
     private String descrizione;
     @Column
     private String priorita = "no";
-    @Column
-    private String urlImmagine = "no";
     @Column(nullable = false)
-    private String stato = "todo";
+    private StatoIssue stato = StatoIssue.TO_DO;
     @Column(nullable = false)
     private String tipo;
     @Column
     private LocalDate data;
+    @Column(name = "data_risoluzione")
+    private LocalDateTime dataRisoluzione;
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private AuthUser assignee;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_allegato")
+    private Attachment allegato;
 
     public Issue() {}
 
@@ -36,11 +45,10 @@ public class Issue {
         this.data = LocalDate.now();
     }
 
-    public Issue(String titolo, String descrizione, String priorita, String urlImmagine) {
+    public Issue(String titolo, String descrizione, String priorita) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.priorita = priorita;
-        this.urlImmagine = urlImmagine;
         this.data = LocalDate.now();
     }
 
@@ -62,19 +70,16 @@ public class Issue {
     public void setPriorita(String priorita) {
         this.priorita = priorita;
     }
-    public String getUrlImmagine() {
-        return urlImmagine;
-    }
-    public void setUrlImmagine(String urlImmagine) {
-        this.urlImmagine = urlImmagine;
-    }
 
-    public String getStato() {
-        return stato;
-    }
-    public void setStato(String stato) {
-        this.stato = stato;
-    }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public LocalDateTime getDataRisoluzione() {return dataRisoluzione;}
+    public void setDataRisoluzione(LocalDateTime dataRisoluzione) {this.dataRisoluzione = dataRisoluzione;}
+    public AuthUser getAssignee() {return assignee;}
+    public void setAssignee(AuthUser assignee) {this.assignee = assignee;}
+    public StatoIssue getStato() {return stato;}
+    public void setStato(StatoIssue stato) {this.stato = stato;}
+    public Attachment getAllegato() {return allegato;}
+    public void setAllegato(Attachment allegato) {this.allegato = allegato;}
 }

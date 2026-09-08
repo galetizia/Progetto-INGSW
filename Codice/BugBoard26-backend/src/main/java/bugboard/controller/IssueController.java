@@ -20,7 +20,7 @@ public class IssueController {
     @PostMapping("/nuovaIssue")
     public ResponseEntity<String> nuovaIssue(@RequestBody IssueRequest request) {
         try{
-            issueService.createIssue(request.titolo(),request.descrizione(),request.priorita(),request.urlImmagine());
+            issueService.createIssue(request.titolo(),request.descrizione(),request.priorita());
             return ResponseEntity.ok("Nuova issue creata ");
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
