@@ -49,6 +49,20 @@ public class UserHomeController {
     @FXML
     private TableColumn<Issue, String> dataColumn;
 
+
+    @FXML
+    private TableView<Issue> archiviatiTable;
+    @FXML
+    private TableColumn<Issue, Integer> idArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> titoloArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> prioritaArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> tipoArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> dataArchiviatiColumn;
+
     @FXML
     private VBox colonnaSinistra;
     @FXML
@@ -56,10 +70,20 @@ public class UserHomeController {
     @FXML
     public void initialize()
     {
-        colonnaSinistra.setVisible(false);
-        colonnaDestra.setVisible(false);
-        colonnaSinistra.setManaged(false);
-        colonnaDestra.setManaged(false);
+
+        // Setup colonne Issue Attive
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
+        statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
+        dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+
+        // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
+        idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
+        prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
+        tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
     }
     @FXML
     protected void onSegnalaIssueButtonClick(){
@@ -88,22 +112,43 @@ public class UserHomeController {
     }
 
     @FXML
-    protected void onElencoIssueButtonClick(){
-        if(issueTable.getItems().isEmpty()){
-            idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-            titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
-            statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
-            prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
-            dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+    protected void onElencoIssueButtonClick() {
+        boolean isVisible = colonnaSinistra.isVisible();
 
-            loadOnTable();
+        if (!isVisible) {
+            loadOnTable(); // Riempi la tabella coi dati
             colonnaSinistra.setVisible(true);
             colonnaSinistra.setManaged(true);
-        } else{
-            issueTable.getItems().clear();
+        } else {
             colonnaSinistra.setVisible(false);
             colonnaSinistra.setManaged(false);
         }
+
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        javafx.application.Platform.runLater(() -> {
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        });
+    }
+
+    @FXML
+    protected void onBugArchiviatiButtonClick() {
+        boolean isVisible = colonnaDestra.isVisible();
+
+        if (!isVisible) {
+            // NOTA: Qui dovrai fare una chiamata per caricare gli archiviati, es. loadArchiviatiOnTable();
+            colonnaDestra.setVisible(true);
+            colonnaDestra.setManaged(true);
+        } else {
+            colonnaDestra.setVisible(false);
+            colonnaDestra.setManaged(false);
+        }
+
+        Stage stage = (Stage) colonnaDestra.getScene().getWindow();
+        javafx.application.Platform.runLater(() -> {
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        });
     }
 
     private void loadOnTable() {

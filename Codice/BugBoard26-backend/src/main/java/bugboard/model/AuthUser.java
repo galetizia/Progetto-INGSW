@@ -58,12 +58,8 @@ public class AuthUser {
     public Ruolo getRuolo() {
         return ruolo;
     }
-
-    public void setRuolo(Ruolo ruolo) {
-        this.ruolo = ruolo;
-    }
-
-    public boolean statoAccount() {
+    public void setRuolo(Ruolo ruolo) {this.ruolo = ruolo;}
+    public boolean getStatoAccount() {
         return statoAccount;
     }
     public void setStatoAccount(boolean statoAccount) {
