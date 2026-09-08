@@ -12,4 +12,6 @@ module org.example.bugboard26frontend {
 
     exports org.example.bugboard26frontend;
     exports model;
+
+    exports enums;
 }

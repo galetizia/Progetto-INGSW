@@ -1,5 +1,7 @@
 package model;
 
+import enums.StatoIssue;
+
 import java.time.LocalDate;
 
 public class Issue {
@@ -8,10 +10,11 @@ public class Issue {
     private String titolo;
     private String descrizione;
     private String priorita;
-    private String stato;
+    private StatoIssue stato;
     private String tipo;
     private LocalDate data;
-    private String urlImmagine;
+    private Attachment allegato;
+    private AuthUser assignee;
 
     public Issue() {}
 
@@ -34,21 +37,20 @@ public class Issue {
         this.priorita = priorita;
     }
 
-    public String getStato() {
+    public StatoIssue getStato() {
         return stato;
     }
-    public void setStato(String stato) {
+    public void setStato(StatoIssue stato) {
         this.stato = stato;
     }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    public String getUrlImmagine() {
-        return urlImmagine;
-    }
 
-    public void setUrlImmagine(String urlImmagine) {
-        this.urlImmagine = urlImmagine;
-    }
+    public Attachment getAllegato(){return allegato;}
+    public void setAllegato(Attachment allegato){this.allegato = allegato;}
+    public AuthUser getAssignee(){return assignee;}
+    public void setAssignee(AuthUser assignee){this.assignee = assignee;}
+
 
     public LocalDate getData() {
         return data;

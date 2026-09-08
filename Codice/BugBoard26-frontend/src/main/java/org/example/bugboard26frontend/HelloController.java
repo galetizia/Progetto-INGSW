@@ -62,9 +62,12 @@ public class HelloController {
                 Stage stage = (Stage) emailField.getScene().getWindow();
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("user-home-view.fxml"));
-                Scene scene = new Scene(loader.load(), 2100, 700);
+                Scene scene = new Scene(loader.load());
                 stage.setTitle("Home");
                 stage.setScene(scene);
+
+                stage.sizeToScene();
+                stage.centerOnScreen();
             } else {
                 // Se il codice non è 200, le credenziali sono errate
                 Alert alert = new Alert(Alert.AlertType.ERROR);
