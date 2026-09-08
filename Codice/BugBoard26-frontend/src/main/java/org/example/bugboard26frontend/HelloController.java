@@ -61,7 +61,7 @@ public class HelloController {
             if(success) {
                 Stage stage = (Stage) emailField.getScene().getWindow();
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("user-home-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("externalUser-home-view.fxml"));
                 Scene scene = new Scene(loader.load());
                 stage.setTitle("Home");
                 stage.setScene(scene);
