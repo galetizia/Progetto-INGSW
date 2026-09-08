@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import model.Issue;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,27 +21,48 @@ public class IssueClient {
 
     private final HttpClient client = ApiClient.getClient();
 
-    public boolean createIssue(String titolo, String descrizione, String priorita, String urlImmagine) {
+    private void aggiungiCampoTesto(List<byte[]> byteArrays, String boundary, String nome, String valore) {
+        String campo = "--" + boundary + "\r\n" +
+                "Content-Disposition: form-data; name=\"" + nome + "\"\r\n\r\n" +
+                valore + "\r\n";
+        byteArrays.add(campo.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+
+    public boolean createIssue(String titolo, String descrizione, String priorita, String tipologia, File file) {
 
         try {
-            String json = """
-                    {
-                        "titolo": "%s",
-                        "descrizione": "%s",
-                        "priorita": "%s",
-                        "urlImmagine": "%s"
-                    }
-                    """.formatted(titolo, descrizione, priorita, urlImmagine);
+            String boundary = "Boundary-" + System.currentTimeMillis();
+            List<byte[]> data = new ArrayList<>();
 
+            aggiungiCampoTesto(data, boundary, "titolo", titolo);
+            aggiungiCampoTesto(data, boundary, "descrizione", descrizione);
+            aggiungiCampoTesto(data, boundary, "tipologia", tipologia);
+
+            if(priorita != null && !priorita.isBlank()) {
+                aggiungiCampoTesto(data, boundary, "priorita", priorita);
+            }
+
+            if(file != null && file.exists()) {
+                String fileHeader = "--" + boundary + "\r\n" + "Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n" +
+                        "Content-Type: application/octet-stream\r\n\r\n";
+                data.add(fileHeader.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                data.add(java.nio.file.Files.readAllBytes(file.toPath()));
+                data.add("\r\n".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            }
+
+            data.add(("--" + boundary + "--\r\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "nuovaIssue"))
-                    .header("Content-Type", "application/json")
+                    .header("Content-Type", "multipart/form-data; boundary=" + boundary)
                     .header("Authorization", "Bearer " + AuthSession.getToken())
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .POST(HttpRequest.BodyPublishers.ofByteArrays(data))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status Code dal Server: " + response.statusCode());
+            System.out.println("Messaggio dal Server: " + response.body());
 
             return response.statusCode() == 200 || response.statusCode() == 201;
         } catch (IOException | InterruptedException e) {

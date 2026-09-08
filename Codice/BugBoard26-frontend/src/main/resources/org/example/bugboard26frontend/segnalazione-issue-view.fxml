@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,8 +19,8 @@
                   <Font name="Segoe UI Bold" size="36.0" />
                </font>
             </Label>
-            <TextField fx:id="emailField" promptText="Titolo" />
-            <PasswordField fx:id="passwordField" prefHeight="100.0" prefWidth="317.0" promptText="Descrizione" />
+            <TextField fx:id="titoloField" promptText="Titolo" />
+            <TextField fx:id="descrizioneField" prefHeight="90.0" prefWidth="357.0" promptText="Descrizione" />
             <HBox alignment="CENTER" spacing="20">
                <MenuButton fx:id="prioritaMenuButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Priorità">
                  <items>
@@ -40,7 +39,7 @@
                </MenuButton>
             </HBox>
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAllegaButtonClick" styleClass="button-image" text="Allega Immagine" />
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfermaButtonClick" prefHeight="28.0" prefWidth="124.0" text="Crea">
+            <Button fx:id="confermaButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfermaButtonClick" prefHeight="28.0" prefWidth="124.0" text="Crea">
                <font>
                   <Font name="Segoe UI" size="14.0" />
                </font>

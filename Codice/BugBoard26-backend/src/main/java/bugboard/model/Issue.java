@@ -1,6 +1,7 @@
 package bugboard.model;
 
 import bugboard.enums.StatoIssue;
+import bugboard.enums.TipoIssue;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ public class Issue {
     @Column(nullable = false)
     private StatoIssue stato = StatoIssue.TO_DO;
     @Column(nullable = false)
-    private String tipo;
+    private TipoIssue tipo;
     @Column
     private LocalDate data;
     @Column(name = "data_risoluzione")
@@ -82,4 +83,6 @@ public class Issue {
     public void setStato(StatoIssue stato) {this.stato = stato;}
     public Attachment getAllegato() {return allegato;}
     public void setAllegato(Attachment allegato) {this.allegato = allegato;}
+    public void setTipo(TipoIssue tipo) {this.tipo = tipo;}
+    public String getTipo() {return tipo.name();}
 }

@@ -32,9 +32,6 @@ public class SegnalazioneIssueController {
     private TextField descrizioneField;
 
     @FXML
-    private TextField prioritaField;
-
-    @FXML
     private MenuButton prioritaMenuButton;
     private String prioritaScelta= "";
 
@@ -44,45 +41,47 @@ public class SegnalazioneIssueController {
 
     IssueClient issueClient = new IssueClient();
 
+    File file = null;
+
     @FXML
     protected void onPrioritaAltaSelezionata(){
-        prioritaScelta = "Alta";
+        prioritaScelta = "ALTA";
         prioritaMenuButton.setText("Priorità: Alta");
     }
 
     @FXML
     protected void onPrioritaMediaSelezionata(){
-        prioritaScelta = "Media";
+        prioritaScelta = "MEDIA";
         prioritaMenuButton.setText("Priorità: Media");
     }
 
     @FXML
     protected void onPrioritaBassaSelezionata(){
-        prioritaScelta = "Bassa";
+        prioritaScelta = "BASSA";
         prioritaMenuButton.setText("Priorità: Bassa");
     }
 
     @FXML
     protected void onBugSelezionato(){
-        tipologiaScelta = "Bug";
+        tipologiaScelta = "BUG";
         tipologiaMenuButton.setText("Tipologia: Bug");
     }
 
     @FXML
     protected void onFeatureSelezionato(){
-        tipologiaScelta = "Feature";
+        tipologiaScelta = "FEATURE";
         tipologiaMenuButton.setText("Tipologia: Feature");
     }
 
     @FXML
     protected void onDocumentationSelezionato(){
-        tipologiaScelta = "Documentation";
+        tipologiaScelta = "DOCUMENTATION";
         tipologiaMenuButton.setText("Tipologia: Documentation");
     }
 
     @FXML
     protected void onQuestionSelezionato(){
-        tipologiaScelta = "Question";
+        tipologiaScelta = "QUESTION";
         tipologiaMenuButton.setText("Tipologia: Question");
     }
 
@@ -93,7 +92,7 @@ public class SegnalazioneIssueController {
 
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Immagini", "*.png", "*.jpg", "*.jpeg"));
 
-        File file = fileChooser.showOpenDialog(null);
+        file = fileChooser.showOpenDialog(null);
         if (file != null) {
             System.out.println("File scelto: " + file.getAbsolutePath());
         } else {
@@ -105,7 +104,15 @@ public class SegnalazioneIssueController {
     protected void onConfermaButtonClick(){
         String titolo = titoloField.getText();
         String descrizione = descrizioneField.getText();
-        String priorita = prioritaField.getText();
+
+        if ( titolo.isBlank() || tipologiaScelta.isBlank() || descrizione.isBlank()) {
+            Alert alertErrore = new Alert(Alert.AlertType.WARNING);
+            alertErrore.setTitle("Dati mancanti");
+            alertErrore.setHeaderText(null);
+            alertErrore.setContentText("Inserire Titolo, Descrizione e Tipologia.");
+            alertErrore.showAndWait();
+            return;
+        }
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Conferma operazione");
@@ -114,7 +121,7 @@ public class SegnalazioneIssueController {
             alert.showAndWait().ifPresent(response -> {
                 if(response == ButtonType.OK){
                     System.out.println("Salvataggio in corso");
-                    boolean success = issueClient.createIssue(titolo, descrizione, priorita, null);
+                    boolean success = issueClient.createIssue(titolo, descrizione, prioritaScelta, tipologiaScelta, file);
                     if(success){
                         Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
                         alert2.setTitle("Issue creata");
