@@ -1,9 +1,11 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.StatoIssue;
 
 import java.time.LocalDate;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 
     private int id;
@@ -15,6 +17,8 @@ public class Issue {
     private LocalDate data;
     private Attachment allegato;
     private AuthUser assignee;
+    private LocalDate dataRisoluzione;
+
 
     public Issue() {}
 
@@ -51,11 +55,22 @@ public class Issue {
     public AuthUser getAssignee(){return assignee;}
     public void setAssignee(AuthUser assignee){this.assignee = assignee;}
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    public String getTipo() {return tipo;}
 
     public LocalDate getData() {
         return data;
     }
     public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public LocalDate getDataRisoluzione() {
+        return dataRisoluzione;
+    }
+    public void setDataRisoluzione(LocalDate dataRisoluzione) {
+        this.dataRisoluzione = dataRisoluzione;
     }
 }

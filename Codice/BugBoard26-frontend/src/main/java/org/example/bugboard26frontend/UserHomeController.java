@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import client.AuthSession;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -18,11 +20,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Issue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.List;
 
 public class UserHomeController {
@@ -39,15 +43,22 @@ public class UserHomeController {
     private TableView<Issue> issueTable;
 
     @FXML
+    private Button visualizzaAllegatoButton;
+
+    @FXML
     private TableColumn<Issue, Integer> idColumn;
     @FXML
     private TableColumn<Issue, String> titoloColumn;
     @FXML
     private TableColumn<Issue, String> statoColumn;
     @FXML
+    private TableColumn<Issue,String> tipoColumn;
+    @FXML
     private TableColumn<Issue, String> prioritaColumn;
     @FXML
     private TableColumn<Issue, String> dataColumn;
+    @FXML
+    private TextArea descriptionArea;
 
 
     @FXML
@@ -70,11 +81,11 @@ public class UserHomeController {
     @FXML
     public void initialize()
     {
-
         // Setup colonne Issue Attive
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
         statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
 
@@ -84,6 +95,17 @@ public class UserHomeController {
         prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
+
+        issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+            if(newValue != null) {
+                descriptionArea.setText(newValue.getDescrizione());
+                visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
+            }
+            else {
+                descriptionArea.setText("");
+                visualizzaAllegatoButton.setDisable(true);
+            }
+        });
     }
     @FXML
     protected void onSegnalaIssueButtonClick(){
@@ -116,7 +138,7 @@ public class UserHomeController {
         boolean isVisible = colonnaSinistra.isVisible();
 
         if (!isVisible) {
-            loadOnTable(); // Riempi la tabella coi dati
+            loadOnTable();
             colonnaSinistra.setVisible(true);
             colonnaSinistra.setManaged(true);
         } else {
@@ -174,6 +196,38 @@ public class UserHomeController {
         }
     }
 
+    @FXML
+    protected void onVisualizzaAllegatoButtonClick() {
+        Issue issue = issueTable.getSelectionModel().getSelectedItem();
+        if(issue != null && issue.getAllegato()!=null) {
+
+            try {
+                byte[] data = issue.getAllegato().getContenuto();
+                ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                Image image = new Image(bais);
+
+                ImageView imageView = new ImageView(image);
+                imageView.setPreserveRatio(true);
+                imageView.setFitHeight(1000);
+                imageView.setFitWidth(800);
+
+                StackPane layout = new StackPane(imageView);
+                layout.setStyle("-fx-background-color: #0b0914; -fx-padding: 20;");
+
+                Stage imgStage = new Stage();
+                imgStage.setTitle("Allegato: "+issue.getAllegato().getNome());
+                imgStage.setScene(new Scene(layout));
+                //imgStage.initModality(Modality.APPLICATION_MODAL);
+
+                Stage mainWindow = (Stage) visualizzaAllegatoButton.getScene().getWindow();
+                imgStage.initOwner(mainWindow);
+                imgStage.showAndWait();
+            } catch (Exception e){
+                System.out.println("Errore nell'apertura allegato" + e.getMessage());
+            }
+        }
+
+    }
     @FXML
     protected void onCambioPasswordButtonClick(){
 
