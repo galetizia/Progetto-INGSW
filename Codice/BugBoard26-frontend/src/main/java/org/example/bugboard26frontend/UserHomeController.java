@@ -13,6 +13,7 @@ import client.AuthSession;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Issue;
@@ -38,8 +39,6 @@ public class UserHomeController {
     private TableView<Issue> issueTable;
 
     @FXML
-    private StackPane contentArea;
-    @FXML
     private TableColumn<Issue, Integer> idColumn;
     @FXML
     private TableColumn<Issue, String> titoloColumn;
@@ -51,9 +50,16 @@ public class UserHomeController {
     private TableColumn<Issue, String> dataColumn;
 
     @FXML
+    private VBox colonnaSinistra;
+    @FXML
+    private VBox colonnaDestra;
+    @FXML
     public void initialize()
     {
-        contentArea.setVisible(false);
+        colonnaSinistra.setVisible(false);
+        colonnaDestra.setVisible(false);
+        colonnaSinistra.setManaged(false);
+        colonnaDestra.setManaged(false);
     }
     @FXML
     protected void onSegnalaIssueButtonClick(){
@@ -91,10 +97,12 @@ public class UserHomeController {
             dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
 
             loadOnTable();
-            contentArea.setVisible(true);
+            colonnaSinistra.setVisible(true);
+            colonnaSinistra.setManaged(true);
         } else{
             issueTable.getItems().clear();
-            contentArea.setVisible(false);
+            colonnaSinistra.setVisible(false);
+            colonnaSinistra.setManaged(false);
         }
     }
 
