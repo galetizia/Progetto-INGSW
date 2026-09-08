@@ -19,21 +19,31 @@ public class Issue {
 
     @Column(nullable = false)
     private String titolo;
+
     @Column(nullable = false)
     private String descrizione;
+
     @Column
     private String priorita = "no";
+
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private StatoIssue stato = StatoIssue.TO_DO;
+
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoIssue tipo;
+
     @Column
     private LocalDate data;
+
     @Column(name = "data_risoluzione")
     private LocalDateTime dataRisoluzione;
+
     @ManyToOne
     @JoinColumn(name = "assignee_id")
     private AuthUser assignee;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_allegato")
     private Attachment allegato;

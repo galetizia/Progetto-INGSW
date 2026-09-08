@@ -4,47 +4,37 @@ import client.AuthClient;
 import client.IssueClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import client.AuthSession;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Issue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Base64;
 import java.util.List;
 
-public class UserHomeController {
-    @FXML
-    private MenuItem logoutButton;
+public class ExternalUserHomeController {
 
     @FXML
-    private Button elencoButton;
+    private MenuItem logoutButton;
 
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
 
     @FXML
-    private TableView<Issue> issueTable;
-
+    private TableView<Issue> bugTable;
     @FXML
     private Button visualizzaAllegatoButton;
-
     @FXML
     private TableColumn<Issue, Integer> idColumn;
     @FXML
@@ -60,27 +50,10 @@ public class UserHomeController {
     @FXML
     private TextArea descriptionArea;
 
-
-    @FXML
-    private TableView<Issue> archiviatiTable;
-    @FXML
-    private TableColumn<Issue, Integer> idArchiviatiColumn;
-    @FXML
-    private TableColumn<Issue, String> titoloArchiviatiColumn;
-    @FXML
-    private TableColumn<Issue, String> prioritaArchiviatiColumn;
-    @FXML
-    private TableColumn<Issue, String> tipoArchiviatiColumn;
-    @FXML
-    private TableColumn<Issue, String> dataArchiviatiColumn;
-
     @FXML
     private VBox colonnaSinistra;
     @FXML
-    private VBox colonnaDestra;
-    @FXML
-    public void initialize()
-    {
+    public void initialize() {
         // Setup colonne Issue Attive
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
@@ -89,14 +62,7 @@ public class UserHomeController {
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
 
-        // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
-        idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
-        prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
-        tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
-
-        issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+        bugTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
@@ -107,34 +73,9 @@ public class UserHomeController {
             }
         });
     }
-    @FXML
-    protected void onSegnalaIssueButtonClick(){
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("segnalazione-issue-view.fxml"));
-            Parent root = fxmlLoader.load();
-
-            // nuova finestra(pop-up)
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Segnalazione");
-            dialogStage.setScene(new Scene(root));
-            dialogStage.setResizable(false);
-
-            // per bloccare le finestre sottostanti
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-
-            // recuperiamo finestra principale
-            Stage mainWindow = (Stage) logoutButton.getParentPopup().getOwnerWindow();
-            dialogStage.initOwner(mainWindow);
-
-            dialogStage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Errore nell'apertura finestra segnalazione");
-        }
-    }
 
     @FXML
-    protected void onElencoIssueButtonClick() {
+    protected void onElencoBugButtonClick() {
         boolean isVisible = colonnaSinistra.isVisible();
 
         if (!isVisible) {
@@ -152,53 +93,19 @@ public class UserHomeController {
             stage.centerOnScreen();
         });
     }
-
-    @FXML
-    protected void onBugArchiviatiButtonClick() {
-        boolean isVisible = colonnaDestra.isVisible();
-
-        if (!isVisible) {
-            // NOTA: Qui dovrai fare una chiamata per caricare gli archiviati, es. loadArchiviatiOnTable();
-            colonnaDestra.setVisible(true);
-            colonnaDestra.setManaged(true);
-        } else {
-            colonnaDestra.setVisible(false);
-            colonnaDestra.setManaged(false);
-        }
-
-        Stage stage = (Stage) colonnaDestra.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
-            stage.sizeToScene();
-            stage.centerOnScreen();
-        });
-    }
-
     private void loadOnTable() {
         List<Issue> issues = issueClient.elencoIssue();
         ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
-        issueTable.setItems(observableList);
-    }
 
-    @FXML
-    protected void onLogoutButtonClick() {
-        authClient.logout();
-
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e){
-            e.printStackTrace();
-            System.out.println("Errore nell'apertura schermata login");
-        }
+        FilteredList<Issue> filteredData = new FilteredList<>(observableList, p -> {
+            return "BUG".equalsIgnoreCase(p.getTipo());
+        });
+        bugTable.setItems(filteredData);
     }
 
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
-        Issue issue = issueTable.getSelectionModel().getSelectedItem();
+        Issue issue = bugTable.getSelectionModel().getSelectedItem();
         if(issue != null && issue.getAllegato()!=null) {
 
             try {
@@ -228,8 +135,26 @@ public class UserHomeController {
         }
 
     }
+
     @FXML
-    protected void onCambioPasswordButtonClick(){
+    protected void onLogoutButtonClick() {
+        authClient.logout();
+
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Errore nell'apertura schermata login");
+        }
+    }
+
+    @FXML
+    protected void onCambioPasswordButtonClick() {
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Cambio Password");

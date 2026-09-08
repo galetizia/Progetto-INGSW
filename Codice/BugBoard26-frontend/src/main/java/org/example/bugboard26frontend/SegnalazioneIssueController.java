@@ -29,7 +29,7 @@ public class SegnalazioneIssueController {
     private Button confermaButton;
 
     @FXML
-    private TextField descrizioneField;
+    private TextArea descrizioneField;
 
     @FXML
     private MenuButton prioritaMenuButton;

@@ -9,25 +9,26 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <!-- HBox principale: divide lo schermo in 3 colonne -->
 
-<HBox alignment="CENTER" prefHeight="649.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.UserHomeController">
+<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.UserHomeController">
 
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
 
     <!-- COLONNA SINISTRA: Elenco Issue Attive -->
-    <VBox fx:id="colonnaSinistra" spacing="15.0" HBox.hgrow="ALWAYS" visible="false" managed="false">
+    <VBox fx:id="colonnaSinistra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <Label text="Issue Attive" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Bold" size="22.0" />
             </font>
         </Label>
-        <TableView fx:id="issueTable" styleClass="dark-table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="issueTable" prefHeight="321.0" prefWidth="592.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" text="ID" />
                 <TableColumn fx:id="titoloColumn" prefWidth="150.0" text="Titolo" />
@@ -42,7 +43,13 @@
         </TableView>
         <!-- Text area spostata sotto la tabella di sinistra -->
         <Label text="Descrizione Issue Selezionata" textFill="#a29bb8" />
-        <TextArea fx:id="descriptionArea" prefHeight="150.0" styleClass="dark-text-area" wrapText="true" />
+        <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
+      <HBox prefHeight="65.0" prefWidth="592.0">
+         <children>
+            <Region prefHeight="54.0" prefWidth="507.0" />
+            <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" />
+         </children>
+      </HBox>
     </VBox>
 
 
@@ -87,7 +94,7 @@
 
 
     <!-- COLONNA DESTRA: Bug Archiviati -->
-    <VBox fx:id="colonnaDestra" spacing="15.0" HBox.hgrow="ALWAYS" visible="false" managed="false">
+    <VBox fx:id="colonnaDestra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <Label text="Bug Archiviati" textFill="#a29bb8">
             <font>
                 <Font name="Segoe UI Bold" size="22.0" />
