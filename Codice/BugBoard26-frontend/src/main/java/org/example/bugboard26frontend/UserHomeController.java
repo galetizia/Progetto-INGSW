@@ -44,6 +44,8 @@ public class UserHomeController {
 
     @FXML
     private Button visualizzaAllegatoButton;
+    @FXML
+    private Button prendiInCaricoButton;
 
     @FXML
     private TableColumn<Issue, Integer> idColumn;
@@ -100,10 +102,12 @@ public class UserHomeController {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
+                prendiInCaricoButton.setDisable(false);
             }
             else {
                 descriptionArea.setText("");
                 visualizzaAllegatoButton.setDisable(true);
+                prendiInCaricoButton.setDisable(true);
             }
         });
     }
@@ -226,7 +230,30 @@ public class UserHomeController {
                 System.out.println("Errore nell'apertura allegato" + e.getMessage());
             }
         }
+    }
 
+    @FXML
+    protected void prendiInCaricoButtonClick(){
+        Issue issueSelezionata =  issueTable.getSelectionModel().getSelectedItem();
+        if(issueSelezionata != null && AuthSession.isLoggedIn()){
+            boolean success = issueClient.prendiInCarico(issueSelezionata.getId());
+            if(success){
+                loadOnTable();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Successo");
+                alert.setHeaderText(null);
+                alert.setContentText("Hai preso in carico la issue #" + issueSelezionata.getId());
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText(null);
+                alert.setContentText("Impossibile prendere in carico la issue.");
+                alert.showAndWait();
+            }
+
+        }
     }
     @FXML
     protected void onCambioPasswordButtonClick(){

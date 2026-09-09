@@ -57,11 +57,10 @@ public class HelloController {
         try{
             boolean success = authClient.login(email, password);
 
-            // Controlla il codice di stato: 200 significa che è andato tutto bene
             if(success) {
                 Stage stage = (Stage) emailField.getScene().getWindow();
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("externalUser-home-view.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("user-home-view.fxml"));
                 Scene scene = new Scene(loader.load());
                 stage.setTitle("Home");
                 stage.setScene(scene);

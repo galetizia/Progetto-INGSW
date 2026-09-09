@@ -22,7 +22,7 @@
     </padding>
 
     <!-- COLONNA SINISTRA: Elenco Issue Attive -->
-    <VBox fx:id="colonnaSinistra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
+    <VBox fx:id="colonnaSinistra" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
         <Label text="Issue Attive" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Bold" size="22.0" />
@@ -46,7 +46,8 @@
         <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
       <HBox prefHeight="65.0" prefWidth="592.0">
          <children>
-            <Region prefHeight="54.0" prefWidth="507.0" />
+            <Button fx:id="prendiInCaricoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#prendiInCaricoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Prendi in carico" />
+            <Region prefHeight="62.0" prefWidth="227.0" />
             <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" />
          </children>
       </HBox>

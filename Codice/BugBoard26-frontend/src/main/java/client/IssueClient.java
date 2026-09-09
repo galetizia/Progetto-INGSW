@@ -94,4 +94,20 @@ public class IssueClient {
         }
         return new ArrayList<>();
     }
+
+    public boolean prendiInCarico(int issueId){
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "prendiInCarico?id=" + issueId))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

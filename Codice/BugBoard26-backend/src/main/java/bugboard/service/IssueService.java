@@ -5,6 +5,7 @@ import bugboard.enums.TipoIssue;
 import bugboard.model.Attachment;
 import bugboard.model.AuthUser;
 import bugboard.model.Issue;
+import bugboard.repository.AuthUserRepository;
 import bugboard.repository.IssueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +17,11 @@ import java.util.List;
 @Service
 public class IssueService {
     private final IssueRepository issueRepository;
+    private final AuthUserRepository authUserRepository;
 
-    public IssueService(IssueRepository issueRepository) {
+    public IssueService(IssueRepository issueRepository, AuthUserRepository authUserRepository) {
         this.issueRepository = issueRepository;
+        this.authUserRepository = authUserRepository;
     }
 
     public void createIssue(String titolo, String descrizione, TipoIssue tipologia , String priorita, MultipartFile file) {
@@ -61,15 +64,24 @@ public class IssueService {
         return issues;
     }
 
-    public void prendiInCaricoIssue(int issueId, AuthUser sviluppatore) {
-        Issue issue = issueRepository.findById(issueId)
-                .orElseThrow(() -> new RuntimeException("Issue non trovata"));
+    public boolean assegnaIssueUtente(int issueId, String emailUser) {
+        try{
+            Issue issue = issueRepository.findById(issueId)
+                    .orElseThrow(() -> new RuntimeException("Issue non trovata"));
 
-        // Cambia lo stato e assegna l'utente
-        issue.setStato(StatoIssue.ASSEGNATO);
-        issue.setAssignee(sviluppatore);
+            AuthUser user = authUserRepository.findByEmail(emailUser).orElseThrow(() -> new RuntimeException("Utente non trovato"));
 
-        issueRepository.save(issue);
+            // Cambia lo stato e assegna l'utente
+            issue.setStato(StatoIssue.ASSEGNATO);
+            issue.setAssignee(user);
+
+            issueRepository.save(issue);
+            return true;
+        } catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     // 2. L'utente ha finito e risolve l'issue
@@ -77,7 +89,7 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Issue non trovata"));
 
-        // Cambia lo stato a RISOLTO
+        // Cambia lo stato a: RISOLTO
         issue.setStato(StatoIssue.RISOLTO);
 
         // SALVA LA DATA E L'ORA ESATTA
