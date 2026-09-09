@@ -4,6 +4,8 @@ import client.AuthClient;
 import client.IssueClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +29,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 
 public class UserHomeController {
@@ -38,6 +41,9 @@ public class UserHomeController {
 
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
+    private ObservableList<Issue> masterData = FXCollections.observableArrayList();
+    private FilteredList<Issue> filteredData;
+    private SortedList<Issue> sortedData;
 
     @FXML
     private TableView<Issue> issueTable;
@@ -80,6 +86,11 @@ public class UserHomeController {
     private VBox colonnaSinistra;
     @FXML
     private VBox colonnaDestra;
+
+    @FXML
+    private ChoiceBox<String> filtroChoiceBox;
+    @FXML
+    private ChoiceBox<String> ordinaChoiceBox;
     @FXML
     public void initialize()
     {
@@ -98,7 +109,7 @@ public class UserHomeController {
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
-        issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+        issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
@@ -110,7 +121,54 @@ public class UserHomeController {
                 prendiInCaricoButton.setDisable(true);
             }
         });
+
+        filteredData = new FilteredList<>(masterData, p -> true);
+        sortedData = new SortedList<>(filteredData);
+
+        issueTable.setItems(sortedData);
+
+        filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Le mie issue");
+        filtroChoiceBox.setValue("Tutte");
+
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.setValue("Nessun ordine");
+
+        filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
+        });
+
+        // Ascoltatore per gli ordini
+        ordinaChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
+        });
     }
+
+    private void applicaFiltroEOrdine(){
+        if(filteredData == null || sortedData == null) return;
+
+        String filtro = filtroChoiceBox.getValue();
+        String ordina = ordinaChoiceBox.getValue();
+
+        filteredData.setPredicate(issue -> {
+            if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
+            if ("Le mie issue".equals(filtro)) return "ASSEGNATO".equalsIgnoreCase(issue.getStato());
+            return true;
+        });
+
+        if("Priorità Alta".equals(ordina)){
+            List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita().toUpperCase());
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+        } else if("Più recenti".equals(ordina)){
+            sortedData.setComparator((i1, i2) -> i2.getData().compareTo(i1.getData()));
+        } else{
+            sortedData.setComparator(null);
+        }
+    }
+
     @FXML
     protected void onSegnalaIssueButtonClick(){
         try {
@@ -127,10 +185,11 @@ public class UserHomeController {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
 
             // recuperiamo finestra principale
-            Stage mainWindow = (Stage) logoutButton.getParentPopup().getOwnerWindow();
+            Stage mainWindow = (Stage) issueTable.getScene().getWindow();
             dialogStage.initOwner(mainWindow);
 
             dialogStage.showAndWait();
+            loadOnTable();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Errore nell'apertura finestra segnalazione");
@@ -179,8 +238,7 @@ public class UserHomeController {
 
     private void loadOnTable() {
         List<Issue> issues = issueClient.elencoIssue();
-        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
-        issueTable.setItems(observableList);
+        masterData.setAll(issues);
     }
 
     @FXML
@@ -232,10 +290,11 @@ public class UserHomeController {
         }
     }
 
+
     @FXML
     protected void prendiInCaricoButtonClick(){
         Issue issueSelezionata =  issueTable.getSelectionModel().getSelectedItem();
-        if(issueSelezionata != null && AuthSession.isLoggedIn()){
+        if(issueSelezionata != null && AuthSession.isLoggedIn() && issueSelezionata.getAssignee()==null) {
             boolean success = issueClient.prendiInCarico(issueSelezionata.getId());
             if(success){
                 loadOnTable();

@@ -170,3 +170,77 @@
     -fx-font-weight: bold;
     -fx-font-size: 15px;
 }
+/* =========================================
+   5. CHOICE BOX (Stile coerente con Tabella e Neon)
+   ========================================= */
+.choice-box {
+    -fx-background-color: #0b0914; /* Stesso sfondo della tabella */
+    -fx-border-color: #2a2240;     /* Bordo prugna spento */
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4 10 4 10;
+    -fx-cursor: hand;
+}
+
+/* Testo dell'elemento selezionato */
+.choice-box > .label {
+    -fx-text-fill: #a29bb8;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Contenitore della freccina */
+.choice-box .open-button {
+    -fx-background-color: transparent;
+}
+
+/* Freccia verso il basso */
+.choice-box .arrow {
+    -fx-background-color: #a29bb8; /* Grigio/viola come le intestazioni */
+    -fx-padding: 3.5px 5px 3.5px 5px;
+}
+
+/* Stato Hover, Focus o Tendina Aperta (:showing) */
+.choice-box:hover, .choice-box:focused, .choice-box:showing {
+    -fx-border-color: #bf5afe; /* Si accende di Viola Neon */
+    -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
+}
+
+.choice-box:hover > .label, .choice-box:showing > .label {
+    -fx-text-fill: #ffffff;
+}
+
+.choice-box:hover .arrow, .choice-box:showing .arrow {
+    -fx-background-color: #bf5afe; /* La freccia diventa fluo */
+}
+
+/* Menu a discesa aperto (Popup) */
+.choice-box .context-menu {
+    -fx-background-color: #151122; /* Sfondo scuro delle card/header */
+    -fx-border-color: #2a2240;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 15, 0, 0, 5);
+}
+
+/* Singoli elementi della lista a tendina */
+.choice-box .menu-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12 6 12;
+}
+
+.choice-box .menu-item .label {
+    -fx-text-fill: #a29bb8;
+    -fx-font-size: 13px;
+}
+
+/* Elemento su cui passi sopra il cursore nella tendina */
+.choice-box .menu-item:hover, .choice-box .menu-item:focused {
+    -fx-background-color: #3b2d59; /* Stesso viola opaco della riga selezionata */
+}
+
+.choice-box .menu-item:hover .label, .choice-box .menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
