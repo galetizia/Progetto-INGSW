@@ -2,12 +2,14 @@ package bugboard.controller;
 
 import bugboard.enums.TipoIssue;
 import bugboard.model.Issue;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import bugboard.service.IssueService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.security.Principal;
 import java.util.List;
 import java.util.logging.FileHandler;
 
@@ -38,5 +40,23 @@ public class IssueController {
     @GetMapping("/elenco_issue")
     public ResponseEntity<List<Issue>> elencoIssue() {
             return ResponseEntity.ok(issueService.elencoIssue());
+    }
+
+    @PostMapping("/prendiInCarico")
+    public ResponseEntity<String> prendiInCarico(@RequestParam int id, Principal principal){
+
+        try{
+            String email = principal.getName();
+            boolean successo = issueService.assegnaIssueUtente(id, email);
+            if(successo){
+                return ResponseEntity.ok("Issue presa in carico");
+            }
+            else {
+                return ResponseEntity.badRequest().body("Impossibile trovare o prendere in carico issue");
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore del server: " + e.getMessage());
+        }
+
     }
 }

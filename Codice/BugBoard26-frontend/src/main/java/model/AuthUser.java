@@ -1,7 +1,9 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.Ruolo;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthUser {
 
     private int id;
