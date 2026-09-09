@@ -1,6 +1,8 @@
 package bugboard.controller;
 
+import bugboard.enums.Ruolo;
 import bugboard.model.AuthUser;
+import bugboard.repository.AuthUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,8 @@ public class AuthUserController {
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try{
             String token = authUserService.login(request.email(), request.password());
-            return ResponseEntity.ok(new LoginResponse(token));
+            AuthUser utenteLoggato = authUserService.findByEmail(request.email());
+            return ResponseEntity.ok(new LoginResponse(token, utenteLoggato.getRuolo()));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -65,5 +68,5 @@ public class AuthUserController {
 }
 //un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
 record AuthRequest(String email, String password) {}
-record LoginResponse(String token) {}
+record LoginResponse(String token, Ruolo ruoloUtente) {}
 record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}

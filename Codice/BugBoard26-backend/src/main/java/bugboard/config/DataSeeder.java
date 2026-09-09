@@ -1,5 +1,6 @@
 package bugboard.config;
 
+import bugboard.enums.Ruolo;
 import bugboard.model.AuthUser;
 import bugboard.repository.AuthUserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -16,17 +17,27 @@ public class DataSeeder {
             PasswordEncoder passwordEncoder) {
 
         return args -> {
-            String emailTest = "admin@bugboard.com";
 
-            AuthUser utente = authUserRepository.findByEmail(emailTest).orElseGet(() -> {
-                AuthUser nuovoUtente = new AuthUser();
-                nuovoUtente.setEmail(emailTest);
-                return nuovoUtente;
-            });
+            // --- 1. UTENTE ADMIN ---
+            AuthUser admin = authUserRepository.findByEmail("admin@bugboard.com").orElse(new AuthUser());
+            admin.setEmail("admin@bugboard.com");
+            admin.setRuolo(Ruolo.ADMIN);
+            admin.setPassword(passwordEncoder.encode("Password123!"));
+            authUserRepository.save(admin);
 
-            utente.setPassword(passwordEncoder.encode("Password123!"));
+            // --- 2. UTENTE ESTERNO ---
+            AuthUser esterno = authUserRepository.findByEmail("external@bugboard.com").orElse(new AuthUser());
+            esterno.setEmail("external@bugboard.com");
+            esterno.setRuolo(Ruolo.EXTERNAL_USER);
+            esterno.setPassword(passwordEncoder.encode("Password123!"));
+            authUserRepository.save(esterno);
 
-            authUserRepository.save(utente);
+            // --- 3. UTENTE INTERNO ---
+            AuthUser interno = authUserRepository.findByEmail("internal@bugboard.com").orElse(new AuthUser());
+            interno.setEmail("internal@bugboard.com");
+            interno.setRuolo(Ruolo.INTERNAL_USER);
+            interno.setPassword(passwordEncoder.encode("Password123!"));
+            authUserRepository.save(interno);
 
         };
     }
