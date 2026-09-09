@@ -55,9 +55,4 @@ public class AuthUserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         authUserRepository.save(user);
     }
-
-    public AuthUser findByEmail(String email) {
-        return authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-    }
 }

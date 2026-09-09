@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.StatoIssue;
+import enums.TipoIssue;
 
 import java.time.LocalDate;
 
@@ -13,7 +14,7 @@ public class Issue {
     private String descrizione;
     private String priorita;
     private StatoIssue stato;
-    private String tipo;
+    private TipoIssue tipo;
     private LocalDate data;
     private Attachment allegato;
     private AuthUser assignee;
@@ -41,8 +42,8 @@ public class Issue {
         this.priorita = priorita;
     }
 
-    public StatoIssue getStato() {
-        return stato;
+    public String getStato() {
+        return stato.name();
     }
     public void setStato(StatoIssue stato) {
         this.stato = stato;
@@ -55,10 +56,10 @@ public class Issue {
     public AuthUser getAssignee(){return assignee;}
     public void setAssignee(AuthUser assignee){this.assignee = assignee;}
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoIssue tipo) {
         this.tipo = tipo;
     }
-    public String getTipo() {return tipo;}
+    public String getTipo() {return tipo.name();}
 
     public LocalDate getData() {
         return data;

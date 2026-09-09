@@ -15,17 +15,19 @@ import bugboard.service.AuthUserService;
 @RequestMapping("/api/user")
 public class AuthUserController {
     private final AuthUserService authUserService;
+    private final AuthUserRepository authUserRepository;
 
     //Passiamo il service al controller
-    public AuthUserController(AuthUserService authUserService) {
+    public AuthUserController(AuthUserService authUserService, AuthUserRepository authUserRepository) {
         this.authUserService = authUserService;
+        this.authUserRepository = authUserRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try{
             String token = authUserService.login(request.email(), request.password());
-            AuthUser utenteLoggato = authUserService.findByEmail(request.email());
+            AuthUser utenteLoggato = authUserRepository.findByEmail(request.email()).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
             return ResponseEntity.ok(new LoginResponse(token, utenteLoggato.getRuolo()));
 
         } catch (IllegalArgumentException e) {
