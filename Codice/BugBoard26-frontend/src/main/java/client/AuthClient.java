@@ -5,6 +5,11 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import enums.Ruolo;
+import model.AuthUser;
 
 public class AuthClient {
 
@@ -28,13 +33,24 @@ public class AuthClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-
             String body = response.body();
 
-            String token = extractToken(body);
+            String token = estraiValore(body, "token");
+            String ruoloString = estraiValore(body, "ruoloUtente");
 
-            AuthSession.setToken(token);
-            return true;
+            if (token != null && ruoloString != null) {
+                // 2. Salviamo il token
+                AuthSession.setToken(token);
+
+                // 3. Creiamo un utente inserendoci solo il ruolo
+                AuthUser utenteLoggato = new AuthUser();
+
+                // Converte la stringa del ruolo nel vero valore Enum
+                utenteLoggato.setRuolo(Ruolo.valueOf(ruoloString));
+
+                AuthSession.setUtenteCorrente(utenteLoggato);
+                return true;
+            }
         }
         return false;
     }
@@ -83,5 +99,16 @@ public class AuthClient {
 
     private static String extractToken(String json) {
         return json.replace("{\"token\":\"", "").replace("\"", "").replace("}", "").trim();
+    }
+
+    private String estraiValore(String json, String chiave) {
+        String patternString = "\"" + chiave + "\"\\s*:\\s*\"([^\"]+)\"";
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(json);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 }

@@ -60,9 +60,27 @@ public class HelloController {
             if(success) {
                 Stage stage = (Stage) emailField.getScene().getWindow();
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("user-home-view.fxml"));
+                var ruolo = client.AuthSession.getUtenteCorrente().getRuolo();
+                String viewToLoad = "";
+
+                switch (ruolo) {
+                    case ADMIN:
+                        viewToLoad = "admin-home-view.fxml";
+                        break;
+                    case EXTERNAL_USER:
+                        viewToLoad = "externalUser-home-view.fxml";
+                        break;
+                    case INTERNAL_USER:
+                        viewToLoad = "user-home-view.fxml";
+                        break;
+                    default:
+                        viewToLoad = "user-home-view.fxml"; // Fallback di sicurezza
+                        break;
+                }
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(viewToLoad));
                 Scene scene = new Scene(loader.load());
-                stage.setTitle("Home");
+                stage.setTitle("BugBoard - " + ruolo.name());
                 stage.setScene(scene);
 
                 stage.sizeToScene();

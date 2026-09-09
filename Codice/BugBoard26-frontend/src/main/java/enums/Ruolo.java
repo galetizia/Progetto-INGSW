@@ -1,5 +1,5 @@
 package enums;
 
 public enum Ruolo {
-    ADMIN, USER, EXTERNAL_USER;
+    ADMIN, INTERNAL_USER, EXTERNAL_USER;
 }
