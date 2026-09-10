@@ -195,6 +195,9 @@ public class AdminHomeController {
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
             stage.show();
+            stage.sizeToScene();
+            stage.centerOnScreen();
+
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Errore nell'apertura schermata login");

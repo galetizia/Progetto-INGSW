@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class IssueClient {
 
 
-    private static final String BASE_URL = "http://localhost:8080/api/user/";
+    private static final String BASE_URL = "http://localhost:8080/api/issues/";
 
     private final HttpClient client = ApiClient.getClient();
 
@@ -130,6 +130,8 @@ public class IssueClient {
 
             if(response.statusCode() == 200) {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 return mapper.readValue(response.body(), new TypeReference<List<Issue>>(){});
             } else {
                 System.out.println("Errore getIssueAttive: " + response.statusCode());
@@ -152,6 +154,8 @@ public class IssueClient {
 
             if(response.statusCode() == 200) {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 return mapper.readValue(response.body(), new TypeReference<List<Issue>>(){});
             } else {
                 System.out.println("Errore getIssueArchiviate: " + response.statusCode());
