@@ -11,8 +11,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class IssueClient {
 
@@ -52,6 +56,7 @@ public class IssueClient {
 
             data.add(("--" + boundary + "--\r\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
 
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "nuovaIssue"))
                     .header("Content-Type", "multipart/form-data; boundary=" + boundary)
@@ -86,6 +91,8 @@ public class IssueClient {
                 String json = response.body();
 
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.registerModule(new JavaTimeModule());
+                mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 return mapper.readValue(json, new TypeReference<List<Issue>>(){});
             } else
                 System.out.println("Errore: " + response.statusCode());

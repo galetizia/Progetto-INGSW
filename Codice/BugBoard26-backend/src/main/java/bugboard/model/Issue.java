@@ -34,8 +34,9 @@ public class Issue {
     @Enumerated(EnumType.STRING)
     private TipoIssue tipo;
 
-    @Column
-    private LocalDate data;
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime data;
 
     @Column(name = "data_risoluzione")
     private LocalDateTime dataRisoluzione;
@@ -48,19 +49,21 @@ public class Issue {
     @JoinColumn(name = "id_allegato")
     private Attachment allegato;
 
-    public Issue() {}
+    public Issue() {
+        this.data = LocalDateTime.now();
+    }
 
     public Issue(String titolo, String descrizione) {
         this.titolo = titolo;
         this.descrizione = descrizione;
-        this.data = LocalDate.now();
+
     }
 
     public Issue(String titolo, String descrizione, String priorita) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.priorita = priorita;
-        this.data = LocalDate.now();
+        this.data = LocalDateTime.now();
     }
 
     public String getTitolo() {
@@ -92,5 +95,12 @@ public class Issue {
     public Attachment getAllegato() {return allegato;}
     public void setAllegato(Attachment allegato) {this.allegato = allegato;}
     public void setTipo(TipoIssue tipo) {this.tipo = tipo;}
-    public TipoIssue getTipo() {return this.tipo;}
+    public String getTipo() {return tipo.name();}
+
+    public LocalDateTime getData() {
+        return data;
+    }
+    public void setData(LocalDateTime data) {
+        this.data = data;
+    }
 }

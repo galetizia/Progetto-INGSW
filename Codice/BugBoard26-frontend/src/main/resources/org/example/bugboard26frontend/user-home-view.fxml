@@ -36,6 +36,7 @@
             <ChoiceBox fx:id="ordinaChoiceBox" prefWidth="150.0" />
          </children>
       </HBox>
+
         <TableView fx:id="issueTable" prefHeight="321.0" prefWidth="592.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" text="ID" />
@@ -49,6 +50,8 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+
+
         <!-- Text area spostata sotto la tabella di sinistra -->
         <Label text="Descrizione Issue Selezionata" textFill="#a29bb8" />
         <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
