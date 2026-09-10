@@ -5,6 +5,7 @@ import enums.StatoIssue;
 import enums.TipoIssue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
@@ -15,7 +16,7 @@ public class Issue {
     private String priorita;
     private StatoIssue stato;
     private TipoIssue tipo;
-    private LocalDate data;
+    private LocalDateTime data;
     private Attachment allegato;
     private AuthUser assignee;
     private LocalDate dataRisoluzione;
@@ -61,10 +62,10 @@ public class Issue {
     }
     public String getTipo() {return tipo.name();}
 
-    public LocalDate getData() {
+    public LocalDateTime getData() {
         return data;
     }
-    public void setData(LocalDate data) {
+    public void setData(LocalDateTime data) {
         this.data = data;
     }
 

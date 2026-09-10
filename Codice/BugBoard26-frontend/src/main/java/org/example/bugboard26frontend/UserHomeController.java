@@ -24,11 +24,8 @@ import model.Issue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Base64;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -64,7 +61,7 @@ public class UserHomeController {
     @FXML
     private TableColumn<Issue, String> prioritaColumn;
     @FXML
-    private TableColumn<Issue, String> dataColumn;
+    private TableColumn<Issue, LocalDateTime> dataColumn;
     @FXML
     private TextArea descriptionArea;
 
@@ -80,7 +77,7 @@ public class UserHomeController {
     @FXML
     private TableColumn<Issue, String> tipoArchiviatiColumn;
     @FXML
-    private TableColumn<Issue, String> dataArchiviatiColumn;
+    private TableColumn<Issue, LocalDateTime> dataArchiviatiColumn;
 
     @FXML
     private VBox colonnaSinistra;
@@ -101,6 +98,20 @@ public class UserHomeController {
         tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime date, boolean empty) {
+                super.updateItem(date, empty);
+
+                if (empty || date == null) {
+                    setText(null); // Se la riga è vuota, non scrivere nulla
+                } else {
+                    setText(formatter.format(date)); // Applica il bel formato!
+                }
+            }
+        });
 
         // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
         idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -158,7 +169,7 @@ public class UserHomeController {
         if("Priorità Alta".equals(ordina)){
             List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
             sortedData.setComparator(Comparator.comparingInt(issue -> {
-                String priorita = String.valueOf(issue.getPriorita().toUpperCase());
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
                 int posizione = ordine.indexOf(priorita);
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));

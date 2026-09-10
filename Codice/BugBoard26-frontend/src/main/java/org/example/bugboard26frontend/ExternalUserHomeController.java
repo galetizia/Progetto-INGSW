@@ -5,6 +5,7 @@ import client.IssueClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,9 @@ import model.Issue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 public class ExternalUserHomeController {
@@ -30,6 +34,9 @@ public class ExternalUserHomeController {
 
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
+    private ObservableList<Issue> masterData = FXCollections.observableArrayList();
+    private FilteredList<Issue> filteredData;
+    private SortedList<Issue> sortedData;
 
     @FXML
     private TableView<Issue> bugTable;
@@ -46,12 +53,16 @@ public class ExternalUserHomeController {
     @FXML
     private TableColumn<Issue, String> prioritaColumn;
     @FXML
-    private TableColumn<Issue, String> dataColumn;
+    private TableColumn<Issue, LocalDateTime> dataColumn;
     @FXML
     private TextArea descriptionArea;
 
     @FXML
     private VBox colonnaSinistra;
+    @FXML
+    private ChoiceBox<String> filtroChoiceBox;
+    @FXML
+    private ChoiceBox<String> ordinaChoiceBox;
     @FXML
     public void initialize() {
         // Setup colonne Issue Attive
@@ -61,8 +72,23 @@ public class ExternalUserHomeController {
         tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-        bugTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+        dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime date, boolean empty) {
+                super.updateItem(date, empty);
+
+                if (empty || date == null) {
+                    setText(null); // Se la riga è vuota, non scrivere nulla
+                } else {
+                    setText(formatter.format(date)); // Applica il bel formato!
+                }
+            }
+        });
+
+
+        bugTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
@@ -72,6 +98,53 @@ public class ExternalUserHomeController {
                 visualizzaAllegatoButton.setDisable(true);
             }
         });
+
+        filteredData = new FilteredList<>(masterData, p -> "BUG".equalsIgnoreCase(p.getTipo()));
+        sortedData = new SortedList<>(filteredData);
+        bugTable.setItems(sortedData);
+
+        filtroChoiceBox.getItems().addAll("Tutte", "To-do");
+        filtroChoiceBox.setValue("Tutte");
+
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.setValue("Nessun ordine");
+
+        filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
+        });
+
+        // Ascoltatore per gli ordini
+        ordinaChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
+        });
+    }
+
+    private void applicaFiltroEOrdine(){
+        if(filteredData == null || sortedData == null) return;
+
+        String filtro = filtroChoiceBox.getValue();
+        String ordina = ordinaChoiceBox.getValue();
+
+        filteredData.setPredicate(issue -> {
+            if(!"BUG".equalsIgnoreCase(issue.getTipo())) return false;
+            if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
+            return true;
+        });
+
+        if("Priorità Alta".equals(ordina)){
+            List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+        } else if("Più recenti".equals(ordina)){
+            sortedData.setComparator(
+                    Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
+                            .reversed());
+        } else{
+            sortedData.setComparator(null);
+        }
     }
 
     @FXML
@@ -95,12 +168,7 @@ public class ExternalUserHomeController {
     }
     private void loadOnTable() {
         List<Issue> issues = issueClient.elencoIssue();
-        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
-
-        FilteredList<Issue> filteredData = new FilteredList<>(observableList, p -> {
-            return "BUG".equalsIgnoreCase(p.getTipo());
-        });
-        bugTable.setItems(filteredData);
+        masterData.setAll(issues);
     }
 
     @FXML
