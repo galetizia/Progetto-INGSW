@@ -117,4 +117,64 @@ public class IssueClient {
         }
         return false;
     }
+
+    public List<Issue> getIssueAttive() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/issues/attive"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(response.body(), new TypeReference<List<Issue>>(){});
+            } else {
+                System.out.println("Errore getIssueAttive: " + response.statusCode());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Issue> getIssueArchiviate() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/issues/storico"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(response.body(), new TypeReference<List<Issue>>(){});
+            } else {
+                System.out.println("Errore getIssueArchiviate: " + response.statusCode());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean archiviaIssue(int issueId) {
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/issues/" + issueId + "/archivia"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

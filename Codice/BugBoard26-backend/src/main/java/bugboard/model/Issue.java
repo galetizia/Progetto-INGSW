@@ -81,9 +81,7 @@ public class Issue {
     public String getPriorita() {
         return priorita;
     }
-    public void setPriorita(String priorita) {
-        this.priorita = priorita;
-    }
+    public void setPriorita(String priorita) {this.priorita = priorita;}
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -92,7 +90,7 @@ public class Issue {
     public void setDataRisoluzione(LocalDateTime dataRisoluzione) {this.dataRisoluzione = dataRisoluzione;}
     public AuthUser getAssignee() {return assignee;}
     public void setAssignee(AuthUser assignee) {this.assignee = assignee;}
-    public StatoIssue getStato() {return stato;}
+    public StatoIssue getStato() {return this.stato;}
     public void setStato(StatoIssue stato) {this.stato = stato;}
     public Attachment getAllegato() {return allegato;}
     public void setAllegato(Attachment allegato) {this.allegato = allegato;}

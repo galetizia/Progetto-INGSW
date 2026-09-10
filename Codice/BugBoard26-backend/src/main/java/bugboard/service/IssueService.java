@@ -97,4 +97,25 @@ public class IssueService {
 
         issueRepository.save(issue);
     }
+
+    // 1. Recupera i bug per la tabella delle Issue
+    public List<Issue> getIssueAttive() {
+        return issueRepository.findByStatoIn(List.of(StatoIssue.TO_DO, StatoIssue.ASSEGNATO));
+    }
+
+    // 2. Recupera i bug per la tabella Archivio Bug
+    public List<Issue> getIssueArchiviate() {
+        return issueRepository.findByStatoIn(List.of(StatoIssue.RISOLTO, StatoIssue.ARCHIVIATO));
+    }
+
+    // 3. Il metodo per l'Admin che archivia un bug
+    public Issue archiviaIssue(int idIssue) {
+        Issue issue = issueRepository.findById(idIssue)
+                .orElseThrow(() -> new IllegalArgumentException("Issue non trovata con ID: " + idIssue));
+
+        issue.setStato(StatoIssue.ARCHIVIATO);
+        issue.setDataRisoluzione(LocalDateTime.now());
+
+        return issueRepository.save(issue);
+    }
 }
