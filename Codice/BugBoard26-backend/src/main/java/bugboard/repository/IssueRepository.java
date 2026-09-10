@@ -1,5 +1,6 @@
 package bugboard.repository;
 
+import bugboard.enums.StatoIssue;
 import bugboard.model.Issue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +16,7 @@ public interface IssueRepository extends JpaRepository<Issue, Integer> {
 
     Optional<Issue> findById(int id);
     boolean existsById(int id);
+
+    List<Issue> findByStatoIn(List<StatoIssue> stati);
 
 }

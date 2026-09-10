@@ -37,8 +37,6 @@ public class AdminHomeController {
     @FXML
     private Button visualizzaAllegatoButton;
     @FXML
-    private Button prendiInCaricoButton;
-    @FXML
     private TableColumn<Issue, Integer> idColumn;
     @FXML
     private TableColumn<Issue, String> titoloColumn;
@@ -71,6 +69,10 @@ public class AdminHomeController {
     private VBox colonnaSinistra;
     @FXML
     private VBox colonnaDestra;
+
+    @FXML
+    private Button archiviaIssueButton;
+
     @FXML
     public void initialize()
     {
@@ -93,12 +95,12 @@ public class AdminHomeController {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
-                prendiInCaricoButton.setDisable(false);
+                if(archiviaIssueButton != null) archiviaIssueButton.setDisable(false);
             }
             else {
                 descriptionArea.setText("");
                 visualizzaAllegatoButton.setDisable(true);
-                prendiInCaricoButton.setDisable(true);
+                if(archiviaIssueButton != null) archiviaIssueButton.setDisable(true);
             }
         });
     }
@@ -153,7 +155,7 @@ public class AdminHomeController {
         boolean isVisible = colonnaDestra.isVisible();
 
         if (!isVisible) {
-            // NOTA: Qui dovrai fare una chiamata per caricare gli archiviati, es. loadArchiviatiOnTable();
+            loadArchiviatiOnTable();
             colonnaDestra.setVisible(true);
             colonnaDestra.setManaged(true);
         } else {
@@ -168,10 +170,18 @@ public class AdminHomeController {
         });
     }
 
+    //Carica la tabella delle issue attive (TO DO oppure ASSEGNATE)
     private void loadOnTable() {
-        List<Issue> issues = issueClient.elencoIssue();
+        List<Issue> issues = issueClient.getIssueAttive();
         ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
         issueTable.setItems(observableList);
+    }
+
+    //Carica la tabella delle issue archiviate (ARCHIVIATE e RISOLTE)
+    private void loadArchiviatiOnTable() {
+        List<Issue> issues = issueClient.getIssueArchiviate();
+        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
+        archiviatiTable.setItems(observableList);
     }
 
     @FXML
@@ -224,31 +234,41 @@ public class AdminHomeController {
     }
 
     @FXML
-    protected void prendiInCaricoButtonClick(){
-        Issue issueSelezionata =  issueTable.getSelectionModel().getSelectedItem();
-        if(issueSelezionata != null && AuthSession.isLoggedIn() && issueSelezionata.getAssignee() == null){
-            boolean success = issueClient.prendiInCarico(issueSelezionata.getId());
-            if(success){
-                loadOnTable();
+    public void handleArchiviaIssue() {
+        Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Successo");
-                alert.setHeaderText(null);
-                alert.setContentText("Hai preso in carico la issue #" + issueSelezionata.getId());
-                alert.showAndWait();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossibile prendere in carico la issue.");
-                alert.showAndWait();
-            }
-        } else  {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attenzione");
-            alert.setHeaderText(null);
-            alert.setContentText("Seleziona una issue valida e non ancora assegnata.");
-            alert.showAndWait();
+        if (issueSelezionata != null) {
+            Alert conferma = new Alert(Alert.AlertType.CONFIRMATION);
+            conferma.setTitle("Conferma Archiviazione");
+            conferma.setHeaderText("Archiviazione Issue #" + issueSelezionata.getId());
+            conferma.setContentText("Sei sicuro di voler archiviare: '" + issueSelezionata.getTitolo() + "'?");
+
+            conferma.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    boolean successo = issueClient.archiviaIssue(issueSelezionata.getId());
+
+                    if (successo) {
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Successo");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("Issue archiviata con successo!");
+                        successAlert.showAndWait();
+
+                        // Ricarichiamo le tabelle: sparirà da sinistra e andrà a destra!
+                        loadOnTable();
+                        if (colonnaDestra.isVisible()) {
+                            loadArchiviatiOnTable();
+                        }
+                        archiviaIssueButton.setDisable(true); // Resettiamo il bottone
+                    } else {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setTitle("Errore");
+                        errorAlert.setHeaderText(null);
+                        errorAlert.setContentText("Si è verificato un problema di comunicazione col server.");
+                        errorAlert.showAndWait();
+                    }
+                }
+            });
         }
     }
     @FXML
@@ -311,4 +331,5 @@ public class AdminHomeController {
     protected void onGestioneUtentiButtonClick(){
 
     }
+
 }

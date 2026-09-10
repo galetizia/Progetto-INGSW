@@ -46,8 +46,7 @@
         <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
         <HBox prefHeight="65.0" prefWidth="592.0">
             <children>
-                <Button fx:id="prendiInCaricoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#prendiInCaricoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Prendi in carico" />
-                <Region prefHeight="62.0" prefWidth="227.0" />
+                <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" />                <Region prefHeight="62.0" prefWidth="227.0" />
                 <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" />
             </children>
         </HBox>
