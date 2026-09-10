@@ -9,12 +9,13 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <!-- HBox principale: divide lo schermo in 3 colonne -->
 
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.ChoiceBox?>
 <HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.AdminHomeController">
 
     <padding>
@@ -22,12 +23,21 @@
     </padding>
 
     <!-- COLONNA SINISTRA: Elenco Issue Attive -->
-    <VBox fx:id="colonnaSinistra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
-        <Label text="Issue Attive" textFill="WHITE">
-            <font>
-                <Font name="Segoe UI Bold" size="22.0" />
-            </font>
-        </Label>
+    <VBox fx:id="colonnaSinistra" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
+        <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
+            <children>
+                <Label prefHeight="28.0" prefWidth="152.0" text="Issue Attive" textFill="WHITE">
+                    <font>
+                        <Font name="Segoe UI Bold" size="22.0" />
+                    </font>
+                </Label>
+                <Region prefHeight="200.0" prefWidth="200.0" />
+                <ChoiceBox fx:id="filtroChoiceBox" prefWidth="150.0" />
+                <ChoiceBox fx:id="ordinaChoiceBox" prefWidth="150.0" />
+            </children>
+        </HBox>
+
+
         <TableView fx:id="issueTable" prefHeight="321.0" prefWidth="592.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" text="ID" />
@@ -41,12 +51,16 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+
+
+
         <!-- Text area spostata sotto la tabella di sinistra -->
         <Label text="Descrizione Issue Selezionata" textFill="#a29bb8" />
         <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
-        <HBox prefHeight="65.0" prefWidth="592.0">
+        <HBox prefHeight="65.0" prefWidth="592.0" spacing="20.0">
             <children>
-                <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" />                <Region prefHeight="62.0" prefWidth="227.0" />
+                <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" />
+            <Button fx:id="segnalaComeDuplicatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaComeDuplicatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Segnala come duplicato" />
                 <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" />
             </children>
         </HBox>

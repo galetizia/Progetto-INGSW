@@ -118,4 +118,12 @@ public class IssueService {
 
         return issueRepository.save(issue);
     }
+
+    public boolean eliminaIssue(int idIssue) {
+        if(issueRepository.existsById(idIssue)) {
+            issueRepository.deleteById(idIssue);
+            return true;
+        }
+        return false;
+    }
 }

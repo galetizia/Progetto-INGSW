@@ -17,7 +17,7 @@ public class AuthClient {
 
     private final HttpClient client = ApiClient.getClient();
 
-    public boolean login(String email, String password) throws IOException, InterruptedException {
+    public boolean login(String email, String password) throws IOException, InterruptedException, IllegalAccessException {
 
         String json = """
                 {
@@ -39,18 +39,14 @@ public class AuthClient {
             String ruoloString = estraiValore(body, "ruoloUtente");
 
             if (token != null && ruoloString != null) {
-                // 2. Salviamo il token
                 AuthSession.setToken(token);
-
-                // 3. Creiamo un utente inserendoci solo il ruolo
                 AuthUser utenteLoggato = new AuthUser();
-
-                // Converte la stringa del ruolo nel vero valore Enum
                 utenteLoggato.setRuolo(Ruolo.valueOf(ruoloString));
-
                 AuthSession.setUtenteCorrente(utenteLoggato);
                 return true;
             }
+        } else if (response.statusCode() == 401) {
+            throw new IllegalAccessException(response.body());
         }
         return false;
     }

@@ -36,6 +36,9 @@ public class AuthUserService {
         if(!passwordEncoder.matches(password,user.getPassword())) {
             throw new IllegalArgumentException("Email/Password non valide");
         }
+        if(!user.getStatoAccount()){
+            throw new IllegalArgumentException("Account esistente ma non attivo");
+        }
 
         return jwtService.generateToken(user, user.getRuolo().name());
     }

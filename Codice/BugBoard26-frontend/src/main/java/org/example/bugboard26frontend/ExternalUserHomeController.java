@@ -82,7 +82,7 @@ public class ExternalUserHomeController {
                 if (empty || date == null) {
                     setText(null); // Se la riga è vuota, non scrivere nulla
                 } else {
-                    setText(formatter.format(date)); // Applica il bel formato!
+                    setText(formatter.format(date));
                 }
             }
         });
@@ -103,7 +103,7 @@ public class ExternalUserHomeController {
         sortedData = new SortedList<>(filteredData);
         bugTable.setItems(sortedData);
 
-        filtroChoiceBox.getItems().addAll("Tutte", "To-do");
+        filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question");
         filtroChoiceBox.setValue("Tutte");
 
         ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
@@ -126,8 +126,11 @@ public class ExternalUserHomeController {
         String ordina = ordinaChoiceBox.getValue();
 
         filteredData.setPredicate(issue -> {
-            if(!"BUG".equalsIgnoreCase(issue.getTipo().name())) return false;
             if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
+            if ("Bug".equals(filtro)) return "BUG".equalsIgnoreCase(issue.getTipo().name());
+            if ("Feature".equals(filtro)) return "FEATURE".equalsIgnoreCase(issue.getTipo().name());
+            if ("Documentation".equals(filtro)) return "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
+            if ("Question".equals(filtro)) return "QUESTION".equalsIgnoreCase(issue.getTipo().name());
             return true;
         });
 

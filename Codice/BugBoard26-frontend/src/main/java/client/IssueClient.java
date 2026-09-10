@@ -181,4 +181,22 @@ public class IssueClient {
         }
         return false;
     }
+
+    public boolean eliminaIssue(int issueId) {
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/issues/" + issueId + "/elimina"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(("Eliminazione issue, status: " + response.statusCode()));
+            return response.statusCode() == 200 || response.statusCode() == 204;
+        } catch (IOException | InterruptedException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

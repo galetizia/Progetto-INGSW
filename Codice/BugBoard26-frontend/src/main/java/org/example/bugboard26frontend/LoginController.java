@@ -5,17 +5,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import client.AuthSession;
 import javafx.stage.Stage;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 // (Il Cervello): È il file Java collegato strettamente alla grafica.
 // Qui dentro ci sono i metodi che dicono al programma cosa fare quando l'utente interagisce con la finestra
-public class HelloController {
+public class LoginController {
     @FXML
     private TextField emailField;
 
@@ -90,21 +84,18 @@ public class HelloController {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Errore!");
                 alert.setHeaderText(null);
-                alert.setContentText("Credenziali non valide");
+                alert.setContentText("Errore imprevisto");
                 alert.showAndWait();
             }
-        }catch (Exception e) {
-            // Si attiva SOLO se il server è irraggiungibile (es. Spring Boot è spento o non c'è rete)
+        } catch (IllegalArgumentException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Errore di rete!");
+            alert.setTitle("Accesso negato!");
             alert.setHeaderText(null);
-            alert.setContentText("Impossibile contattare il server");
+            alert.setContentText(e.getMessage());
             alert.showAndWait();
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-
-
     }
 }

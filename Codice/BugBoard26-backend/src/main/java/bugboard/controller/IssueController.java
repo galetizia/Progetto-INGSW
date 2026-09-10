@@ -71,6 +71,22 @@ public class IssueController {
         return ResponseEntity.ok(issueService.getIssueArchiviate());
     }
 
+    @DeleteMapping("/{id}/elimina")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteIssue(@PathVariable int id) {
+        try{
+            boolean success = issueService.eliminaIssue(id);
+            if(success){
+                return ResponseEntity.ok("Issue eliminata con successo");
+            } else {
+                return ResponseEntity.badRequest().body("Errore nell'eliminazione della issue");
+            }
+
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore del server: " + e.getMessage());
+        }
+    }
+
     // Endpoint accessibile SOLO all'amministratore
     @PutMapping("/{id}/archivia")
     @PreAuthorize("hasRole('ADMIN')")
