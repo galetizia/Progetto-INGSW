@@ -99,7 +99,7 @@ public class ExternalUserHomeController {
             }
         });
 
-        filteredData = new FilteredList<>(masterData, p -> "BUG".equalsIgnoreCase(p.getTipo()));
+        filteredData = new FilteredList<>(masterData, p -> "BUG".equalsIgnoreCase(p.getTipo().name()));
         sortedData = new SortedList<>(filteredData);
         bugTable.setItems(sortedData);
 
@@ -126,7 +126,7 @@ public class ExternalUserHomeController {
         String ordina = ordinaChoiceBox.getValue();
 
         filteredData.setPredicate(issue -> {
-            if(!"BUG".equalsIgnoreCase(issue.getTipo())) return false;
+            if(!"BUG".equalsIgnoreCase(issue.getTipo().name())) return false;
             if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
             return true;
         });

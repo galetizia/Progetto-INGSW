@@ -97,7 +97,7 @@ public class Issue {
     public Attachment getAllegato() {return allegato;}
     public void setAllegato(Attachment allegato) {this.allegato = allegato;}
     public void setTipo(TipoIssue tipo) {this.tipo = tipo;}
-    public String getTipo() {return tipo.name();}
+    public TipoIssue getTipo() {return tipo;}
 
     public LocalDateTime getData() {
         return data;
