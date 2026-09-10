@@ -5,6 +5,8 @@ import client.AuthSession;
 import client.IssueClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +24,9 @@ import model.Issue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 public class AdminHomeController {
@@ -32,6 +37,11 @@ public class AdminHomeController {
     private Button elencoButton;
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
+    private ObservableList<Issue> masterData = FXCollections.observableArrayList();
+    private FilteredList<Issue> filteredData;
+    private SortedList<Issue> sortedData;
+    @FXML
+    private Button segnalaComeDuplicatoButton;
     @FXML
     private TableView<Issue> issueTable;
     @FXML
@@ -47,7 +57,7 @@ public class AdminHomeController {
     @FXML
     private TableColumn<Issue, String> prioritaColumn;
     @FXML
-    private TableColumn<Issue, String> dataColumn;
+    private TableColumn<Issue, LocalDateTime> dataColumn;
     @FXML
     private TextArea descriptionArea;
 
@@ -63,7 +73,7 @@ public class AdminHomeController {
     @FXML
     private TableColumn<Issue, String> tipoArchiviatiColumn;
     @FXML
-    private TableColumn<Issue, String> dataArchiviatiColumn;
+    private TableColumn<Issue, LocalDateTime> dataArchiviatiColumn;
 
     @FXML
     private VBox colonnaSinistra;
@@ -72,6 +82,11 @@ public class AdminHomeController {
 
     @FXML
     private Button archiviaIssueButton;
+
+    @FXML
+    private ChoiceBox<String> filtroChoiceBox;
+    @FXML
+    private ChoiceBox<String> ordinaChoiceBox;
 
     @FXML
     public void initialize()
@@ -83,6 +98,21 @@ public class AdminHomeController {
         tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime date, boolean empty) {
+                super.updateItem(date, empty);
+
+                if (empty || date == null) {
+                    setText(null); // Se la riga è vuota, non scrivere nulla
+                } else {
+                    setText(formatter.format(date));
+                }
+            }
+        });
+
 
         // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
         idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -91,20 +121,73 @@ public class AdminHomeController {
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
-        issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
+        issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
                 if(archiviaIssueButton != null) archiviaIssueButton.setDisable(false);
+                segnalaComeDuplicatoButton.setDisable(false);
             }
             else {
                 descriptionArea.setText("");
                 visualizzaAllegatoButton.setDisable(true);
                 if(archiviaIssueButton != null) archiviaIssueButton.setDisable(true);
+                segnalaComeDuplicatoButton.setDisable(true);
             }
+        });
+
+        filteredData = new FilteredList<>(masterData, p -> true);
+        sortedData = new SortedList<>(filteredData);
+
+        issueTable.setItems(sortedData);
+
+        filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question", "Le mie issue");
+        filtroChoiceBox.setValue("Tutte");
+
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.setValue("Nessun ordine");
+
+        filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
+        });
+
+        // Ascoltatore per gli ordini
+        ordinaChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+            applicaFiltroEOrdine();
         });
     }
 
+    private void applicaFiltroEOrdine(){
+        if(filteredData == null || sortedData == null) return;
+
+        String filtro = filtroChoiceBox.getValue();
+        String ordina = ordinaChoiceBox.getValue();
+
+        filteredData.setPredicate(issue -> {
+            if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
+            if ("Bug".equals(filtro)) return "BUG".equalsIgnoreCase(issue.getTipo().name());
+            if ("Feature".equals(filtro)) return "FEATURE".equalsIgnoreCase(issue.getTipo().name());
+            if ("Documentation".equals(filtro)) return "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
+            if ("Question".equals(filtro)) return "QUESTION".equalsIgnoreCase(issue.getTipo().name());
+            if ("Le mie issue".equals(filtro)) return "ASSEGNATO".equalsIgnoreCase(issue.getStato());
+            return true;
+        });
+
+        if("Priorità Alta".equals(ordina)){
+            List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+        } else if("Più recenti".equals(ordina)){
+            sortedData.setComparator(
+                    Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
+                            .reversed());
+        } else{
+            sortedData.setComparator(null);
+        }
+    }
 
     public void onElencoIssueButtonClick(){
         boolean isVisible = colonnaSinistra.isVisible();
@@ -173,8 +256,7 @@ public class AdminHomeController {
     //Carica la tabella delle issue attive (TO DO oppure ASSEGNATE)
     private void loadOnTable() {
         List<Issue> issues = issueClient.getIssueAttive();
-        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
-        issueTable.setItems(observableList);
+        masterData.setAll(issues);
     }
 
     //Carica la tabella delle issue archiviate (ARCHIVIATE e RISOLTE)
@@ -331,7 +413,34 @@ public class AdminHomeController {
     }
 
     @FXML
+    protected void onSegnalaComeDuplicatoButtonClick(){
+        Issue issue = issueTable.getSelectionModel().getSelectedItem();
+        if(issue != null){
+            Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmDelete.setTitle("Conferma eliminazione");
+            confirmDelete.setHeaderText("Segnalazione Issue #" + issue.getId());
+            confirmDelete.setContentText("Sei sicuro di voler segnalare quests issue (" +issue.getId() +") come duplicata?");
+            confirmDelete.showAndWait().ifPresent(response -> {
+                if(response == ButtonType.OK){
+
+                    boolean success = issueClient.eliminaIssue(issue.getId());
+                    if(success){
+                        masterData.remove(issue);
+                    } else {
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.setTitle("Errore");
+                        error.setHeaderText(null);
+                        error.setContentText("Impossbile eliminare issue");
+                        error.showAndWait();
+                    }
+                }
+            });
+        }
+    }
+
+    @FXML
     protected void onGestioneUtentiButtonClick(){
+
 
     }
 

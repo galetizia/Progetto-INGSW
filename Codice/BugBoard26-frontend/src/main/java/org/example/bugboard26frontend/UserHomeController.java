@@ -138,7 +138,7 @@ public class UserHomeController {
 
         issueTable.setItems(sortedData);
 
-        filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Le mie issue");
+        filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question", "Le mie issue");
         filtroChoiceBox.setValue("Tutte");
 
         ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
@@ -162,6 +162,10 @@ public class UserHomeController {
 
         filteredData.setPredicate(issue -> {
             if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
+            if ("Bug".equals(filtro)) return "BUG".equalsIgnoreCase(issue.getTipo().name());
+            if ("Feature".equals(filtro)) return "FEATURE".equalsIgnoreCase(issue.getTipo().name());
+            if ("Documentation".equals(filtro)) return "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
+            if ("Question".equals(filtro)) return "QUESTION".equalsIgnoreCase(issue.getTipo().name());
             if ("Le mie issue".equals(filtro)) return "ASSEGNATO".equalsIgnoreCase(issue.getStato());
             return true;
         });
@@ -174,10 +178,32 @@ public class UserHomeController {
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));
         } else if("Più recenti".equals(ordina)){
-            sortedData.setComparator((i1, i2) -> i2.getData().compareTo(i1.getData()));
+            sortedData.setComparator(
+                    Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
+                            .reversed());
         } else{
             sortedData.setComparator(null);
         }
+    }
+
+    @FXML
+    protected void onElencoIssueButtonClick() {
+        boolean isVisible = colonnaSinistra.isVisible();
+
+        if (!isVisible) {
+            loadOnTable();
+            colonnaSinistra.setVisible(true);
+            colonnaSinistra.setManaged(true);
+        } else {
+            colonnaSinistra.setVisible(false);
+            colonnaSinistra.setManaged(false);
+        }
+
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        javafx.application.Platform.runLater(() -> {
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        });
     }
 
     @FXML
@@ -208,31 +234,11 @@ public class UserHomeController {
     }
 
     @FXML
-    protected void onElencoIssueButtonClick() {
-        boolean isVisible = colonnaSinistra.isVisible();
-
-        if (!isVisible) {
-            loadOnTable();
-            colonnaSinistra.setVisible(true);
-            colonnaSinistra.setManaged(true);
-        } else {
-            colonnaSinistra.setVisible(false);
-            colonnaSinistra.setManaged(false);
-        }
-
-        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
-            stage.sizeToScene();
-            stage.centerOnScreen();
-        });
-    }
-
-    @FXML
     protected void onBugArchiviatiButtonClick() {
         boolean isVisible = colonnaDestra.isVisible();
 
         if (!isVisible) {
-            // NOTA: Qui dovrai fare una chiamata per caricare gli archiviati, es. loadArchiviatiOnTable();
+            loadArchiviatiOnTable();
             colonnaDestra.setVisible(true);
             colonnaDestra.setManaged(true);
         } else {
@@ -250,6 +256,12 @@ public class UserHomeController {
     private void loadOnTable() {
         List<Issue> issues = issueClient.elencoIssue();
         masterData.setAll(issues);
+    }
+
+    private void loadArchiviatiOnTable() {
+        List<Issue> issues = issueClient.getIssueArchiviate();
+        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
+        archiviatiTable.setItems(observableList);
     }
 
     @FXML
@@ -290,7 +302,6 @@ public class UserHomeController {
                 Stage imgStage = new Stage();
                 imgStage.setTitle("Allegato: "+issue.getAllegato().getNome());
                 imgStage.setScene(new Scene(layout));
-                //imgStage.initModality(Modality.APPLICATION_MODAL);
 
                 Stage mainWindow = (Stage) visualizzaAllegatoButton.getScene().getWindow();
                 imgStage.initOwner(mainWindow);
@@ -300,7 +311,6 @@ public class UserHomeController {
             }
         }
     }
-
 
     @FXML
     protected void prendiInCaricoButtonClick(){
@@ -325,6 +335,7 @@ public class UserHomeController {
 
         }
     }
+
     @FXML
     protected void onCambioPasswordButtonClick(){
 

@@ -16,7 +16,7 @@ public interface IssueRepository extends JpaRepository<Issue, Integer> {
 
     Optional<Issue> findById(int id);
     boolean existsById(int id);
-
+    void deleteById(int id);
     List<Issue> findByStatoIn(List<StatoIssue> stati);
 
 }
