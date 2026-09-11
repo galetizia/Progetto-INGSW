@@ -57,14 +57,25 @@ public class AuthUserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crea_utenti")
     // @RequestBody converte automaticamente il JSON ricevuto in un oggetto RegisterRequest
-    public ResponseEntity<String> createUser(@RequestBody AuthRequest request) {
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request) {
         try {
             // Delega la logica al Service
-            authUserService.registerAuthUser(request.email(), request.password());
+            authUserService.registerAuthUser(request.email(), request.password(), request.ruolo());
             // Restituisce stato HTTP 200 (OK) se va tutto a buon fine
             return ResponseEntity.ok("Utente registrato correttamente");
         } catch (IllegalArgumentException e) {
             // Cattura gli errori (es. email duplicata) e restituisce HTTP 400 (Bad Request)
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/cambia_stato")
+    public ResponseEntity<String> changeState(@PathVariable int id) {
+        try {
+            authUserService.cambiaStatoUtente(id);
+            return ResponseEntity.ok("Stato utente aggiornato");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -79,3 +90,4 @@ public class AuthUserController {
 record AuthRequest(String email, String password) {}
 record LoginResponse(String token, Ruolo ruoloUtente) {}
 record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}
+record CreateUserRequest(String email, String password, String ruolo) {}

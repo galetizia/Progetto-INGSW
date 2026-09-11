@@ -8,10 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -28,7 +27,6 @@ public class GestioneUtentiController {
 
     @FXML
     private TableView<AuthUser> utentiTable;
-
     @FXML
     private TableColumn<AuthUser, String> emailColumn;
     @FXML
@@ -42,6 +40,8 @@ public class GestioneUtentiController {
     private VBox colonnaGestione;
     @FXML
     private ChoiceBox<String> filtroChoiceBox;
+    @FXML private Button creaUtenteButton;
+    @FXML private Button cambiaStatoButton;
 
     @FXML void initialize() {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -58,6 +58,20 @@ public class GestioneUtentiController {
             applicaFiltro();
         });
         utentiTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        utentiTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                cambiaStatoButton.setDisable(false);
+                if (newSelection.getStatoAccount()) {
+                    cambiaStatoButton.setText("Disattiva Utente");
+                } else {
+                    cambiaStatoButton.setText("Attiva Utente");
+                }
+            } else {
+                cambiaStatoButton.setDisable(true);
+                cambiaStatoButton.setText("Disattiva Utente");
+            }
+        });
     }
 
     private void applicaFiltro() {
@@ -97,7 +111,52 @@ public class GestioneUtentiController {
         masterData.setAll(users);
     }
 
+    @FXML
+    protected void onCreaUtenteButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("creazione-utente-view.fxml"));
+            Parent root = fxmlLoader.load();
 
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Creazione Utente");
+            dialogStage.setScene(new javafx.scene.Scene(root));
+            dialogStage.setResizable(false);
 
+            // Blocca la finestra sottostante finché il pop-up non viene chiuso
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            Stage mainWindow = (Stage) creaUtenteButton.getScene().getWindow();
+            dialogStage.initOwner(mainWindow);
+
+            dialogStage.showAndWait(); // Aspetta che il pop-up si chiuda
+
+            // Appena il pop-up si chiude, ricarichiamo la tabella per mostrare il nuovo utente!
+            loadOnTable();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Errore nell'apertura del pop-up di creazione utente.");
+        }
+    }
+
+    @FXML
+    protected void onCambiaStatoButtonClick() {
+        AuthUser userSelezionato = utentiTable.getSelectionModel().getSelectedItem();
+
+        if (userSelezionato != null) {
+            System.out.println("Richiesta cambio stato per utente ID: " + userSelezionato.getId());
+
+            boolean success = authClient.cambiaStatoUtente(userSelezionato.getId());
+
+            if (success) {
+                loadOnTable();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Errore");
+                alert.setHeaderText(null);
+                alert.setContentText("Impossibile cambiare lo stato dell'utente.");
+                alert.showAndWait();
+            }
+        }
+    }
 
 }

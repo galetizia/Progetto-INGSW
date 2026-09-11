@@ -62,7 +62,6 @@
         <VBox alignment="CENTER" spacing="20.0" stylesheets="@style.css">
 
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestione Utenti" />
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestione utenti" />
 
         </VBox>
     </VBox>
@@ -79,7 +78,7 @@
 
 
 
-    <!-- COLONNA DESTRA: Bug Archiviati -->
+    <!-- COLONNA DESTRA: Gestione Utenti -->
     <VBox fx:id="colonnaGestione" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
       <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
          <children>
@@ -88,7 +87,7 @@
                       <Font name="Segoe UI Bold" size="22.0" />
                   </font>
               </Label>
-            <Region prefHeight="37.0" prefWidth="358.0" />
+            <Region HBox.hgrow="ALWAYS" />
             <ChoiceBox fx:id="filtroChoiceBox" prefWidth="150.0" />
          </children>
       </HBox>
@@ -102,6 +101,13 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+
+        <HBox prefHeight="65.0" prefWidth="592.0" spacing="20.0">
+            <children>
+                <Button fx:id="creaUtenteButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreaUtenteButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Crea Utente" HBox.hgrow="ALWAYS" />
+                <Button fx:id="cambiaStatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCambiaStatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Disattiva Utente" HBox.hgrow="ALWAYS" />
+            </children>
+        </HBox>
     </VBox>
 
 </HBox>
