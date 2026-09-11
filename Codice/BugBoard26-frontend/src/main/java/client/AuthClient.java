@@ -5,9 +5,13 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import enums.Ruolo;
 import model.AuthUser;
 
@@ -106,5 +110,27 @@ public class AuthClient {
             return matcher.group(1);
         }
         return null;
+    }
+
+    public List<AuthUser> getUsers(){
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "elenco_utenti"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET().build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200){
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<List<AuthUser>>(){});
+            } else System.out.println(response.statusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+
+
     }
 }

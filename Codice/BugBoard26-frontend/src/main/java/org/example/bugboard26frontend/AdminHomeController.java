@@ -440,6 +440,18 @@ public class AdminHomeController {
 
     @FXML
     protected void onGestioneUtentiButtonClick(){
+        try{
+            Stage stage = (Stage) elencoButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("gestione-utenti-view.fxml"));
+            Scene scene = new Scene(loader.load());
+            stage.setTitle("Gestione utenti");
+            stage.setScene(scene);
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
 
 
     }

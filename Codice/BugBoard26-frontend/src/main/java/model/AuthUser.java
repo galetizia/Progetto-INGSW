@@ -11,6 +11,7 @@ public class AuthUser {
     private String nome;
     private String cognome;
     private Ruolo ruolo;
+    private boolean statoAccount;
 
     public AuthUser() {}
 
@@ -24,4 +25,6 @@ public class AuthUser {
     public void setCognome(String cognome) {this.cognome = cognome;}
     public Ruolo getRuolo() {return ruolo;}
     public void setRuolo(Ruolo ruolo) {this.ruolo = ruolo;}
+    public boolean getStatoAccount() {return statoAccount;}
+    public void setStatoAccount(boolean statoAccount) {this.statoAccount = statoAccount;}
 }
