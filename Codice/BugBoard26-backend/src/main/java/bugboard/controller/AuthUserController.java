@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import bugboard.service.AuthUserService;
 
+import java.util.List;
+
 // Indica a Spring che questa classe riceve richieste web e risponde con dati
 @RestController
 // Definisce l'indirizzo base: tutti i metodi qui dentro inizieranno con "/api/utenti"
@@ -65,6 +67,11 @@ public class AuthUserController {
             // Cattura gli errori (es. email duplicata) e restituisce HTTP 400 (Bad Request)
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/elenco_utenti")
+    public ResponseEntity<List<AuthUser>> getUsers() {
+        return ResponseEntity.ok(authUserRepository.findAll());
     }
 
 }

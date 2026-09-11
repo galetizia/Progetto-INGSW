@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- HBox principale: divide lo schermo in 3 colonne -->
 
 <?import javafx.scene.control.ChoiceBox?>
 <HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.ExternalUserHomeController">

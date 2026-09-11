@@ -16,12 +16,12 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+    AuthClient authClient = new AuthClient();
+
     @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText();
         String password = passwordField.getText();
-
-        AuthClient authClient = new AuthClient();
 
         if(email.isEmpty() || password.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -68,7 +68,7 @@ public class LoginController {
                         viewToLoad = "user-home-view.fxml";
                         break;
                     default:
-                        viewToLoad = "user-home-view.fxml"; // Fallback di sicurezza
+                        viewToLoad = "user-home-view.fxml";
                         break;
                 }
 
@@ -87,7 +87,7 @@ public class LoginController {
                 alert.setContentText("Errore imprevisto");
                 alert.showAndWait();
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Accesso negato!");
             alert.setHeaderText(null);
@@ -95,6 +95,11 @@ public class LoginController {
             alert.showAndWait();
             e.printStackTrace();
         } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore di Sistema");
+            alert.setHeaderText(null);
+            alert.setContentText("Impossibile contattare il server. Riprova più tardi.");
+            alert.showAndWait();
             e.printStackTrace();
         }
     }

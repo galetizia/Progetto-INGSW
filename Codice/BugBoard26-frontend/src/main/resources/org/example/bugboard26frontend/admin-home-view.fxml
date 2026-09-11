@@ -23,7 +23,7 @@
     </padding>
 
     <!-- COLONNA SINISTRA: Elenco Issue Attive -->
-    <VBox fx:id="colonnaSinistra" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
+    <VBox fx:id="colonnaSinistra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
             <children>
                 <Label prefHeight="28.0" prefWidth="152.0" text="Issue Attive" textFill="WHITE">
@@ -80,7 +80,7 @@
         <Label styleClass="title-bugboard" text="BugBoard" />
 
         <VBox alignment="CENTER" spacing="20.0" stylesheets="@style.css">
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElencoIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Elenco Issue" />
+            <Button fx:id="elencoButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElencoIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Elenco Issue" />
             <!-- Bottone Principale -->
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Segnala Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onArchivioBugButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Archivio Bug" />
