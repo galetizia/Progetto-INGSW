@@ -63,6 +63,8 @@
 
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestione Utenti" />
 
+            <Button fx:id="indietroButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onIndietroButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="⬅ Indietro" />
+
         </VBox>
     </VBox>
 

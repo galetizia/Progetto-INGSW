@@ -276,6 +276,7 @@ public class AdminHomeController {
 
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Schermata Login");
             stage.show();
             stage.sizeToScene();
             stage.centerOnScreen();

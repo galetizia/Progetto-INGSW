@@ -42,6 +42,7 @@ public class GestioneUtentiController {
     private ChoiceBox<String> filtroChoiceBox;
     @FXML private Button creaUtenteButton;
     @FXML private Button cambiaStatoButton;
+    @FXML private Button indietroButton;
 
     @FXML void initialize() {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -72,6 +73,7 @@ public class GestioneUtentiController {
                 cambiaStatoButton.setText("Disattiva Utente");
             }
         });
+        loadOnTable();
     }
 
     private void applicaFiltro() {
@@ -156,6 +158,25 @@ public class GestioneUtentiController {
                 alert.setContentText("Impossibile cambiare lo stato dell'utente.");
                 alert.showAndWait();
             }
+        }
+    }
+
+    @FXML
+    protected void onIndietroButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("admin-home-view.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = (Stage) indietroButton.getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.setTitle("Admin Dashboard");
+            stage.show();
+            stage.sizeToScene();
+            stage.centerOnScreen();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Errore nel tornare alla schermata Admin.");
         }
     }
 
