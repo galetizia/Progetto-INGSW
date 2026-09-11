@@ -18,7 +18,7 @@ public class AuthUserService {
         this.jwtService = jwtService;
     }
 
-    public void registerAuthUser(String email, String password) {
+    public void registerAuthUser(String email, String password, String ruolo) {
         if (authUserRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email già in uso");
         }
@@ -26,7 +26,20 @@ public class AuthUserService {
         String hashedPass = passwordEncoder.encode(password);
         AuthUser newUser = new AuthUser(email, hashedPass);
 
+        newUser.setRuolo(bugboard.enums.Ruolo.valueOf(ruolo));
+
         authUserRepository.save(newUser);
+    }
+
+    // Cambia lo stato dell'account
+    public void cambiaStatoUtente(int id) {
+        AuthUser user = authUserRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+
+        // Se è true diventa false, se è false diventa true
+        user.setStatoAccount(!user.getStatoAccount());
+
+        authUserRepository.save(user);
     }
 
     public String login (String email, String password) {

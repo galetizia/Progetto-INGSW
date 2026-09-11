@@ -133,4 +133,56 @@ public class AuthClient {
 
 
     }
+
+
+    // Metodo creazione utente
+    public boolean registerUser(String email, String password, String ruolo) {
+        String json = """
+                {
+                    "email": "%s",
+                    "password": "%s",
+                    "ruolo": "%s"
+                }
+                """.formatted(email, password, ruolo);
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "crea_utenti"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status Code Creazione Utente: " + response.statusCode());
+            if (response.statusCode() != 200 && response.statusCode() != 201) {
+                System.out.println("Errore dal server: " + response.body());
+            }
+
+            return response.statusCode() == 200 || response.statusCode() == 201;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Metodo Attiva/Disattiva utente
+    public boolean cambiaStatoUtente(int id) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + id + "/cambia_stato"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status Code Cambio Stato: " + response.statusCode());
+            return response.statusCode() == 200;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
