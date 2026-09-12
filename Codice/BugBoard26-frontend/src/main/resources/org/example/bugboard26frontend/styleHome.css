@@ -244,3 +244,20 @@
 .choice-box .menu-item:hover .label, .choice-box .menu-item:focused .label {
     -fx-text-fill: #ffffff;
 }
+
+.chart-pie-label {
+    -fx-fill: white;
+}
+
+/* Colora di bianco le freccette stesse */
+.chart-pie-label-line {
+    -fx-stroke: white;
+}
+
+/* Rende trasparente lo sfondo della legenda e bianco il suo testo */
+.chart-legend {
+    -fx-background-color: transparent;
+}
+.chart-legend-item {
+    -fx-text-fill: white;
+}

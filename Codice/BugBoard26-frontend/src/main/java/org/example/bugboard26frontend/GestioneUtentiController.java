@@ -7,16 +7,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Insets;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.AuthUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GestioneUtentiController {
 
@@ -33,6 +39,12 @@ public class GestioneUtentiController {
     private TableColumn<AuthUser, Ruolo> ruoloColumn;
     @FXML
     private TableColumn<AuthUser, Boolean> statoAccountColumn;
+
+    @FXML
+    private PieChart BugChart;
+    @FXML
+    private BarChart<String, Number> bugPerUserChart;
+
 
     @FXML
     private VBox colonnaDashboard;
@@ -54,6 +66,8 @@ public class GestioneUtentiController {
 
         filtroChoiceBox.getItems().addAll("Tutti", "Attivi", "Non Attivi");
         filtroChoiceBox.setValue("Tutti");
+
+        popolaDashboard();
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             applicaFiltro();
@@ -86,6 +100,49 @@ public class GestioneUtentiController {
             if("Non Attivi".equals(filtro)) return !user.getStatoAccount();
             return true;
         });
+    }
+
+    private void popolaDashboard() {
+        Map<String, Integer> dataStates = issueClient.countIssueStates();
+
+        int countToDo = dataStates.getOrDefault("TO_DO", 0);
+        int countAssegnati = dataStates.getOrDefault("ASSEGNATO", 0);
+        int countRisolti = dataStates.getOrDefault("RISOLTO", 0);
+        int countArchiviati = dataStates.getOrDefault("ARCHIVIATO", 0);
+
+
+        ObservableList<PieChart.Data> issueStates = FXCollections.observableArrayList(
+                new PieChart.Data("To-Do (" + countToDo + ")", countToDo),
+                new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati ),
+                new PieChart.Data("Risolti (" + countRisolti + ")", countRisolti),
+                new PieChart.Data("Archiviati (" + countArchiviati + ")", countArchiviati)
+        );
+
+        Map<String, Integer> issuesType = issueClient.countIssueTypes();
+
+        int countBug = issuesType.getOrDefault("BUG", 0);
+        int countFeature = issuesType.getOrDefault("FEATURE", 0);
+        int countQuestion = issuesType.getOrDefault("QUESTION", 0);
+        int countDocumentation = issuesType.getOrDefault("DOCUMENTATION", 0);
+
+        ObservableList<PieChart.Data> issueTypes = FXCollections.observableArrayList(
+                new PieChart.Data("Bug (" + countBug + ")", countBug),
+                new PieChart.Data("Feature (" + countFeature + ")", countFeature),
+                new PieChart.Data("Documentation (" + countDocumentation + ")", countDocumentation),
+                new PieChart.Data("Question (" + countQuestion + ")", countQuestion)
+        );
+
+
+
+        BugChart.setData(issueStates);
+        BugChart.setTitle("Stato Generale Issue");
+
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Bug assegnati per utente");
+
+        bugPerUserChart.getData().clear();
+        bugPerUserChart.getData().add(series);
     }
 
     @FXML

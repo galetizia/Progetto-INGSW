@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.FileHandler;
 
 @RestController
@@ -41,6 +42,15 @@ public class IssueController {
     @GetMapping("/elenco_issue")
     public ResponseEntity<List<Issue>> elencoIssue() {
             return ResponseEntity.ok(issueService.elencoIssue());
+    }
+
+    @GetMapping("/countIssueStates")
+    public ResponseEntity<Map<String, Integer>> countIssueStates() {
+        return ResponseEntity.ok(issueService.countIssueStates());
+    }
+    @GetMapping("/countIssueTypes")
+    public ResponseEntity<Map<String, Integer>> countIssueTypes() {
+        return ResponseEntity.ok(issueService.countIssueTypes());
     }
 
     @PostMapping("/prendiInCarico")

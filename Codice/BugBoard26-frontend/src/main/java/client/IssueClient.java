@@ -14,7 +14,10 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -198,5 +201,51 @@ public class IssueClient {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Map<String, Integer> countIssueStates() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "countIssueStates"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200) {
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Integer>>() {});
+            } else {
+                System.out.println("Errore countIssueStates: " + response.statusCode());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
+    public Map<String, Integer> countIssueTypes() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "countIssueTypes"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200) {
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Integer>>() {});
+            } else {
+                System.out.println("Errore countIssueTypes: " + response.statusCode());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return new HashMap<>();
     }
 }
