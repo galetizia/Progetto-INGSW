@@ -39,44 +39,49 @@ public class CreazioneUtenteController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        if (email.isBlank() || password.isBlank() || ruoloScelto.isBlank()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Dati mancanti");
-            alert.setHeaderText(null);
-            alert.setContentText("Inserire Email, Password e scegliere un Ruolo.");
-            alert.showAndWait();
+        // 1. Controllo campi vuoti
+        if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi (Email e Password).");
+            return; // Blocca l'esecuzione
+        }
+
+        // 2. Controllo validità Email
+        if(!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
+            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Inserire un indirizzo email valido (@ e .com/.it).");
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Conferma operazione");
-        alert.setHeaderText("Stai per creare un nuovo utente con ruolo " + ruoloScelto);
-        alert.setContentText("Procedere?");
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                System.out.println("Salvataggio utente in corso...");
+        // 3. Controllo validità Password
+        if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$")){
+            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "La password deve essere di almeno 8 caratteri, contenere un numero, una lettera maiuscola, una minuscola e un carattere speciale (@,#,$,%,^,&,+,=,!).");
+            return;
+        }
 
-                // Effettuiamo la chiamata tramite AuthClient
-                boolean success = authClient.registerUser(email, password, ruoloScelto);
+        // 4. Controllo selezione Ruolo
+        if(ruoloScelto.isEmpty()) {
+            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
+            return;
+        }
 
-                if (success) {
-                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                    successAlert.setTitle("Utente creato");
-                    successAlert.setHeaderText(null);
-                    successAlert.setContentText("Utente creato con successo!");
-                    successAlert.showAndWait();
-                    chiudiFinestra();
-                } else {
-                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                    errorAlert.setTitle("Errore!");
-                    errorAlert.setHeaderText(null);
-                    errorAlert.setContentText("Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
-                    errorAlert.showAndWait();
-                }
-            } else {
-                System.out.println("Operazione annullata");
-            }
-        });
+        // Se tutti i controlli vengono superati, procedi con la creazione!
+        boolean success = authClient.registerUser(email, password, ruoloScelto);
+
+        if (success) {
+            // Chiudi il pop-up se la creazione è andata a buon fine
+            Stage stage = (Stage) confermaButton.getScene().getWindow();
+            stage.close();
+        } else {
+            mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
+        }
+    }
+
+    // Metodo di supporto per creare gli Alert senza ripetere sempre le stesse righe
+    private void mostraAlert(Alert.AlertType tipo, String titolo, String messaggio) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titolo);
+        alert.setHeaderText(null);
+        alert.setContentText(messaggio);
+        alert.showAndWait();
     }
 
     @FXML
