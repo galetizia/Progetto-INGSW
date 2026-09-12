@@ -39,12 +39,14 @@
                     </items>
                 </MenuButton>
 
-                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAnnullaButtonClick" styleClass="button-image" text="Annulla" />
                 <Button fx:id="confermaButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfermaButtonClick" prefHeight="28.0" prefWidth="124.0" text="Crea Utente">
                     <font>
                         <Font name="Segoe UI" size="14.0" />
                     </font>
                 </Button>
+
+                <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onAnnullaButtonClick" styleClass="button-image" text="Annulla" />
+
             </children>
         </VBox>
     </children>

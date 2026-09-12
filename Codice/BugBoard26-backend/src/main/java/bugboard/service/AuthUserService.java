@@ -24,7 +24,7 @@ public class AuthUserService {
         }
 
         String hashedPass = passwordEncoder.encode(password);
-        AuthUser newUser = new AuthUser(email, hashedPass);
+        AuthUser newUser = new AuthUser(hashedPass, email);
 
         newUser.setRuolo(bugboard.enums.Ruolo.valueOf(ruolo));
 
