@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import bugboard.service.AuthUserService;
 
 import java.util.List;
+import java.util.Map;
 
 // Indica a Spring che questa classe riceve richieste web e risponde con dati
 @RestController
@@ -78,6 +79,12 @@ public class AuthUserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/issues")
+    public ResponseEntity<Map<String, Integer>> getIssuesPerUser() {
+        return  ResponseEntity.ok(authUserService.getIssuesPerUser());
     }
 
     @GetMapping("/elenco_utenti")

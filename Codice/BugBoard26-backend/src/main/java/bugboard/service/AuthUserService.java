@@ -5,6 +5,10 @@ import bugboard.repository.AuthUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class AuthUserService {
 
@@ -70,5 +74,17 @@ public class AuthUserService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         authUserRepository.save(user);
+    }
+
+    public Map<String, Integer> getIssuesPerUser(){
+        List<Object[]> issuesPerUser = authUserRepository.findAllIssuesPerUser();
+
+        Map<String, Integer> map = new HashMap<>();
+        for(Object[] obj : issuesPerUser){
+            String email = (String) obj[0];
+            Integer count = ((Long) obj[1]).intValue();
+            map.put(email, count);
+        }
+        return map;
     }
 }
