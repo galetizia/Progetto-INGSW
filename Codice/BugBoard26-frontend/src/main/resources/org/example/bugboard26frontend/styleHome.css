@@ -124,6 +124,20 @@
     -fx-padding: 0 10 0 10;
 }
 
+/* ======================================================================
+   FIX POP-UP: Mantiene i tuoi colori originali anche quando apri gli Alert
+   ====================================================================== */
+
+/* Mantiene il tuo sfondo viola scuro quando il pop-up è aperto */
+.table-view .table-row-cell:selected {
+    -fx-background-color: #3b2d59;
+}
+
+/* Impedisce a JavaFX di far diventare il testo nero quando il pop-up è aperto */
+.table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #ffffff;
+}
+
 .menu-button {
     -fx-background-color: transparent;
     -fx-padding: 15 20 15 20;

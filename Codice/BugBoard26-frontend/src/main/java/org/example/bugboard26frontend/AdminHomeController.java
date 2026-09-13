@@ -228,6 +228,9 @@ public class AdminHomeController {
 
             dialogStage.showAndWait();
             loadOnTable();
+
+            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Errore nell'apertura finestra segnalazione");
@@ -354,6 +357,8 @@ public class AdminHomeController {
                         errorAlert.showAndWait();
                     }
                 }
+
+                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
             });
         }
     }
@@ -420,7 +425,7 @@ public class AdminHomeController {
             Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDelete.setTitle("Conferma eliminazione");
             confirmDelete.setHeaderText("Segnalazione Issue #" + issue.getId());
-            confirmDelete.setContentText("Sei sicuro di voler segnalare quests issue (" +issue.getId() +") come duplicata?");
+            confirmDelete.setContentText("Sei sicuro di voler segnalare questa issue (" +issue.getId() +") come duplicata?");
             confirmDelete.showAndWait().ifPresent(response -> {
                 if(response == ButtonType.OK){
 
@@ -435,6 +440,8 @@ public class AdminHomeController {
                         error.showAndWait();
                     }
                 }
+
+                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
             });
         }
     }
