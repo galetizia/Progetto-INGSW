@@ -100,6 +100,25 @@ public class AdminHomeController {
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+        statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+
+                if (empty || stato == null) {
+                    setText(null);
+                } else {
+                    if ("TO_DO".equalsIgnoreCase(stato)) {
+                        setText("🟢 TO_DO");
+                    } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
+                        setText("🔒 ASSEGNATO");
+                    } else {
+                        setText(stato);
+                    }
+                }
+            }
+        });
+
         dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime date, boolean empty) {

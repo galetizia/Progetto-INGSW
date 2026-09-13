@@ -43,11 +43,17 @@ public class AuthClient {
 
             String token = estraiValore(body, "token");
             String ruoloString = estraiValore(body, "ruoloUtente");
+            String idString = estraiValore(body, "id");
 
             if (token != null && ruoloString != null) {
                 AuthSession.setToken(token);
                 AuthUser utenteLoggato = new AuthUser();
                 utenteLoggato.setRuolo(Ruolo.valueOf(ruoloString));
+
+                if (idString != null) {
+                    utenteLoggato.setId(Integer.parseInt(idString));
+                }
+
                 AuthSession.setUtenteCorrente(utenteLoggato);
                 return true;
             }
@@ -104,12 +110,12 @@ public class AuthClient {
     }
 
     private String estraiValore(String json, String chiave) {
-        String patternString = "\"" + chiave + "\"\\s*:\\s*\"([^\"]+)\"";
+        String patternString = "\"" + chiave + "\"\\s*:\\s*\"?([^\",\\}]+)\"?";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(json);
 
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(1).trim(); // trim() rimuove eventuali spazi extra
         }
         return null;
     }
