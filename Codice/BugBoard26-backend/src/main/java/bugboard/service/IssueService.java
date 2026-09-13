@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class IssueService {
@@ -62,6 +64,28 @@ public class IssueService {
             );
         }
         return issues;
+    }
+
+    public Map<String, Integer> countIssueStates() {
+        List<Object[]> issueStates = issueRepository.findAllIssueStates();
+        Map<String, Integer> map = new HashMap<>();
+        for (Object[] obj : issueStates) {
+            String tipo = obj[0].toString();
+            Integer count = ((Number) obj[1]).intValue();
+            map.put(tipo, count);
+        }
+        return map;
+    }
+
+    public Map<String, Integer> countIssueTypes() {
+        List<Object[]> issueTypes = issueRepository.findAllIssueTypes();
+        Map<String, Integer> map = new HashMap<>();
+        for (Object[] obj : issueTypes) {
+            String tipo = obj[0].toString();
+            Integer count = ((Number) obj[1]).intValue();
+            map.put(tipo, count);
+        }
+        return map;
     }
 
     public boolean assegnaIssueUtente(int issueId, String emailUser) {
