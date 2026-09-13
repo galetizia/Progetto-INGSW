@@ -30,7 +30,7 @@ public class AuthUserController {
         try{
             String token = authUserService.login(request.email(), request.password());
             AuthUser utenteLoggato = authUserRepository.findByEmail(request.email()).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-            return ResponseEntity.ok(new LoginResponse(token, utenteLoggato.getRuolo()));
+            return ResponseEntity.ok(new LoginResponse(token, utenteLoggato.getRuolo(), utenteLoggato.getId()));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -88,6 +88,6 @@ public class AuthUserController {
 }
 //un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
 record AuthRequest(String email, String password) {}
-record LoginResponse(String token, Ruolo ruoloUtente) {}
+record LoginResponse(String token, Ruolo ruoloUtente, int id) {}
 record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}
 record CreateUserRequest(String email, String password, String ruolo) {}

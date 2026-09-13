@@ -100,6 +100,35 @@ public class UserHomeController {
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+        statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+
+                if (empty || stato == null || getTableRow() == null || getTableRow().getItem() == null) {
+                    setText(null);
+                    return;
+                }
+
+                Issue issueCorrente = getTableRow().getItem();
+
+                if ("TO_DO".equalsIgnoreCase(stato)) {
+                    setText("🟢 TO_DO");
+                } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
+
+                    if (issueCorrente.getAssignee() != null
+                            && issueCorrente.getAssignee().getId() == AuthSession.getUtenteCorrente().getId()) {
+                        setText("👤 IN LAVORAZIONE");
+                    } else {
+                        setText("🔒 ASSEGNATO");
+                    }
+
+                } else {
+                    setText(stato);
+                }
+            }
+        });
+
         dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime date, boolean empty) {
@@ -108,7 +137,7 @@ public class UserHomeController {
                 if (empty || date == null) {
                     setText(null); // Se la riga è vuota, non scrivere nulla
                 } else {
-                    setText(formatter.format(date)); // Applica il bel formato!
+                    setText(formatter.format(date));
                 }
             }
         });
@@ -124,7 +153,10 @@ public class UserHomeController {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
-                prendiInCaricoButton.setDisable(false);
+
+                // Il bottone si abilita SOLO se lo stato è "TO_DO"
+                boolean isToDo = "TO_DO".equalsIgnoreCase(newValue.getStato());
+                prendiInCaricoButton.setDisable(!isToDo);
             }
             else {
                 descriptionArea.setText("");
@@ -166,7 +198,11 @@ public class UserHomeController {
             if ("Feature".equals(filtro)) return "FEATURE".equalsIgnoreCase(issue.getTipo().name());
             if ("Documentation".equals(filtro)) return "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
             if ("Question".equals(filtro)) return "QUESTION".equalsIgnoreCase(issue.getTipo().name());
-            if ("Le mie issue".equals(filtro)) return "ASSEGNATO".equalsIgnoreCase(issue.getStato());
+            if ("Le mie issue".equals(filtro)) {
+                return "ASSEGNATO".equalsIgnoreCase(issue.getStato())
+                        && issue.getAssignee() != null
+                        && issue.getAssignee().getId() == AuthSession.getUtenteCorrente().getId();
+                }
             return true;
         });
 
@@ -254,7 +290,7 @@ public class UserHomeController {
     }
 
     private void loadOnTable() {
-        List<Issue> issues = issueClient.elencoIssue();
+        List<Issue> issues = issueClient.getIssueAttive();
         masterData.setAll(issues);
     }
 
