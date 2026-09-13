@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
@@ -101,23 +102,24 @@ public class GestioneUtentiController {
             return true;
         });
     }
-
-    private void popolaDashboard() {
+    @FXML
+    protected void onStatoIssueButtonClick(){
         Map<String, Integer> dataStates = issueClient.countIssueStates();
 
         int countToDo = dataStates.getOrDefault("TO_DO", 0);
         int countAssegnati = dataStates.getOrDefault("ASSEGNATO", 0);
-        int countRisolti = dataStates.getOrDefault("RISOLTO", 0);
-        int countArchiviati = dataStates.getOrDefault("ARCHIVIATO", 0);
 
+        ObservableList<PieChart.Data> issueStates = FXCollections.observableArrayList();
 
-        ObservableList<PieChart.Data> issueStates = FXCollections.observableArrayList(
-                new PieChart.Data("To-Do (" + countToDo + ")", countToDo),
-                new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati ),
-                new PieChart.Data("Risolti (" + countRisolti + ")", countRisolti),
-                new PieChart.Data("Archiviati (" + countArchiviati + ")", countArchiviati)
-        );
+        if(countToDo > 0) issueStates.add(new PieChart.Data("To-Do (" + countToDo + ")", countToDo));
+        if(countAssegnati > 0) issueStates.add(new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati));
 
+        BugChart.setData(issueStates);
+        BugChart.setTitle("Stato Generale Issue Attive");
+    }
+
+    @FXML
+    protected void onTipoIssueButtonClick(){
         Map<String, Integer> issuesType = issueClient.countIssueTypes();
 
         int countBug = issuesType.getOrDefault("BUG", 0);
@@ -125,24 +127,57 @@ public class GestioneUtentiController {
         int countQuestion = issuesType.getOrDefault("QUESTION", 0);
         int countDocumentation = issuesType.getOrDefault("DOCUMENTATION", 0);
 
-        ObservableList<PieChart.Data> issueTypes = FXCollections.observableArrayList(
-                new PieChart.Data("Bug (" + countBug + ")", countBug),
-                new PieChart.Data("Feature (" + countFeature + ")", countFeature),
-                new PieChart.Data("Documentation (" + countDocumentation + ")", countDocumentation),
-                new PieChart.Data("Question (" + countQuestion + ")", countQuestion)
-        );
+        ObservableList<PieChart.Data> issueTypes = FXCollections.observableArrayList();
 
+        if(countBug > 0) issueTypes.add(new PieChart.Data("Bug (" + countBug + ")", countBug));
+        if(countFeature > 0) issueTypes.add(new PieChart.Data("Feature (" + countFeature + ")", countFeature));
+        if(countDocumentation > 0) issueTypes.add(new PieChart.Data("Documentation (" + countDocumentation + ")", countDocumentation));
+        if(countQuestion > 0) issueTypes.add(new PieChart.Data("Question (" + countQuestion + ")", countQuestion));
 
-
-        BugChart.setData(issueStates);
+        BugChart.setData(issueTypes);
         BugChart.setTitle("Stato Generale Issue");
+    }
 
+    private void popolaDashboard() {
+        onStatoIssueButtonClick();
+        onTipoIssueButtonClick();
+        getIssuesPerUserData();
+    }
+
+    private void getIssuesPerUserData(){
+        Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Bug assegnati per utente");
 
+        for(Map.Entry<String, Integer> entry : issuesPerUser.entrySet()) {
+            String email = entry.getKey();
+            int count = entry.getValue();
+            String username = email.split("@")[0];
+            series.getData().add(new XYChart.Data<>(username, count));
+
+        }
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
+        NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
+        yAxis.setMinorTickVisible(false); // Nasconde le lineette piccole intermedie
+
+        yAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                // Se il numero è intero (resto della divisione per 1 è 0) lo stampa, altrimenti stringa vuota
+                if (object.doubleValue() % 1 == 0) {
+                    return String.valueOf(object.intValue());
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return null; // Non serve per i grafici
+            }
+        });
     }
 
     @FXML

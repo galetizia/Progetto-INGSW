@@ -6,7 +6,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,8 +132,27 @@ public class AuthClient {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
 
+    public Map<String, Integer> getIssuesPerUser(){
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "issues"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET().build();
 
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200){
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Integer>>() {
+                });
+            } else System.out.println(response.statusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
     }
 
 

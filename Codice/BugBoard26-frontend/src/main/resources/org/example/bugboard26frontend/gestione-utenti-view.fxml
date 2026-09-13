@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.GestioneUtentiController">
+<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.GestioneUtentiController">
 
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
@@ -25,14 +26,16 @@
     <VBox fx:id="colonnaDashboard" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
         <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
             <children>
-                <Label prefHeight="28.0" prefWidth="152.0" text="Issue Attive" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Bold" size="22.0" />
-                    </font>
-                </Label>
                 <Region prefHeight="200.0" prefWidth="200.0" />
             </children>
         </HBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onStatoIssueButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Stato issue attive" />
+            <Region prefHeight="40.0" prefWidth="90.0" />
+            <Button mnemonicParsing="false" onAction="#onTipoIssueButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Tipo issue attive" />
+         </children>
+      </HBox>
       <PieChart fx:id="BugChart" prefHeight="300.0" prefWidth="350.0" />
       <BarChart fx:id="bugPerUserChart" prefHeight="344.0" prefWidth="592.0">
         <xAxis>
@@ -109,5 +112,9 @@
             </children>
         </HBox>
     </VBox>
+   <stylesheets>
+      <URL value="@style.css" />
+      <URL value="@styleHome.css" />
+   </stylesheets>
 
 </HBox>
