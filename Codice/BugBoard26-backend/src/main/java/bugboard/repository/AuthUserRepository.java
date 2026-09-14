@@ -21,13 +21,14 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
 
     boolean existsById(int id);
 
-    @Query("SELECT a.email, COUNT(i) FROM AuthUser a LEFT JOIN Issue i ON a = i.assignee WHERE a.statoAccount = true and a.ruolo = INTERNAL_USER GROUP BY a.email")
+    @Query("SELECT a.email, COUNT(i) FROM AuthUser a LEFT JOIN Issue i ON a = i.assignee and i.stato = 'ASSEGNATO' WHERE a.statoAccount = true and a.ruolo = INTERNAL_USER GROUP BY a.email")
     List<Object[]> findAllIssuesPerUser();
 
-    @Query(value = "SELECT u.email, AVG(EXTRACT(EPOCH FROM i.data_risoluzione) - EXTRACT(EPOCH FROM i.data)) / 3600.0 " +
+    @Query(value = "SELECT u.email, AVG(EXTRACT(EPOCH FROM i.data_risoluzione) - EXTRACT(EPOCH FROM i.data_assegnazione)) / 3600.0 " +
             "FROM issue i " +
             "JOIN auth_user u ON i.assignee_id = u.id " +
             "WHERE i.stato = 'RISOLTO'" +
             "GROUP BY u.email", nativeQuery = true)
     List<Object[]> findALlTimePerUser();
+
 }

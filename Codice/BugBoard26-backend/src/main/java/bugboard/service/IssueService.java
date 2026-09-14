@@ -98,6 +98,7 @@ public class IssueService {
             // Cambia lo stato e assegna l'utente
             issue.setStato(StatoIssue.ASSEGNATO);
             issue.setAssignee(user);
+            issue.setDataAssegnazione(LocalDateTime.now());
 
             issueRepository.save(issue);
             return true;

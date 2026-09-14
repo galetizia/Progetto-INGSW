@@ -104,8 +104,16 @@
 /* 5. Le righe dei dati */
 .table-row-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #ffffff;
     -fx-cell-size: 30px; /* Altezza righe */
+}
+
+/* QUESTO È IL SEGRETO: Forza il testo BIANCO dentro le celle */
+.table-row-cell .text {
+    -fx-fill: #ffffff;
+}
+.table-row-cell .table-cell {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
 }
 
 /* 6. Nasconde le righe vuote in basso che JavaFX crea di default */
