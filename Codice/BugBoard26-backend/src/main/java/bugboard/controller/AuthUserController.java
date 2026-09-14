@@ -87,6 +87,12 @@ public class AuthUserController {
         return  ResponseEntity.ok(authUserService.getIssuesPerUser());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/time_per_user")
+    public ResponseEntity<Map<String, Double>> getTimePerUser() {
+        return ResponseEntity.ok(authUserService.getTimePerUser());
+    }
+
     @GetMapping("/elenco_utenti")
     public ResponseEntity<List<AuthUser>> getUsers() {
         return ResponseEntity.ok(authUserRepository.findAll());

@@ -161,6 +161,26 @@ public class AuthClient {
         return new HashMap<>();
     }
 
+    public Map<String, Double> getTimePerUser(){
+        try{
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "time_per_user"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET().build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if(response.statusCode() == 200){
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Double>>() {});
+            } else  System.out.println(response.statusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
 
     // Metodo creazione utente
     public boolean registerUser(String email, String password, String ruolo) {

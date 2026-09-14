@@ -87,4 +87,15 @@ public class AuthUserService {
         }
         return map;
     }
+
+    public Map<String, Double> getTimePerUser(){
+        List<Object[]> timePerUser = authUserRepository.findALlTimePerUser();
+        Map<String, Double> map = new HashMap<>();
+        for(Object[] obj : timePerUser){
+            String email = (String) obj[0];
+            Double count = ((Number) obj[1]).doubleValue();
+            map.put(email, count);
+        }
+        return map;
+    }
 }
