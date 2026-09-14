@@ -183,7 +183,6 @@ public class UserHomeController {
                         && newValue.getAssignee() != null
                         && newValue.getAssignee().getId() == AuthSession.getUtenteCorrente().getId();
 
-                // 👉 LOGICA DINAMICA DEI PULSANTI
                 if (isToDo) {
                     prendiInCaricoButton.setText("Prendi in carico");
                     prendiInCaricoButton.setDisable(false);

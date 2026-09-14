@@ -9,14 +9,12 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import model.AuthUser;
 
 import java.util.List;
@@ -42,7 +40,10 @@ public class GestioneUtentiController {
     private PieChart bugChart;
     @FXML
     private BarChart<String, Number> bugPerUserChart;
-
+    @FXML
+    private TableColumn<AuthUser, Double> tempoMedioColumn;
+    @FXML
+    private TableColumn<AuthUser, Integer> issueAttiveColumn;
 
     @FXML
     private VBox colonnaDashboard;
@@ -57,8 +58,40 @@ public class GestioneUtentiController {
 
     @FXML void initialize() {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        ruoloColumn.setCellValueFactory(new PropertyValueFactory<>("ruolo"));
-        statoAccountColumn.setCellValueFactory(new PropertyValueFactory<>("statoAccount"));
+        ruoloColumn.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getRuolo()));
+
+        ruoloColumn.setCellFactory(column -> new TableCell<AuthUser, Ruolo>() {
+            @Override
+            protected void updateItem(Ruolo item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {setText(null);}
+                else {String ruolo = item.name().replace("_USER","");
+                setText(ruolo);}
+            }
+        });
+
+        statoAccountColumn.setCellValueFactory(cellData ->
+                        new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getStatoAccount()));
+        statoAccountColumn.setStyle("-fx-alignment: CENTER;");
+
+        statoAccountColumn.setCellFactory(column -> new TableCell<AuthUser, Boolean>() {
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                }
+                else {
+                    setText(item ? "Attivo" : "Disattivato");
+                }
+            }
+        });
+
+        issueAttiveColumn.setCellValueFactory(new PropertyValueFactory<>("issueAttive"));
+        tempoMedioColumn.setCellValueFactory(new PropertyValueFactory<>("tempoMedio"));
+        issueAttiveColumn.setStyle("-fx-alignment: CENTER;");
+        tempoMedioColumn.setStyle("-fx-alignment: CENTER;");
 
         filteredData = new FilteredList<>(masterData, p -> true);
         utentiTable.setItems(filteredData);
@@ -149,14 +182,36 @@ public class GestioneUtentiController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Tempo medio di risoluzione (Ore)");
 
-        dataTimes.forEach((email, tempo) -> {
-            double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
-            series.getData().add(new XYChart.Data<>(email, tempoArrotondato));
 
-        });
+        dataTimes.entrySet().stream()
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .limit(12)
+                .forEach(entry -> {
+                    Double tempo = entry.getValue();
+                    String email = entry.getKey();
+                    double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
+                    String username = email.split("@")[0] + "(" + tempoArrotondato +")";
+                    series.getData().add(new XYChart.Data<>(username, tempoArrotondato));
+
+                });
+
+        CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
+        xAxis.setTickLabelRotation(315);
+
         NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
-        yAxis.setTickLabelFormatter(null);
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                return String.format(java.util.Locale.US, "%.2f h", object.doubleValue());
+            }
+            @Override
+            public Number fromString(String string){
+                return null;
+            }
+        });
 
+        bugPerUserChart.setTitle("Tempo medio di risoluzione (Ore)");
+        bugPerUserChart.setLegendVisible(false);
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
     }
@@ -169,19 +224,28 @@ public class GestioneUtentiController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Bug assegnati per utente");
 
-        for(Map.Entry<String, Integer> entry : issuesPerUser.entrySet()) {
-            String email = entry.getKey();
-            int count = entry.getValue();
-            String username = email.split("@")[0];
-            series.getData().add(new XYChart.Data<>(username, count));
+        issuesPerUser.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(12)
+                .forEach(entry -> {
+                    String email = entry.getKey();
+                    int count = entry.getValue();
+                    String username = email.split("@")[0] + "(" + count +")";
+                    series.getData().add(new XYChart.Data<>(username, count));
 
-        }
+                });
+
+        CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
+        xAxis.setTickLabelRotation(315);
+
+        bugPerUserChart.setTitle("Bug assegnati per utente");
+        bugPerUserChart.setLegendVisible(false);
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
         NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
         yAxis.setMinorTickVisible(false); // Nasconde le lineette piccole intermedie
 
-        yAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
                 // Se il numero è intero (resto della divisione per 1 è 0) lo stampa, altrimenti stringa vuota
@@ -221,6 +285,20 @@ public class GestioneUtentiController {
 
     private void loadOnTable() {
         List<AuthUser> users = authClient.getUsers();
+
+        Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
+        Map<String, Double> timeMap = authClient.getTimePerUser();
+
+        for(AuthUser user : users){
+            String email = user.getEmail();
+
+            int bugAssegnati = issuesPerUser.getOrDefault(email, 0);
+            user.setIssueAttive(bugAssegnati);
+
+            double tempoMedio = timeMap.getOrDefault(email, 0.0);
+            double tempoArrotondato = Math.round(tempoMedio*10.0)/10.0;
+            user.setTempoMedio(tempoArrotondato);
+        }
         masterData.setAll(users);
     }
 

@@ -49,6 +49,9 @@ public class Issue {
     @JoinColumn(name = "id_allegato")
     private Attachment allegato;
 
+    @Column(name = "data_assegnazione")
+    private LocalDateTime dataAssegnazione;
+
     public Issue() {
         this.data = LocalDateTime.now();
     }
@@ -103,4 +106,11 @@ public class Issue {
     public void setData(LocalDateTime data) {
         this.data = data;
     }
+    public LocalDateTime getDataAssegnazione() {
+        return dataAssegnazione;
+    }
+    public void setDataAssegnazione(LocalDateTime dataAssegnazione) {
+        this.dataAssegnazione = dataAssegnazione;
+    }
+
 }

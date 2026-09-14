@@ -12,6 +12,8 @@ public class AuthUser {
     private String cognome;
     private Ruolo ruolo;
     private boolean statoAccount;
+    private int issueAttive;
+    private double tempoMedio;
 
     public AuthUser() {}
 
@@ -27,4 +29,9 @@ public class AuthUser {
     public void setRuolo(Ruolo ruolo) {this.ruolo = ruolo;}
     public boolean getStatoAccount() {return statoAccount;}
     public void setStatoAccount(boolean statoAccount) {this.statoAccount = statoAccount;}
+
+    public int getIssueAttive() {return issueAttive;}
+    public void setIssueAttive(int issueAttive) {this.issueAttive = issueAttive;}
+    public double getTempoMedio() {return tempoMedio;}
+    public void setTempoMedio(double tempoMedio) {this.tempoMedio = tempoMedio;}
 }

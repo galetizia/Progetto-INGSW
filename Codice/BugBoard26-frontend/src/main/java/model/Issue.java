@@ -19,8 +19,8 @@ public class Issue {
     private LocalDateTime data;
     private Attachment allegato;
     private AuthUser assignee;
-    private LocalDate dataRisoluzione;
-
+    private LocalDateTime dataRisoluzione;
+    private LocalDateTime dataAssegnazione;
 
     public Issue() {}
 
@@ -69,10 +69,17 @@ public class Issue {
         this.data = data;
     }
 
-    public LocalDate getDataRisoluzione() {
+    public LocalDateTime getDataRisoluzione() {
         return dataRisoluzione;
     }
-    public void setDataRisoluzione(LocalDate dataRisoluzione) {
+    public void setDataRisoluzione(LocalDateTime dataRisoluzione) {
         this.dataRisoluzione = dataRisoluzione;
+    }
+
+    public LocalDateTime getDataAssegnazione() {
+        return dataAssegnazione;
+    }
+    public void setDataAssegnazione(LocalDateTime dataAssegnazione) {
+        this.dataAssegnazione = dataAssegnazione;
     }
 }
