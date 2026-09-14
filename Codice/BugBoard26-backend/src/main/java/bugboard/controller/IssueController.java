@@ -108,4 +108,26 @@ public class IssueController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    //Endpoint Risolvi Issue
+    @PutMapping("/{id}/risolvi")
+    public ResponseEntity<String> risolviIssue(@PathVariable int id) {
+        try {
+            issueService.risolviIssue(id);
+            return ResponseEntity.ok("Issue risolta con successo");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Endpoint Rilascia Issue
+    @PutMapping("/{id}/rilascia")
+    public ResponseEntity<String> rilasciaIssue(@PathVariable int id) {
+        try {
+            issueService.rilasciaIssue(id);
+            return ResponseEntity.ok("Issue rilasciata con successo");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

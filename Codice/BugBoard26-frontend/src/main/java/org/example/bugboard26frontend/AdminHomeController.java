@@ -74,6 +74,8 @@ public class AdminHomeController {
     private TableColumn<Issue, String> tipoArchiviatiColumn;
     @FXML
     private TableColumn<Issue, LocalDateTime> dataArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> statoArchiviatiColumn;
 
     @FXML
     private VBox colonnaSinistra;
@@ -139,6 +141,25 @@ public class AdminHomeController {
         prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
+
+        statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        statoArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+                if (empty || stato == null) {
+                    setText(null);
+                } else {
+                    if ("RISOLTO".equalsIgnoreCase(stato)) {
+                        setText("✅ RISOLTO");
+                    } else if ("ARCHIVIATO".equalsIgnoreCase(stato)) {
+                        setText("📦 ARCHIVIATO");
+                    } else {
+                        setText(stato);
+                    }
+                }
+            }
+        });
 
         issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             if(newValue != null) {
@@ -298,7 +319,7 @@ public class AdminHomeController {
 
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Schermata Login");
+            stage.setTitle("BugBoard - Login");
             stage.show();
             stage.sizeToScene();
             stage.centerOnScreen();

@@ -122,6 +122,17 @@ public class IssueService {
         issueRepository.save(issue);
     }
 
+    public void rilasciaIssue(int issueId) {
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new RuntimeException("Issue non trovata"));
+
+        // Riporta lo stato a TO_DO e rimuove l'assegnatario
+        issue.setStato(StatoIssue.TO_DO);
+        issue.setAssignee(null);
+
+        issueRepository.save(issue);
+    }
+
     // 1. Recupera i bug per la tabella delle Issue
     public List<Issue> getIssueAttive() {
         return issueRepository.findByStatoIn(List.of(StatoIssue.TO_DO, StatoIssue.ASSEGNATO));
