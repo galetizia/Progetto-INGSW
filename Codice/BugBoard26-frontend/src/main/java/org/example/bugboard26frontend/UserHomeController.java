@@ -218,7 +218,7 @@ public class UserHomeController {
         filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question", "Le mie issue");
         filtroChoiceBox.setValue("Tutte");
 
-        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Priorità Bassa", "Più recenti");
         ordinaChoiceBox.setValue("Nessun ordine");
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
@@ -258,6 +258,14 @@ public class UserHomeController {
                 int posizione = ordine.indexOf(priorita);
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));
+        } else if ("Priorità Bassa".equals(ordina)) {
+            List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+
         } else if("Più recenti".equals(ordina)){
             sortedData.setComparator(
                     Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
