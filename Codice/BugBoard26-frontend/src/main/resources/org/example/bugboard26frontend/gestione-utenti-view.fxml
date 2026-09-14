@@ -36,8 +36,15 @@
             <Button mnemonicParsing="false" onAction="#onTipoIssueButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Tipo issue attive" />
          </children>
       </HBox>
-      <PieChart fx:id="BugChart" prefHeight="300.0" prefWidth="350.0" />
-      <BarChart fx:id="bugPerUserChart" prefHeight="344.0" prefWidth="592.0">
+      <PieChart fx:id="bugChart" prefHeight="300.0" prefWidth="350.0" />
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onIssueAssegnateButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Issue assegnate" />
+            <Region prefHeight="40.0" prefWidth="90.0" />
+            <Button mnemonicParsing="false" onAction="#onTempoButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Tempo medio risoluzione " />
+         </children>
+      </HBox>
+      <BarChart fx:id="bugPerUserChart" animated="false" prefHeight="276.0" prefWidth="592.0">
         <xAxis>
           <CategoryAxis prefHeight="28.0" prefWidth="536.0" side="BOTTOM" />
         </xAxis>

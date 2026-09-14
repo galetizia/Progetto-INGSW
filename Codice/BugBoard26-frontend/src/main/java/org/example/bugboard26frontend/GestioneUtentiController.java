@@ -6,8 +6,6 @@ import enums.Ruolo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
-import javafx.geometry.Insets;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.AuthUser;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +39,7 @@ public class GestioneUtentiController {
     private TableColumn<AuthUser, Boolean> statoAccountColumn;
 
     @FXML
-    private PieChart BugChart;
+    private PieChart bugChart;
     @FXML
     private BarChart<String, Number> bugPerUserChart;
 
@@ -56,6 +53,7 @@ public class GestioneUtentiController {
     @FXML private Button creaUtenteButton;
     @FXML private Button cambiaStatoButton;
     @FXML private Button indietroButton;
+    @FXML private BarChart<String, Number> timePerUserChart;
 
     @FXML void initialize() {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -114,8 +112,8 @@ public class GestioneUtentiController {
         if(countToDo > 0) issueStates.add(new PieChart.Data("To-Do (" + countToDo + ")", countToDo));
         if(countAssegnati > 0) issueStates.add(new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati));
 
-        BugChart.setData(issueStates);
-        BugChart.setTitle("Stato Generale Issue Attive");
+        bugChart.setData(issueStates);
+        bugChart.setTitle("Stato Generale Issue Attive");
     }
 
     @FXML
@@ -134,17 +132,38 @@ public class GestioneUtentiController {
         if(countDocumentation > 0) issueTypes.add(new PieChart.Data("Documentation (" + countDocumentation + ")", countDocumentation));
         if(countQuestion > 0) issueTypes.add(new PieChart.Data("Question (" + countQuestion + ")", countQuestion));
 
-        BugChart.setData(issueTypes);
-        BugChart.setTitle("Stato Generale Issue");
+        bugChart.setData(issueTypes);
+        bugChart.setTitle("Stato Generale Issue");
     }
 
     private void popolaDashboard() {
         onStatoIssueButtonClick();
-        onTipoIssueButtonClick();
-        getIssuesPerUserData();
+        onIssueAssegnateButtonClick();
     }
 
-    private void getIssuesPerUserData(){
+    @FXML
+    protected void onTempoButtonClick() {
+        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
+        Map<String, Double> dataTimes = authClient.getTimePerUser();
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Tempo medio di risoluzione (Ore)");
+
+        dataTimes.forEach((email, tempo) -> {
+            double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
+            series.getData().add(new XYChart.Data<>(email, tempoArrotondato));
+
+        });
+        NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
+        yAxis.setTickLabelFormatter(null);
+
+        bugPerUserChart.getData().clear();
+        bugPerUserChart.getData().add(series);
+    }
+
+    @FXML
+    protected void onIssueAssegnateButtonClick(){
+        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
