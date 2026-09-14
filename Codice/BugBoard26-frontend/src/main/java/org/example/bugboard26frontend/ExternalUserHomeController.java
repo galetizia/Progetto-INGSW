@@ -65,7 +65,7 @@ public class ExternalUserHomeController {
     private ChoiceBox<String> ordinaChoiceBox;
     @FXML
     public void initialize() {
-        // Setup colonne Issue Attive
+        // Setup colonne Issue
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
         statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
@@ -73,6 +73,28 @@ public class ExternalUserHomeController {
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+
+                if (empty || stato == null || getTableRow() == null || getTableRow().getItem() == null) {
+                    setText(null);
+                    return;
+                }
+
+                if ("TO_DO".equalsIgnoreCase(stato)) {
+                    setText("🟢 TO_DO");
+                } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
+                    setText("🔒 ASSEGNATO");
+                } else if ("RISOLTO".equalsIgnoreCase(stato)) {
+                    setText("✅ RISOLTO");
+                } else {
+                    setText(stato);
+                }
+            }
+        });
 
         dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
             @Override
@@ -99,14 +121,14 @@ public class ExternalUserHomeController {
             }
         });
 
-        filteredData = new FilteredList<>(masterData, p -> "BUG".equalsIgnoreCase(p.getTipo().name()));
+        filteredData = new FilteredList<>(masterData, p -> true);
         sortedData = new SortedList<>(filteredData);
         bugTable.setItems(sortedData);
 
         filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question");
         filtroChoiceBox.setValue("Tutte");
 
-        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Priorità Bassa", "Più recenti");
         ordinaChoiceBox.setValue("Nessun ordine");
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
@@ -141,6 +163,14 @@ public class ExternalUserHomeController {
                 int posizione = ordine.indexOf(priorita);
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));
+        } else if ("Priorità Bassa".equals(ordina)) {
+            List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+
         } else if("Più recenti".equals(ordina)){
             sortedData.setComparator(
                     Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
@@ -171,6 +201,10 @@ public class ExternalUserHomeController {
     }
     private void loadOnTable() {
         List<Issue> issues = issueClient.elencoIssue();
+
+        // Rimuove dalla lista tutte le issue con stato "ARCHIVIATO"
+        issues.removeIf(issue -> "ARCHIVIATO".equalsIgnoreCase(issue.getStato()));
+
         masterData.setAll(issues);
     }
 
@@ -217,7 +251,10 @@ public class ExternalUserHomeController {
 
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("BugBoard - Login");
             stage.show();
+            stage.sizeToScene();
+            stage.centerOnScreen();
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Errore nell'apertura schermata login");

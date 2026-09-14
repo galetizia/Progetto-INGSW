@@ -49,6 +49,8 @@ public class UserHomeController {
     private Button visualizzaAllegatoButton;
     @FXML
     private Button prendiInCaricoButton;
+    @FXML
+    private Button rilasciaIssueButton;
 
     @FXML
     private TableColumn<Issue, Integer> idColumn;
@@ -78,6 +80,8 @@ public class UserHomeController {
     private TableColumn<Issue, String> tipoArchiviatiColumn;
     @FXML
     private TableColumn<Issue, LocalDateTime> dataArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> statoArchiviatiColumn;
 
     @FXML
     private VBox colonnaSinistra;
@@ -88,6 +92,7 @@ public class UserHomeController {
     private ChoiceBox<String> filtroChoiceBox;
     @FXML
     private ChoiceBox<String> ordinaChoiceBox;
+
     @FXML
     public void initialize()
     {
@@ -142,26 +147,66 @@ public class UserHomeController {
             }
         });
 
-        // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
+        // Setup colonne Bug Archiviati
         idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
         prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
+        statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        statoArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+                if (empty || stato == null) {
+                    setText(null);
+                } else {
+                    if ("RISOLTO".equalsIgnoreCase(stato)) {
+                        setText("✅ RISOLTO");
+                    } else if ("ARCHIVIATO".equalsIgnoreCase(stato)) {
+                        setText("📦 ARCHIVIATO");
+                    } else {
+                        setText(stato);
+                    }
+                }
+            }
+        });
+
         issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
-                visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
+                visualizzaAllegatoButton.setDisable(newValue.getAllegato() == null);
 
-                // Il bottone si abilita SOLO se lo stato è "TO_DO"
                 boolean isToDo = "TO_DO".equalsIgnoreCase(newValue.getStato());
-                prendiInCaricoButton.setDisable(!isToDo);
+                boolean isMiaInLavorazione = "ASSEGNATO".equalsIgnoreCase(newValue.getStato())
+                        && newValue.getAssignee() != null
+                        && newValue.getAssignee().getId() == AuthSession.getUtenteCorrente().getId();
+
+                // 👉 LOGICA DINAMICA DEI PULSANTI
+                if (isToDo) {
+                    prendiInCaricoButton.setText("Prendi in carico");
+                    prendiInCaricoButton.setDisable(false);
+                    if (rilasciaIssueButton != null) rilasciaIssueButton.setDisable(true);
+
+                } else if (isMiaInLavorazione) {
+                    prendiInCaricoButton.setText("Segna come Risolto");
+                    prendiInCaricoButton.setDisable(false);
+                    if (rilasciaIssueButton != null) rilasciaIssueButton.setDisable(false);
+
+                } else {
+                    // È di qualcun altro o archiviata
+                    prendiInCaricoButton.setText("Prendi in carico");
+                    prendiInCaricoButton.setDisable(true);
+                    if (rilasciaIssueButton != null) rilasciaIssueButton.setDisable(true);
+                }
             }
             else {
                 descriptionArea.setText("");
                 visualizzaAllegatoButton.setDisable(true);
+                prendiInCaricoButton.setText("Prendi in carico");
                 prendiInCaricoButton.setDisable(true);
+                if (rilasciaIssueButton != null) rilasciaIssueButton.setDisable(true);
             }
         });
 
@@ -173,7 +218,7 @@ public class UserHomeController {
         filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question", "Le mie issue");
         filtroChoiceBox.setValue("Tutte");
 
-        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Priorità Bassa", "Più recenti");
         ordinaChoiceBox.setValue("Nessun ordine");
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
@@ -213,6 +258,14 @@ public class UserHomeController {
                 int posizione = ordine.indexOf(priorita);
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));
+        } else if ("Priorità Bassa".equals(ordina)) {
+            List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+
         } else if("Più recenti".equals(ordina)){
             sortedData.setComparator(
                     Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
@@ -310,7 +363,10 @@ public class UserHomeController {
 
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("BugBoard - Login");
             stage.show();
+            stage.sizeToScene();
+            stage.centerOnScreen();
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Errore nell'apertura schermata login");
@@ -350,26 +406,67 @@ public class UserHomeController {
 
     @FXML
     protected void prendiInCaricoButtonClick(){
-        Issue issueSelezionata =  issueTable.getSelectionModel().getSelectedItem();
-        if(issueSelezionata != null && AuthSession.isLoggedIn() && issueSelezionata.getAssignee()==null) {
-            boolean success = issueClient.prendiInCarico(issueSelezionata.getId());
-            if(success){
-                loadOnTable();
+        Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Successo");
-                alert.setHeaderText(null);
-                alert.setContentText("Hai preso in carico la issue #" + issueSelezionata.getId());
-                alert.showAndWait();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossibile prendere in carico la issue.");
-                alert.showAndWait();
+        if (issueSelezionata != null && AuthSession.isLoggedIn()) {
+
+            // L'utente sta prendendo in carico la issue
+            if ("TO_DO".equalsIgnoreCase(issueSelezionata.getStato())) {
+                boolean success = issueClient.prendiInCarico(issueSelezionata.getId());
+                if (success) {
+                    loadOnTable();
+                    mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai preso in carico la issue #" + issueSelezionata.getId());
+                } else {
+                    mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile prendere in carico la issue.");
+                }
             }
-
+            // L'utente sta risolvendo la sua issue
+            else if ("ASSEGNATO".equalsIgnoreCase(issueSelezionata.getStato())) {
+                boolean success = issueClient.risolviIssue(issueSelezionata.getId());
+                if (success) {
+                    loadOnTable();
+                    mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue #" + issueSelezionata.getId() + " segnata come Risolta!");
+                } else {
+                    mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile risolvere la issue.");
+                }
+            }
+            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
         }
+    }
+
+    @FXML
+    protected void rilasciaIssueButtonClick() {
+        Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
+
+        if (issueSelezionata != null) {
+            Alert conferma = new Alert(Alert.AlertType.CONFIRMATION);
+            conferma.setTitle("Conferma");
+            conferma.setHeaderText("Rilascio Issue #" + issueSelezionata.getId());
+            conferma.setContentText("Sei sicuro di voler rimettere questa issue in stato TO_DO?");
+
+            conferma.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+
+                    boolean success = issueClient.rilasciaIssue(issueSelezionata.getId());
+                    if (success) {
+                        loadOnTable();
+                        mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai rilasciato la issue.");
+                    } else {
+                        mostraAlert(Alert.AlertType.ERROR, "Errore", "Si è verificato un problema di comunicazione col server.");
+                    }
+                }
+                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+            });
+        }
+    }
+
+    // Metodo di supporto per gli alert
+    private void mostraAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML

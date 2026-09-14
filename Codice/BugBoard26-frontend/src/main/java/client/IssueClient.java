@@ -121,6 +121,42 @@ public class IssueClient {
         return false;
     }
 
+    public boolean risolviIssue(int issueId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + issueId + "/risolvi"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Risolvi issue, status: " + response.statusCode());
+            return response.statusCode() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean rilasciaIssue(int issueId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + issueId + "/rilascia"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Rilascia issue, status: " + response.statusCode());
+            return response.statusCode() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<Issue> getIssueAttive() {
         try {
             HttpRequest request = HttpRequest.newBuilder()

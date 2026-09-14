@@ -74,6 +74,8 @@ public class AdminHomeController {
     private TableColumn<Issue, String> tipoArchiviatiColumn;
     @FXML
     private TableColumn<Issue, LocalDateTime> dataArchiviatiColumn;
+    @FXML
+    private TableColumn<Issue, String> statoArchiviatiColumn;
 
     @FXML
     private VBox colonnaSinistra;
@@ -140,6 +142,25 @@ public class AdminHomeController {
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
+        statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        statoArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+                if (empty || stato == null) {
+                    setText(null);
+                } else {
+                    if ("RISOLTO".equalsIgnoreCase(stato)) {
+                        setText("✅ RISOLTO");
+                    } else if ("ARCHIVIATO".equalsIgnoreCase(stato)) {
+                        setText("📦 ARCHIVIATO");
+                    } else {
+                        setText(stato);
+                    }
+                }
+            }
+        });
+
         issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
@@ -163,7 +184,7 @@ public class AdminHomeController {
         filtroChoiceBox.getItems().addAll("Tutte", "To-do", "Bug", "Feature", "Documentation", "Question", "Le mie issue");
         filtroChoiceBox.setValue("Tutte");
 
-        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Più recenti");
+        ordinaChoiceBox.getItems().addAll("Nessun ordine", "Priorità Alta", "Priorità Bassa", "Più recenti");
         ordinaChoiceBox.setValue("Nessun ordine");
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
@@ -199,6 +220,14 @@ public class AdminHomeController {
                 int posizione = ordine.indexOf(priorita);
                 return posizione == -1 ? Integer.MAX_VALUE : posizione;
             }));
+        } else if ("Priorità Bassa".equals(ordina)) {
+            List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
+            sortedData.setComparator(Comparator.comparingInt(issue -> {
+                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                int posizione = ordine.indexOf(priorita);
+                return posizione == -1 ? Integer.MAX_VALUE : posizione;
+            }));
+
         } else if("Più recenti".equals(ordina)){
             sortedData.setComparator(
                     Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
@@ -298,7 +327,7 @@ public class AdminHomeController {
 
             Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Schermata Login");
+            stage.setTitle("BugBoard - Login");
             stage.show();
             stage.sizeToScene();
             stage.centerOnScreen();
