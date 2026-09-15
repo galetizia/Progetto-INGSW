@@ -175,3 +175,68 @@
     -fx-background-color: #151024;
     -fx-text-fill: #a29bb8;
 }
+
+/* =========================================
+   6. GRAFICI (PieChart & BarChart)
+   ========================================= */
+
+/* Rimuove lo sfondo grigiolino dietro le colonne del grafico a barre */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+/* Colora il testo degli Assi X e Y (Nomi utenti e Numeri) */
+.axis {
+    -fx-tick-label-fill: #a29bb8;
+    -fx-font-size: 11px;
+}
+
+/* Colora le linee della griglia (usiamo il tuo prugna spento) */
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #2a2240;
+}
+
+/* Colora i Titoli dei grafici */
+.chart-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* --- COLORI DEL BARCHART --- */
+/* .default-color0 è la prima (e unica) serie del tuo BarChart */
+.default-color0.chart-bar {
+    -fx-bar-fill: #bf5afe; /* Colonne Viola Neon */
+}
+
+/* Effetto figo quando passi col mouse su una colonna */
+.default-color0.chart-bar:hover {
+    -fx-bar-fill: #d18dff; /* Si illumina ancora di più */
+    -fx-cursor: hand;
+}
+
+/* --- COLORI DEL PIECHART --- */
+/* JavaFX assegna default-color0 alla prima fetta, color1 alla seconda, ecc. */
+.default-color0.chart-pie {
+    -fx-pie-color: #bf5afe; /* 1° Fetta: Viola Neon */
+    -fx-border-color: #0b0914; /* Bordin scuro per separare le fette */
+    -fx-border-width: 2px;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: #6a0dad; /* 2° Fetta: Viola Scuro */
+    -fx-border-color: #0b0914;
+    -fx-border-width: 2px;
+}
+
+.default-color2.chart-pie {
+    -fx-pie-color: #3b2d59; /* 3° Fetta: Viola Opaco */
+    -fx-border-color: #0b0914;
+    -fx-border-width: 2px;
+}
+
+.default-color3.chart-pie {
+    -fx-pie-color: #a29bb8; /* 4° Fetta: Grigio/Viola */
+    -fx-border-color: #0b0914;
+    -fx-border-width: 2px;
+}

@@ -136,13 +136,32 @@ public class AdminHomeController {
 
 
         // Setup colonne Bug Archiviati (assicurati di avere dataRisoluzione nell'Entity)
-        idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
-        prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
-        tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
+        titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Titolo"));
+        prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Priorita"));
+        tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
-        statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
+        dataArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>(){
+            @Override
+            protected void updateItem(LocalDateTime date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null) {
+                    setText(null);
+                }  else {
+                    Issue issue = getTableRow().getItem();
+                    if (issue != null && issue.getStato() != null) {
+                        if (issue.getStato().toString().equalsIgnoreCase("RISOLTO"))
+                            setText(formatter.format(date));
+                        else
+                            setText("-");
+                    }
+                }
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
+
+        statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Stato"));
         statoArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
             @Override
             protected void updateItem(String stato, boolean empty) {

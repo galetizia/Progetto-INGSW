@@ -104,7 +104,7 @@
         <TableView fx:id="utentiTable" prefHeight="467.0" prefWidth="722.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="emailColumn" minWidth="250.0" text="Email" />
-                <TableColumn fx:id="ruoloColumn" minWidth="110.0" maxWidth="130.0" text="Ruolo" />
+                <TableColumn fx:id="ruoloColumn" maxWidth="130.0" minWidth="110.0" text="Ruolo" />
                 <TableColumn fx:id="statoAccountColumn" maxWidth="90.0" minWidth="90.0" text="Stato" />
             <TableColumn fx:id="issueAttiveColumn" maxWidth="100.0" minWidth="90.0" text="Issue attive" />
             <TableColumn fx:id="tempoMedioColumn" maxWidth="110.0" minWidth="100.0" text="Tempo medio" />

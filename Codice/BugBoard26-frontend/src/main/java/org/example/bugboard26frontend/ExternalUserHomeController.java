@@ -85,7 +85,7 @@ public class ExternalUserHomeController {
                 }
 
                 if ("TO_DO".equalsIgnoreCase(stato)) {
-                    setText("🟢 TO_DO");
+                    setText("🟢 TO-DO");
                 } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
                     setText("🔒 ASSEGNATO");
                 } else if ("RISOLTO".equalsIgnoreCase(stato)) {
