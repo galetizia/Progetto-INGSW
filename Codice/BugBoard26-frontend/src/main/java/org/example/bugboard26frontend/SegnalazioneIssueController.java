@@ -29,6 +29,9 @@ public class SegnalazioneIssueController {
     private Button confermaButton;
 
     @FXML
+    private Button indietroButton;
+
+    @FXML
     private TextArea descrizioneField;
 
     @FXML
@@ -143,7 +146,11 @@ public class SegnalazioneIssueController {
             }
         });
 
+    }
 
-
+    @FXML
+    protected void onIndietroButtonClick() {
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        stage.close();
     }
 }

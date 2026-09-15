@@ -59,9 +59,9 @@
         <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
         <HBox prefHeight="65.0" prefWidth="592.0" spacing="20.0">
             <children>
-                <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" />
-                <Button fx:id="segnalaComeDuplicatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaComeDuplicatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Segnala come duplicato" />
-                <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" />
+                <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" HBox.hgrow="ALWAYS" />
+                <Button fx:id="segnalaComeDuplicatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaComeDuplicatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Segnala come duplicato" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" HBox.hgrow="ALWAYS"/>
             </children>
         </HBox>
     </VBox>
@@ -84,7 +84,7 @@
             <!-- Bottone Principale -->
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Segnala Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onArchivioBugButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Archivio Issue" />
-            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestione utenti" />
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestisci utenti" />
 
             <!-- Menu Impostazioni -->
             <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="6.0" prefWidth="266.0" text="Impostazioni">
