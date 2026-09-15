@@ -46,7 +46,7 @@ public class AuthClient {
             String idString = estraiValore(body, "id");
 
             if (token != null && ruoloString != null) {
-                AuthSession.setToken(token);
+                AuthSession.getInstance().setToken(token);
                 AuthUser utenteLoggato = new AuthUser();
                 utenteLoggato.setRuolo(Ruolo.valueOf(ruoloString));
 
@@ -54,7 +54,7 @@ public class AuthClient {
                     utenteLoggato.setId(Integer.parseInt(idString));
                 }
 
-                AuthSession.setUtenteCorrente(utenteLoggato);
+                AuthSession.getInstance().setUtenteCorrente(utenteLoggato);
                 return true;
             }
         } else if (response.statusCode() == 401) {
@@ -73,7 +73,7 @@ public class AuthClient {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            AuthSession.clearToken();
+            AuthSession.getInstance().clearSession();
         }
     }
 
@@ -91,7 +91,7 @@ public class AuthClient {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "change_password"))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
@@ -124,7 +124,7 @@ public class AuthClient {
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "elenco_utenti"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET().build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -144,7 +144,7 @@ public class AuthClient {
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "issues"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET().build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -161,11 +161,30 @@ public class AuthClient {
         return new HashMap<>();
     }
 
+    public Map<String, Integer> getRisoltePerUser(){
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "resolved_issues"))
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
+                    .GET().build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if(response.statusCode() == 200){
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Integer>>() {
+                });
+            } else System.out.println(response.statusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
     public Map<String, Double> getTimePerUser(){
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "time_per_user"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET().build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -196,7 +215,7 @@ public class AuthClient {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "crea_utenti"))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
@@ -219,7 +238,7 @@ public class AuthClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + id + "/cambia_stato"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 

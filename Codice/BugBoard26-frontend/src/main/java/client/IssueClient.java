@@ -63,7 +63,7 @@ public class IssueClient {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "nuovaIssue"))
                     .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.ofByteArrays(data))
                     .build();
 
@@ -84,7 +84,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "elenco_issue"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET()
                     .build();
 
@@ -109,7 +109,7 @@ public class IssueClient {
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "prendiInCarico?id=" + issueId))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -125,7 +125,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + issueId + "/risolvi"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -143,7 +143,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + issueId + "/rilascia"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -161,7 +161,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/issues/attive"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET()
                     .build();
 
@@ -185,7 +185,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/issues/storico"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET()
                     .build();
 
@@ -209,7 +209,7 @@ public class IssueClient {
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/issues/" + issueId + "/archivia"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -225,7 +225,7 @@ public class IssueClient {
         try{
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/issues/" + issueId + "/elimina"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .DELETE()
                     .build();
 
@@ -243,7 +243,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "countIssueStates"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET()
                     .build();
 
@@ -266,7 +266,7 @@ public class IssueClient {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(BASE_URL + "countIssueTypes"))
-                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .GET()
                     .build();
 

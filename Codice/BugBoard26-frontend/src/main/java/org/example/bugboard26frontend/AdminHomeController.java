@@ -3,6 +3,7 @@ package org.example.bugboard26frontend;
 import client.AuthClient;
 import client.AuthSession;
 import client.IssueClient;
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -20,6 +21,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.Issue;
 
 import java.io.ByteArrayInputStream;
@@ -99,6 +101,23 @@ public class AdminHomeController {
         statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
         tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
+
+        prioritaColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    if(item.equalsIgnoreCase("no"))
+                        setText("-");
+                    else
+                        setText(item);
+                }
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
+
         dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -111,7 +130,7 @@ public class AdminHomeController {
                     setText(null);
                 } else {
                     if ("TO_DO".equalsIgnoreCase(stato)) {
-                        setText("🟢 TO_DO");
+                        setText("🟢 TO-DO");
                     } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
                         setText("🔒 ASSEGNATO");
                     } else {
@@ -139,6 +158,21 @@ public class AdminHomeController {
         idArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
         titoloArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Titolo"));
         prioritaArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Priorita"));
+        prioritaArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    if(item.equalsIgnoreCase("no"))
+                        setText("-");
+                    else
+                        setText(item);
+                }
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("Tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
@@ -258,21 +292,36 @@ public class AdminHomeController {
 
     public void onElencoIssueButtonClick(){
         boolean isVisible = colonnaSinistra.isVisible();
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
 
         if (!isVisible) {
             loadOnTable();
+            colonnaDestra.setVisible(false);
+            colonnaDestra.setManaged(false);
+
+            colonnaSinistra.setOpacity(0.0);
             colonnaSinistra.setVisible(true);
             colonnaSinistra.setManaged(true);
-        } else {
-            colonnaSinistra.setVisible(false);
-            colonnaSinistra.setManaged(false);
-        }
 
-        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
             stage.sizeToScene();
             stage.centerOnScreen();
-        });
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), colonnaSinistra);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+        } else {
+            FadeTransition fadeout = new FadeTransition(Duration.millis(300), colonnaSinistra);
+            fadeout.setFromValue(1.0);
+            fadeout.setToValue(0.0);
+            fadeout.setOnFinished(event -> {
+                colonnaSinistra.setVisible(false);
+                colonnaSinistra.setManaged(false);
+                stage.sizeToScene();
+                stage.centerOnScreen();
+            });
+            fadeout.play();
+        }
     }
 
     public void onSegnalaIssueButtonClick(){
@@ -306,21 +355,33 @@ public class AdminHomeController {
     @FXML
     protected void onArchivioBugButtonClick() {
         boolean isVisible = colonnaDestra.isVisible();
+        Stage stage = (Stage) colonnaDestra.getScene().getWindow();
 
         if (!isVisible) {
             loadArchiviatiOnTable();
+            colonnaSinistra.setVisible(false);
+            colonnaSinistra.setManaged(false);
+
             colonnaDestra.setVisible(true);
             colonnaDestra.setManaged(true);
-        } else {
-            colonnaDestra.setVisible(false);
-            colonnaDestra.setManaged(false);
-        }
-
-        Stage stage = (Stage) colonnaDestra.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
             stage.sizeToScene();
             stage.centerOnScreen();
-        });
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), colonnaDestra);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+        } else {
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), colonnaDestra);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(event -> {
+                colonnaDestra.setVisible(false);
+                colonnaDestra.setManaged(false);
+                stage.sizeToScene();
+                stage.centerOnScreen();
+            });
+            fadeOut.play();
+        }
     }
 
     //Carica la tabella delle issue attive (TO DO oppure ASSEGNATE)

@@ -3,27 +3,36 @@ package client;
 import model.AuthUser;
 
 public class AuthSession {
-
+    private static AuthSession instance = null;
     private static String token;
     private static AuthUser utenteCorrente;
 
-    public static void setToken(String token) {
-        AuthSession.token = token;
+    private AuthSession() {}
+    public static AuthSession getInstance() {
+        if (instance == null) {
+            instance = new AuthSession();
+        }
+        return instance;
     }
 
-    public static String getToken() {
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
         return token;
     }
 
-    public static void setUtenteCorrente(AuthUser utente) {AuthSession.utenteCorrente = utente;}
+    public void setUtenteCorrente(AuthUser utente) {this.utenteCorrente = utente;}
 
-    public static AuthUser getUtenteCorrente() {return utenteCorrente;}
+    public AuthUser getUtenteCorrente() {return utenteCorrente;}
 
-    public static void clearToken() {
-        token = null;
+    public void clearSession() {
+        this.token = null;
+        this.utenteCorrente = null;
     }
 
-    public static boolean isLoggedIn() {
-        return token != null;
+    public boolean isLoggedIn() {
+        return this.token != null;
     }
 }

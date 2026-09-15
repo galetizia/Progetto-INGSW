@@ -122,7 +122,7 @@ public class UserHomeController {
                 } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
 
                     if (issueCorrente.getAssignee() != null
-                            && issueCorrente.getAssignee().getId() == AuthSession.getUtenteCorrente().getId()) {
+                            && issueCorrente.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId()) {
                         setText("👤 IN LAVORAZIONE");
                     } else {
                         setText("🔒 ASSEGNATO");
@@ -200,7 +200,7 @@ public class UserHomeController {
                 boolean isToDo = "TO_DO".equalsIgnoreCase(newValue.getStato());
                 boolean isMiaInLavorazione = "ASSEGNATO".equalsIgnoreCase(newValue.getStato())
                         && newValue.getAssignee() != null
-                        && newValue.getAssignee().getId() == AuthSession.getUtenteCorrente().getId();
+                        && newValue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId();
 
                 if (isToDo) {
                     prendiInCaricoButton.setText("Prendi in carico");
@@ -264,7 +264,7 @@ public class UserHomeController {
             if ("Le mie issue".equals(filtro)) {
                 return "ASSEGNATO".equalsIgnoreCase(issue.getStato())
                         && issue.getAssignee() != null
-                        && issue.getAssignee().getId() == AuthSession.getUtenteCorrente().getId();
+                        && issue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId();
                 }
             return true;
         });
@@ -426,7 +426,7 @@ public class UserHomeController {
     protected void prendiInCaricoButtonClick(){
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
-        if (issueSelezionata != null && AuthSession.isLoggedIn()) {
+        if (issueSelezionata != null && AuthSession.getInstance().isLoggedIn()) {
 
             // L'utente sta prendendo in carico la issue
             if ("TO_DO".equalsIgnoreCase(issueSelezionata.getStato())) {

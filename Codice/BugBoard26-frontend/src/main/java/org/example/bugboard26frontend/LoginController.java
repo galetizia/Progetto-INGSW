@@ -54,7 +54,7 @@ public class LoginController {
             if(success) {
                 Stage stage = (Stage) emailField.getScene().getWindow();
 
-                var ruolo = client.AuthSession.getUtenteCorrente().getRuolo();
+                var ruolo = client.AuthSession.getInstance().getUtenteCorrente().getRuolo();
                 String viewToLoad = "";
 
                 switch (ruolo) {

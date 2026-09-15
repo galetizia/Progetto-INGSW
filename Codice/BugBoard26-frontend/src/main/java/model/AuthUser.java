@@ -14,6 +14,7 @@ public class AuthUser {
     private boolean statoAccount;
     private int issueAttive;
     private double tempoMedio;
+    private int issueRisolte;
 
     public AuthUser() {}
 
@@ -34,4 +35,6 @@ public class AuthUser {
     public void setIssueAttive(int issueAttive) {this.issueAttive = issueAttive;}
     public double getTempoMedio() {return tempoMedio;}
     public void setTempoMedio(double tempoMedio) {this.tempoMedio = tempoMedio;}
+    public int getIssueRisolte() {return issueRisolte;}
+    public void setIssueRisolte(int issueRisolte) {this.issueRisolte = issueRisolte;}
 }
