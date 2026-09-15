@@ -154,6 +154,25 @@ public class UserHomeController {
         tipoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         dataArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
 
+        dataArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>(){
+            @Override
+            protected void updateItem(LocalDateTime date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null) {
+                    setText(null);
+                }  else {
+                    Issue issue = getTableRow().getItem();
+                    if (issue != null && issue.getStato() != null) {
+                        if (issue.getStato().toString().equalsIgnoreCase("RISOLTO"))
+                            setText(formatter.format(date));
+                        else
+                            setText("-");
+                    }
+                }
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
+
         statoArchiviatiColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
         statoArchiviatiColumn.setCellFactory(column -> new TableCell<Issue, String>() {
             @Override

@@ -146,7 +146,7 @@ public class GestioneUtentiController {
         if(countAssegnati > 0) issueStates.add(new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati));
 
         bugChart.setData(issueStates);
-        bugChart.setTitle("Stato Generale Issue Attive");
+        bugChart.setTitle("Stato Issue Attive");
     }
 
     @FXML
@@ -166,7 +166,7 @@ public class GestioneUtentiController {
         if(countQuestion > 0) issueTypes.add(new PieChart.Data("Question (" + countQuestion + ")", countQuestion));
 
         bugChart.setData(issueTypes);
-        bugChart.setTitle("Stato Generale Issue");
+        bugChart.setTitle("Tipologia Issue Attive");
     }
 
     private void popolaDashboard() {
@@ -180,8 +180,10 @@ public class GestioneUtentiController {
         Map<String, Double> dataTimes = authClient.getTimePerUser();
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Tempo medio di risoluzione (Ore)");
 
+
+        double[] ore = {0.0};
+        int[] utenti = {0};
 
         dataTimes.entrySet().stream()
                 .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
@@ -190,10 +192,32 @@ public class GestioneUtentiController {
                     Double tempo = entry.getValue();
                     String email = entry.getKey();
                     double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
-                    String username = email.split("@")[0] + "(" + tempoArrotondato +")";
+                    int minTot = (int) Math.round(tempoArrotondato * 60);
+                    String tempoStringa = (minTot / 60 > 0 ? (minTot / 60) + "h " : "") + (minTot % 60) + "m";
+
+                    ore[0] += tempoArrotondato;
+                    utenti[0]++;
+                    String username = email.split("@")[0] + "(" + tempoStringa + ")";
                     series.getData().add(new XYChart.Data<>(username, tempoArrotondato));
 
                 });
+
+        double media = 0.0;
+        String textMedia = "0m";
+
+        if(utenti[0]>0){
+            media = ore[0] / utenti[0];
+            int minutiTot = (int) Math.round(media*60);
+            int hMedia = minutiTot /60;
+            int mMedia = minutiTot % 60;
+            if(hMedia == 0){
+                textMedia = mMedia + "m";
+            } else if(mMedia == 0){
+                textMedia = hMedia + "h";
+            } else{
+                textMedia = hMedia + "h" + mMedia + "m";
+            }
+        }
 
         CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
         xAxis.setTickLabelRotation(315);
@@ -202,7 +226,17 @@ public class GestioneUtentiController {
         yAxis.setTickLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
-                return String.format(java.util.Locale.US, "%.2f h", object.doubleValue());
+                int minutiTotali = (int) Math.round(object.doubleValue() * 60);
+                int h = minutiTotali / 60;
+                int m = minutiTotali % 60;
+
+                if (h == 0) {
+                    return m + "m";
+                } else if (m == 0) {
+                    return h + "h";
+                } else {
+                    return h + "h " + m + "m";
+                }
             }
             @Override
             public Number fromString(String string){
@@ -210,7 +244,7 @@ public class GestioneUtentiController {
             }
         });
 
-        bugPerUserChart.setTitle("Tempo medio di risoluzione (Ore)");
+        bugPerUserChart.setTitle("Tempo medio di risoluzione: " + textMedia);
         bugPerUserChart.setLegendVisible(false);
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
