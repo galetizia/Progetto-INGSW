@@ -36,6 +36,7 @@
     -fx-cursor: hand;
     -fx-background-radius: 8;
 }
+
 .nav-button:hover, .nav-button:focused {
     -fx-background-color: #151122;
     -fx-text-fill: #bf5afe;
@@ -114,6 +115,7 @@
 .table-row-cell .table-cell {
     -fx-text-fill: #ffffff;
     -fx-font-size: 13px;
+    -fx-padding: 0 10 0 10;
 }
 
 /* 6. Nasconde le righe vuote in basso che JavaFX crea di default */
@@ -127,9 +129,6 @@
 }
 .table-row-cell:selected {
     -fx-background-color: #3b2d59; /* Un viola scuro opaco, niente neon qui */
-}
-.table-row-cell .table-cell {
-    -fx-padding: 0 10 0 10;
 }
 
 /* ======================================================================
@@ -237,34 +236,39 @@
 }
 
 /* Menu a discesa aperto (Popup) */
-.choice-box .context-menu {
+.context-menu {
     -fx-background-color: #151122; /* Sfondo scuro delle card/header */
     -fx-border-color: #2a2240;
+    -fx-border-width: 1px;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-padding: 5;
+    -fx-padding: 6;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 15, 0, 0, 5);
 }
 
 /* Singoli elementi della lista a tendina */
-.choice-box .menu-item {
+.menu-item {
     -fx-background-color: transparent;
     -fx-background-radius: 6;
-    -fx-padding: 6 12 6 12;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
 }
 
-.choice-box .menu-item .label {
-    -fx-text-fill: #a29bb8;
-    -fx-font-size: 13px;
+.menu-item .label {
+    -fx-text-fill: #61567d;
+    -fx-effect: null;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
 }
 
 /* Elemento su cui passi sopra il cursore nella tendina */
-.choice-box .menu-item:hover, .choice-box .menu-item:focused {
+.menu-item:hover, .menu-item:focused {
     -fx-background-color: #3b2d59; /* Stesso viola opaco della riga selezionata */
 }
 
-.choice-box .menu-item:hover .label, .choice-box .menu-item:focused .label {
+.menu-item:hover .label, .menu-item:focused .label {
     -fx-text-fill: #ffffff;
+    -fx-effect: null;
 }
 
 .chart-pie-label {

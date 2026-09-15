@@ -161,6 +161,25 @@ public class AuthClient {
         return new HashMap<>();
     }
 
+    public Map<String, Integer> getRisoltePerUser(){
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "resolved_issues"))
+                    .header("Authorization", "Bearer " + AuthSession.getToken())
+                    .GET().build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if(response.statusCode() == 200){
+                String json = response.body();
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(json, new TypeReference<Map<String, Integer>>() {
+                });
+            } else System.out.println(response.statusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
     public Map<String, Double> getTimePerUser(){
         try{
             HttpRequest request = HttpRequest.newBuilder()

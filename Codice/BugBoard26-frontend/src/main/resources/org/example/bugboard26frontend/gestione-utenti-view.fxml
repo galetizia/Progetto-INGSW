@@ -44,9 +44,9 @@
             <Button mnemonicParsing="false" onAction="#onTempoButtonClick" prefHeight="40.0" prefWidth="250.0" styleClass="button-image" text="Tempo medio risoluzione " />
          </children>
       </HBox>
-      <BarChart fx:id="bugPerUserChart" animated="false" prefHeight="276.0" prefWidth="592.0">
+      <BarChart fx:id="bugPerUserChart" animated="false" prefHeight="327.0" prefWidth="592.0">
         <xAxis>
-          <CategoryAxis prefHeight="28.0" prefWidth="536.0" side="BOTTOM" />
+          <CategoryAxis prefHeight="28.0" prefWidth="536.0" side="BOTTOM" tickLabelRotation="315.0" />
         </xAxis>
         <yAxis>
           <NumberAxis side="LEFT" />
@@ -92,7 +92,7 @@
 
 
     <!-- COLONNA DESTRA: Gestione Utenti -->
-    <VBox fx:id="colonnaGestione" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
+    <VBox fx:id="colonnaGestione" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
       <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
          <children>
               <Label prefHeight="28.0" prefWidth="67.0" text="Utenti" textFill="WHITE">
@@ -104,12 +104,13 @@
             <ChoiceBox fx:id="filtroChoiceBox" prefWidth="150.0" />
          </children>
       </HBox>
-        <TableView fx:id="utentiTable" prefHeight="467.0" prefWidth="722.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="utentiTable" prefHeight="467.0" prefWidth="780.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="emailColumn" minWidth="250.0" text="Email" />
                 <TableColumn fx:id="ruoloColumn" maxWidth="130.0" minWidth="110.0" text="Ruolo" />
                 <TableColumn fx:id="statoAccountColumn" maxWidth="90.0" minWidth="90.0" text="Stato" />
             <TableColumn fx:id="issueAttiveColumn" maxWidth="100.0" minWidth="90.0" text="Issue attive" />
+            <TableColumn fx:id="issueRisolteColumn" maxWidth="100.0" minWidth="90.0" text="Issue risolte" />
             <TableColumn fx:id="tempoMedioColumn" maxWidth="110.0" minWidth="100.0" text="Tempo medio" />
             </columns>
             <columnResizePolicy>

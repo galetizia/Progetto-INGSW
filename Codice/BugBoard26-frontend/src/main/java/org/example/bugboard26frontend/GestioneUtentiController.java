@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.AuthUser;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,8 @@ public class GestioneUtentiController {
     private TableColumn<AuthUser, Double> tempoMedioColumn;
     @FXML
     private TableColumn<AuthUser, Integer> issueAttiveColumn;
+    @FXML
+    private TableColumn<AuthUser, Integer> issueRisolteColumn;
 
     @FXML
     private VBox colonnaDashboard;
@@ -54,7 +57,6 @@ public class GestioneUtentiController {
     @FXML private Button creaUtenteButton;
     @FXML private Button cambiaStatoButton;
     @FXML private Button indietroButton;
-    @FXML private BarChart<String, Number> timePerUserChart;
 
     @FXML void initialize() {
 
@@ -95,9 +97,36 @@ public class GestioneUtentiController {
         });
 
         issueAttiveColumn.setCellValueFactory(new PropertyValueFactory<>("issueAttive"));
+
+        issueRisolteColumn.setCellValueFactory(new PropertyValueFactory<>("issueRisolte"));
+        issueRisolteColumn.setStyle("-fx-alignment: CENTER;");
+
         tempoMedioColumn.setCellValueFactory(new PropertyValueFactory<>("tempoMedio"));
+        tempoMedioColumn.setCellFactory(column -> new TableCell<AuthUser, Double>() {
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null)
+                    setText(null);
+                else if (item == 0.0)
+                    setText("-");
+                else {
+                    int minutiTot = (int) Math.round(item * 60);
+                    int h = minutiTot / 60;
+                    int m = minutiTot % 60;
+
+                    if (h == 0)
+                        setText(m + "m");
+                    else if (m == 0)
+                        setText(h + "h");
+                    else
+                        setText(h + "h " + m + "m");
+                }
+                setStyle("-fx-alignment: CENTER;");
+            }
+        });
+
         issueAttiveColumn.setStyle("-fx-alignment: CENTER;");
-        tempoMedioColumn.setStyle("-fx-alignment: CENTER;");
 
         filteredData = new FilteredList<>(masterData, p -> true);
         utentiTable.setItems(filteredData);
@@ -185,35 +214,24 @@ public class GestioneUtentiController {
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
 
+        double oreTot = 0.0;
+        int utentiValidi = 0;
 
-        double[] ore = {0.0};
-        int[] utenti = {0};
-
-        dataTimes.entrySet().stream()
-                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-                .limit(12)
-                .forEach(entry -> {
-                    Double tempo = entry.getValue();
-                    String email = entry.getKey();
-                    double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
-                    int minTot = (int) Math.round(tempoArrotondato * 60);
-                    String tempoStringa = (minTot / 60 > 0 ? (minTot / 60) + "h " : "") + (minTot % 60) + "m";
-
-                    ore[0] += tempoArrotondato;
-                    utenti[0]++;
-                    String username = email.split("@")[0] + "(" + tempoStringa + ")";
-                    series.getData().add(new XYChart.Data<>(username, tempoArrotondato));
-
-                });
+        for (Double tempo : dataTimes.values()) {
+            if (tempo != null && tempo > 0) {
+                oreTot += tempo;
+                utentiValidi++;
+            }
+        }
 
         double media = 0.0;
         String textMedia = "0m";
-
-        if(utenti[0]>0){
-            media = ore[0] / utenti[0];
-            int minutiTot = (int) Math.round(media*60);
+        if(utentiValidi > 0){
+            media = oreTot / utentiValidi;
+            int minutiTot = (int) Math.round(media * 60);
             int hMedia = minutiTot /60;
             int mMedia = minutiTot % 60;
+
             if(hMedia == 0){
                 textMedia = mMedia + "m";
             } else if(mMedia == 0){
@@ -222,6 +240,35 @@ public class GestioneUtentiController {
                 textMedia = hMedia + "h" + mMedia + "m";
             }
         }
+
+        dataTimes.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .sorted(Map.Entry.<String, Double>comparingByValue())
+                .limit(10)
+                .forEach(entry -> {
+                    Double tempo = entry.getValue();
+                    String email = entry.getKey();
+                    double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
+
+                    int minTot = (int) Math.round(tempoArrotondato * 60);
+                    String tempoStringa = (minTot / 60 > 0 ? (minTot / 60) + "h " : "") + (minTot % 60) + "m";
+
+                    String rawName = email.split("@")[0];
+                    String username = (rawName.length() > 10) ? rawName.substring(0, 10) + "..." : rawName;
+
+                    XYChart.Data<String, Number> data = new XYChart.Data<>(username, tempoArrotondato);
+                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                        if (newNode != null) {
+                            javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
+                                    "Utente: " + email + "\nTempo medio: " + tempoStringa
+                            );
+                            tooltip.setShowDelay(javafx.util.Duration.millis(100));
+                            javafx.scene.control.Tooltip.install(newNode, tooltip);
+                        }
+                    });
+
+                    series.getData().add(data);
+                });
 
         CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
         xAxis.setTickLabelRotation(315);
@@ -248,7 +295,7 @@ public class GestioneUtentiController {
             }
         });
 
-        bugPerUserChart.setTitle("Tempo medio di risoluzione: " + textMedia);
+        bugPerUserChart.setTitle("Media Globale: " + textMedia +" | Top 10 utenti più veloci");
         bugPerUserChart.setLegendVisible(false);
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
@@ -260,23 +307,39 @@ public class GestioneUtentiController {
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Bug assegnati per utente");
 
         issuesPerUser.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(12)
+                .limit(10)
                 .forEach(entry -> {
                     String email = entry.getKey();
                     int count = entry.getValue();
-                    String username = email.split("@")[0] + "(" + count +")";
-                    series.getData().add(new XYChart.Data<>(username, count));
+                    String rawName = email.split("@")[0];
 
+                    String username = (rawName.length()>10) ? rawName.substring(0,10) + "..." : rawName;
+
+                    XYChart.Data<String, Number> data = new XYChart.Data<>(username, count);
+
+                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                        if (newNode != null) {
+                            javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
+                                    "Utente: " + email + "\nBug assegnati: " + count
+                            );
+                            tooltip.setShowDelay(javafx.util.Duration.millis(100)); // Comparsa rapida
+                            javafx.scene.control.Tooltip.install(newNode, tooltip);
+                        }
+                    });
+
+                    series.getData().add(data);
                 });
 
         CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
         xAxis.setTickLabelRotation(315);
 
-        bugPerUserChart.setTitle("Bug assegnati per utente");
+
+
+        bugPerUserChart.setTitle("Utenti con più Issue assegnate");
         bugPerUserChart.setLegendVisible(false);
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
@@ -344,11 +407,14 @@ public class GestioneUtentiController {
     private void loadOnTable() {
         List<AuthUser> users = authClient.getUsers();
 
+        Map<String , Integer> issueRisoltePerUser = authClient.getRisoltePerUser();
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
         Map<String, Double> timeMap = authClient.getTimePerUser();
 
         for(AuthUser user : users){
             String email = user.getEmail();
+            int count = issueRisoltePerUser.getOrDefault(user.getEmail(), 0);
+            user.setIssueRisolte(count);
 
             int bugAssegnati = issuesPerUser.getOrDefault(email, 0);
             user.setIssueAttive(bugAssegnati);

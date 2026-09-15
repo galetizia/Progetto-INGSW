@@ -88,6 +88,14 @@ public class AuthUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/resolved_issues")
+    public ResponseEntity<Map<String, Integer>> getRisoltePerUser() {
+        return  ResponseEntity.ok(authUserService.getRisoltePerUser());
+    }
+
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/time_per_user")
     public ResponseEntity<Map<String, Double>> getTimePerUser() {
         return ResponseEntity.ok(authUserService.getTimePerUser());

@@ -89,11 +89,22 @@ public class AuthUserService {
     }
 
     public Map<String, Double> getTimePerUser(){
-        List<Object[]> timePerUser = authUserRepository.findALlTimePerUser();
+        List<Object[]> timePerUser = authUserRepository.findAllTimePerUser();
         Map<String, Double> map = new HashMap<>();
         for(Object[] obj : timePerUser){
             String email = (String) obj[0];
             Double count = (obj[1] != null) ? ((Number) obj[1]).doubleValue() : 0.0;
+            map.put(email, count);
+        }
+        return map;
+    }
+
+    public Map<String, Integer> getRisoltePerUser(){
+        List<Object[]> issuesPerUser = authUserRepository.findAllRisoltePerUser();
+        Map<String, Integer> map = new HashMap<>();
+        for(Object[] obj : issuesPerUser){
+            String email = (String) obj[0];
+            Integer count = ((Long) obj[1]).intValue();
             map.put(email, count);
         }
         return map;

@@ -29,6 +29,10 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
             "JOIN auth_user u ON i.assignee_id = u.id " +
             "WHERE i.stato = 'RISOLTO'" +
             "GROUP BY u.email", nativeQuery = true)
-    List<Object[]> findALlTimePerUser();
+    List<Object[]> findAllTimePerUser();
+
+    @Query(value = "SELECT u.email, COUNT(i.id) AS issue_risolte FROM auth_user u LEFT JOIN issue i ON u.id = i.assignee_id AND i.stato = 'RISOLTO'" +
+            "GROUP BY u.email" , nativeQuery = true)
+    List<Object[]> findAllRisoltePerUser();
 
 }
