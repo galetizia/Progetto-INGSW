@@ -42,7 +42,7 @@
                 <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" text="ID" />
                 <TableColumn fx:id="titoloColumn" minWidth="150.0" text="Titolo" />
                 <TableColumn fx:id="prioritaColumn" minWidth="80.0" text="Priorità" />
-                <TableColumn fx:id="statoColumn" prefWidth="110.0" minWidth="70.0" text="Stato" />
+                <TableColumn fx:id="statoColumn"  minWidth="100.0" text="Stato" />
                 <TableColumn fx:id="tipoColumn" minWidth="130.0" text="Tipo" />
                 <TableColumn fx:id="dataColumn" minWidth="140.0" text="Data" />
             </columns>

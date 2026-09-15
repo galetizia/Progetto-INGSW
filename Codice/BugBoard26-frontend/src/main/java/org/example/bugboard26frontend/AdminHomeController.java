@@ -492,18 +492,31 @@ public class AdminHomeController {
             Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDelete.setTitle("Conferma eliminazione");
             confirmDelete.setHeaderText("Segnalazione Issue #" + issue.getId());
-            confirmDelete.setContentText("Sei sicuro di voler segnalare questa issue (" +issue.getId() +") come duplicata?");
+            confirmDelete.setContentText("Sei sicuro di voler segnalare la issue come duplicata?\n\nATTENZIONE: Questa operazione eliminerà definitivamente la issue e non potrà essere recuperata.");
             confirmDelete.showAndWait().ifPresent(response -> {
                 if(response == ButtonType.OK){
 
                     boolean success = issueClient.eliminaIssue(issue.getId());
                     if(success){
                         masterData.remove(issue);
+
+                        // Pop-up di successo
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Successo");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("Issue eliminata con successo.");
+                        successAlert.showAndWait();
+
+                        // Disabilitiamo i bottoni visto che la issue non c'è più
+                        segnalaComeDuplicatoButton.setDisable(true);
+                        archiviaIssueButton.setDisable(true);
+                        visualizzaAllegatoButton.setDisable(true);
+
                     } else {
                         Alert error = new Alert(Alert.AlertType.ERROR);
                         error.setTitle("Errore");
                         error.setHeaderText(null);
-                        error.setContentText("Impossbile eliminare issue");
+                        error.setContentText("Impossibile eliminare l'issue. Verifica la connessione al server.");
                         error.showAndWait();
                     }
                 }

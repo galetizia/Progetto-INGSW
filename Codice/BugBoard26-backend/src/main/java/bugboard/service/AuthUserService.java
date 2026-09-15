@@ -93,7 +93,7 @@ public class AuthUserService {
         Map<String, Double> map = new HashMap<>();
         for(Object[] obj : timePerUser){
             String email = (String) obj[0];
-            Double count = ((Number) obj[1]).doubleValue();
+            Double count = (obj[1] != null) ? ((Number) obj[1]).doubleValue() : 0.0;
             map.put(email, count);
         }
         return map;

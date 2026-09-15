@@ -23,7 +23,7 @@
     </padding>
 
     <!-- COLONNA SINISTRA: Elenco Issue Attive -->
-    <VBox fx:id="colonnaDashboard" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
+    <VBox fx:id="colonnaDashboard" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
             <children>
                 <Region prefHeight="200.0" prefWidth="200.0" />
@@ -69,9 +69,12 @@
 
         <VBox alignment="CENTER" spacing="20.0" stylesheets="@style.css">
 
+            <!-- Bottone Dashboard -->
+            <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaDashboardButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Visualizza Dashboard" />
+            <!-- Bottone Gestione Utenti -->
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestione Utenti" />
-
-            <Button fx:id="indietroButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onIndietroButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="⬅ Indietro" />
+            <!-- Bottone Indietro -->
+            <Button fx:id="indietroButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onIndietroButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Indietro" />
 
         </VBox>
     </VBox>
@@ -89,7 +92,7 @@
 
 
     <!-- COLONNA DESTRA: Gestione Utenti -->
-    <VBox fx:id="colonnaGestione" managed="true" spacing="15.0" visible="true" HBox.hgrow="ALWAYS">
+    <VBox fx:id="colonnaGestione" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
       <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
          <children>
               <Label prefHeight="28.0" prefWidth="67.0" text="Utenti" textFill="WHITE">

@@ -57,6 +57,12 @@ public class GestioneUtentiController {
     @FXML private BarChart<String, Number> timePerUserChart;
 
     @FXML void initialize() {
+
+        colonnaDashboard.setVisible(false);
+        colonnaDashboard.setManaged(false);
+        colonnaGestione.setVisible(false);
+        colonnaGestione.setManaged(false);
+
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         ruoloColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getRuolo()));
@@ -98,8 +104,6 @@ public class GestioneUtentiController {
 
         filtroChoiceBox.getItems().addAll("Tutti", "Attivi", "Non Attivi");
         filtroChoiceBox.setValue("Tutti");
-
-        popolaDashboard();
 
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
             applicaFiltro();
@@ -294,6 +298,26 @@ public class GestioneUtentiController {
             public Number fromString(String string) {
                 return null; // Non serve per i grafici
             }
+        });
+    }
+
+    @FXML
+    protected void onVisualizzaDashboardButtonClick() {
+        boolean isVisible = colonnaDashboard.isVisible();
+
+        if(!isVisible){
+            popolaDashboard(); // Aggiorna i grafici prima di mostrarli
+            colonnaDashboard.setVisible(true);
+            colonnaDashboard.setManaged(true);
+        } else {
+            colonnaDashboard.setVisible(false);
+            colonnaDashboard.setManaged(false);
+        }
+
+        Stage stage = (Stage) colonnaDashboard.getScene().getWindow();
+        javafx.application.Platform.runLater(() -> {
+            stage.sizeToScene();
+            stage.centerOnScreen();
         });
     }
 
