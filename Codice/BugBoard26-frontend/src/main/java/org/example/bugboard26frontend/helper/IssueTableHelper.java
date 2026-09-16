@@ -194,6 +194,5 @@ public class IssueTableHelper {
 
         }
         tabella.getColumns().addAll(idColumn, titoloColumn, prioritaColumn ,statoColumn, tipoColumn, dataColumn);
-
     }
 }

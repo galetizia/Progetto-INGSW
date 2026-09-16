@@ -5,12 +5,9 @@ import client.AuthSession;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-public class CambioPassword {
-    private final AuthClient authClient;
-
-    public CambioPassword(AuthClient authClient) {
-        this.authClient = authClient;
-    }
+public class CambioPasswordDialog {
+    private static final AuthClient authClient = new AuthClient();
+    private static final MyAlert alert = new MyAlert();
 
     public void mostra() {
 
@@ -73,16 +70,9 @@ public class CambioPassword {
 
         // da implementare il controllo della password
         if (success){
-            mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
+            alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
         } else {
-            mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
+            alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
         }
-    }
-    private void mostraAlert(Alert.AlertType tipo, String titolo, String contenuto) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titolo);
-        alert.setHeaderText(null);
-        alert.setContentText(contenuto);
-        alert.showAndWait();
     }
 }
