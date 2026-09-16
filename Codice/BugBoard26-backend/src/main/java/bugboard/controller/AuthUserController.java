@@ -2,7 +2,6 @@ package bugboard.controller;
 
 import bugboard.enums.Ruolo;
 import bugboard.model.AuthUser;
-import bugboard.repository.AuthUserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,25 +11,20 @@ import bugboard.service.AuthUserService;
 import java.util.List;
 import java.util.Map;
 
-// Indica a Spring che questa classe riceve richieste web e risponde con dati
 @RestController
-// Definisce l'indirizzo base: tutti i metodi qui dentro inizieranno con "/api/utenti"
 @RequestMapping("/api/user")
 public class AuthUserController {
     private final AuthUserService authUserService;
-    private final AuthUserRepository authUserRepository;
 
-    //Passiamo il service al controller
-    public AuthUserController(AuthUserService authUserService, AuthUserRepository authUserRepository) {
+    public AuthUserController(AuthUserService authUserService) {
         this.authUserService = authUserService;
-        this.authUserRepository = authUserRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try{
             String token = authUserService.login(request.email(), request.password());
-            AuthUser utenteLoggato = authUserRepository.findByEmail(request.email()).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+            AuthUser utenteLoggato = authUserService.getUserByEmail(request.email());
             return ResponseEntity.ok(new LoginResponse(token, utenteLoggato.getRuolo(), utenteLoggato.getId()));
 
         } catch (IllegalArgumentException e) {
@@ -57,15 +51,11 @@ public class AuthUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/crea_utenti")
-    // @RequestBody converte automaticamente il JSON ricevuto in un oggetto RegisterRequest
     public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request) {
         try {
-            // Delega la logica al Service
             authUserService.registerAuthUser(request.email(), request.password(), request.ruolo());
-            // Restituisce stato HTTP 200 (OK) se va tutto a buon fine
             return ResponseEntity.ok("Utente registrato correttamente");
         } catch (IllegalArgumentException e) {
-            // Cattura gli errori (es. email duplicata) e restituisce HTTP 400 (Bad Request)
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -103,11 +93,10 @@ public class AuthUserController {
 
     @GetMapping("/elenco_utenti")
     public ResponseEntity<List<AuthUser>> getUsers() {
-        return ResponseEntity.ok(authUserRepository.findAll());
+        return ResponseEntity.ok(authUserService.getAllUsers());
     }
 
 }
-//un contenitore che mappa esattamente il JSON {"email": "...", "password": "..."}
 record AuthRequest(String email, String password) {}
 record LoginResponse(String token, Ruolo ruoloUtente, int id) {}
 record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}

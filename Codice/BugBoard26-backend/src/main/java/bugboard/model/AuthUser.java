@@ -1,13 +1,11 @@
 package bugboard.model;
 
 import bugboard.enums.Ruolo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name ="auth_user")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class AuthUser {
 
     @Id
@@ -37,7 +35,6 @@ public class AuthUser {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -45,7 +42,6 @@ public class AuthUser {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -53,7 +49,6 @@ public class AuthUser {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -62,6 +57,7 @@ public class AuthUser {
         return ruolo;
     }
     public void setRuolo(Ruolo ruolo) {this.ruolo = ruolo;}
+
     public boolean getStatoAccount() {
         return statoAccount;
     }

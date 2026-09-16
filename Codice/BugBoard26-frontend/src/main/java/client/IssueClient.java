@@ -108,7 +108,7 @@ public class IssueClient {
     public boolean prendiInCarico(int issueId){
         try{
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "prendiInCarico?id=" + issueId))
+                    .uri(URI.create(BASE_URL + issueId + "/prendiInCarico"))
                     .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();

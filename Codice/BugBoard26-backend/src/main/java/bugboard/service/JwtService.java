@@ -11,6 +11,8 @@ import java.time.Instant;
 @Service
 public class JwtService {
 
+    private static final long EXPIRATION_TIME_SECONDS = 3600;
+
     private final JwtEncoder jwtEncoder;
 
     public JwtService(JwtEncoder jwtEncoder) {
@@ -23,7 +25,7 @@ public class JwtService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("bugboard")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(3600))
+                .expiresAt(now.plusSeconds(EXPIRATION_TIME_SECONDS))
                 .subject(user.getEmail())
                 .claim("role", ruolo)
                 .build();
