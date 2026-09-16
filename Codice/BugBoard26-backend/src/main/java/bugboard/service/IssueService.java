@@ -49,21 +49,11 @@ public class IssueService {
                 throw new RuntimeException("Errore nel caricamento dell'immagine", e);
             }
         }
-        //stato to-do di default
         issueRepository.save(issue);
     }
 
     public List<Issue> elencoIssue(){
-        List<Issue> issues= issueRepository.findAll();
-        System.out.println("ISSUE TROVATE DAL DB: " + issues.size());
-
-        for (Issue issue : issues) {
-            System.out.println(
-                    "ID: " + issue.getId() +
-                            " | Titolo: " + issue.getTitolo()
-            );
-        }
-        return issues;
+        return issueRepository.findAll();
     }
 
     public Map<String, Integer> countIssueStates() {
@@ -95,7 +85,6 @@ public class IssueService {
 
             AuthUser user = authUserRepository.findByEmail(emailUser).orElseThrow(() -> new RuntimeException("Utente non trovato"));
 
-            // Cambia lo stato e assegna l'utente
             issue.setStato(StatoIssue.ASSEGNATO);
             issue.setAssignee(user);
             issue.setDataAssegnazione(LocalDateTime.now());
@@ -103,21 +92,17 @@ public class IssueService {
             issueRepository.save(issue);
             return true;
         } catch(Exception e){
-            e.printStackTrace();
             return false;
         }
 
     }
 
-    // 2. L'utente ha finito e risolve l'issue
     public void risolviIssue(int issueId) {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Issue non trovata"));
 
-        // Cambia lo stato a: RISOLTO
         issue.setStato(StatoIssue.RISOLTO);
 
-        // SALVA LA DATA E L'ORA ESATTA
         issue.setDataRisoluzione(LocalDateTime.now());
 
         issueRepository.save(issue);
@@ -127,24 +112,20 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Issue non trovata"));
 
-        // Riporta lo stato a TO_DO e rimuove l'assegnatario
         issue.setStato(StatoIssue.TO_DO);
         issue.setAssignee(null);
 
         issueRepository.save(issue);
     }
 
-    // 1. Recupera i bug per la tabella delle Issue
     public List<Issue> getIssueAttive() {
         return issueRepository.findByStatoIn(List.of(StatoIssue.TO_DO, StatoIssue.ASSEGNATO));
     }
 
-    // 2. Recupera i bug per la tabella Archivio Bug
     public List<Issue> getIssueArchiviate() {
         return issueRepository.findByStatoIn(List.of(StatoIssue.RISOLTO, StatoIssue.ARCHIVIATO));
     }
 
-    // 3. Il metodo per l'Admin che archivia un bug
     public Issue archiviaIssue(int idIssue) {
         Issue issue = issueRepository.findById(idIssue)
                 .orElseThrow(() -> new IllegalArgumentException("Issue non trovata con ID: " + idIssue));

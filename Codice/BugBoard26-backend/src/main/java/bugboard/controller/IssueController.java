@@ -9,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import bugboard.service.IssueService;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.FileHandler;
 
 @RestController
 @RequestMapping("/api/issues")
@@ -33,8 +31,8 @@ public class IssueController {
                                              @RequestParam(value="file", required = false) MultipartFile file) {
         try{
             issueService.createIssue(titolo, descrizione, tipologia, priorita, file);
-            return ResponseEntity.ok("Nuova issue creata ");
-        } catch (IllegalArgumentException e){
+            return ResponseEntity.ok("Nuova issue creata");
+        } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -53,8 +51,8 @@ public class IssueController {
         return ResponseEntity.ok(issueService.countIssueTypes());
     }
 
-    @PostMapping("/prendiInCarico")
-    public ResponseEntity<String> prendiInCarico(@RequestParam int id, Principal principal){
+    @PostMapping("/{id}/prendiInCarico")
+    public ResponseEntity<String> prendiInCarico(@PathVariable int id, Principal principal){
 
         try{
             String email = principal.getName();
@@ -97,7 +95,6 @@ public class IssueController {
         }
     }
 
-    // Endpoint accessibile SOLO all'amministratore
     @PutMapping("/{id}/archivia")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> archiviaIssue(@PathVariable int id) {
@@ -109,7 +106,6 @@ public class IssueController {
         }
     }
 
-    //Endpoint Risolvi Issue
     @PutMapping("/{id}/risolvi")
     public ResponseEntity<String> risolviIssue(@PathVariable int id) {
         try {
@@ -120,7 +116,6 @@ public class IssueController {
         }
     }
 
-    // Endpoint Rilascia Issue
     @PutMapping("/{id}/rilascia")
     public ResponseEntity<String> rilasciaIssue(@PathVariable int id) {
         try {

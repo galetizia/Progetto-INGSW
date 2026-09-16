@@ -35,12 +35,10 @@ public class AuthUserService {
         authUserRepository.save(newUser);
     }
 
-    // Cambia lo stato dell'account
     public void cambiaStatoUtente(int id) {
         AuthUser user = authUserRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
 
-        // Se è true diventa false, se è false diventa true
         user.setStatoAccount(!user.getStatoAccount());
 
         authUserRepository.save(user);
@@ -82,7 +80,7 @@ public class AuthUserService {
         Map<String, Integer> map = new HashMap<>();
         for(Object[] obj : issuesPerUser){
             String email = (String) obj[0];
-            Integer count = ((Long) obj[1]).intValue();
+            Integer count = ((Number) obj[1]).intValue();
             map.put(email, count);
         }
         return map;
@@ -104,9 +102,16 @@ public class AuthUserService {
         Map<String, Integer> map = new HashMap<>();
         for(Object[] obj : issuesPerUser){
             String email = (String) obj[0];
-            Integer count = ((Long) obj[1]).intValue();
+            Integer count = ((Number) obj[1]).intValue();
             map.put(email, count);
         }
         return map;
+    }
+
+    public List<AuthUser> getAllUsers() {return authUserRepository.findAll();}
+
+    public AuthUser getUserByEmail(String email) {
+        return authUserRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
     }
 }

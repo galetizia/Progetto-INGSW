@@ -4,17 +4,16 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "attachment")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Attachment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
-    private String nome; // es. "errore.png"
+    private String nome;
     @Column(nullable = false)
-    private String tipo; // es. "image/png"
-    // il tipo BYTEA di Postgres = un array di byte in java
+    private String tipo;
+
     @Column(nullable = false)
     private byte[] contenuto;
 

@@ -18,21 +18,18 @@ public class DataSeeder {
 
         return args -> {
 
-            // --- 1. UTENTE ADMIN ---
             AuthUser admin = authUserRepository.findByEmail("admin@bugboard.com").orElse(new AuthUser());
             admin.setEmail("admin@bugboard.com");
             admin.setRuolo(Ruolo.ADMIN);
             admin.setPassword(passwordEncoder.encode("Password123!"));
             authUserRepository.save(admin);
 
-            // --- 2. UTENTE ESTERNO ---
             AuthUser esterno = authUserRepository.findByEmail("external@bugboard.com").orElse(new AuthUser());
             esterno.setEmail("external@bugboard.com");
             esterno.setRuolo(Ruolo.EXTERNAL_USER);
             esterno.setPassword(passwordEncoder.encode("Password123!"));
             authUserRepository.save(esterno);
 
-            // --- 3. UTENTE INTERNO ---
             AuthUser interno = authUserRepository.findByEmail("internal@bugboard.com").orElse(new AuthUser());
             interno.setEmail("internal@bugboard.com");
             interno.setRuolo(Ruolo.INTERNAL_USER);

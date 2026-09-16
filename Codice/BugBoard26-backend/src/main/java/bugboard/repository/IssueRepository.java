@@ -15,9 +15,6 @@ public interface IssueRepository extends JpaRepository<Issue, Integer> {
     Optional<Issue> findByTitolo(String titolo);
     boolean existsByTitolo(String titolo);
 
-    Optional<Issue> findById(int id);
-    boolean existsById(int id);
-    void deleteById(int id);
     List<Issue> findByStatoIn(List<StatoIssue> stati);
 
     @Query("SELECT i.tipo, COUNT(i) FROM Issue i WHERE i.stato = TO_DO or i.stato= ASSEGNATO GROUP BY i.tipo")
