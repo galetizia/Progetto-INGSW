@@ -4,7 +4,10 @@ import javafx.scene.control.Alert;
 
 public class ControlloPassword {
 
-    public void mostra()
+    /*
+        public void mostra(){
+
+    }
         if(!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Attenzione!");
@@ -21,4 +24,7 @@ public class ControlloPassword {
         alert.showAndWait();
         return;
     }
+
+     */
+
 }
