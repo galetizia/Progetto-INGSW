@@ -113,5 +113,28 @@ public class WindowHelper {
         }
     }
 
+    public static void apriCreazioneUtente(Stage stage, Runnable onClose){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(WindowHelper.class.getResource("/org/example/bugboard26frontend/creazione-utente-view.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Creazione Utente");
+            dialogStage.setScene(new javafx.scene.Scene(root));
+            dialogStage.setResizable(false);
+
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(stage);
+
+            dialogStage.showAndWait();
+
+            if(onClose != null) onClose.run();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

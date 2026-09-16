@@ -17,7 +17,7 @@ public class IssueTableHelper {
         tabella.setPrefHeight(321);
         tabella.setPrefWidth(670);
 
-        TableColumn<Issue, Integer> idColumn = new TableColumn<>("ID"); //si
+        TableColumn<Issue, Integer> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         idColumn.setMinWidth(50);
         idColumn.setMaxWidth(50);

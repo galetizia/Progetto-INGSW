@@ -4,6 +4,8 @@ import client.AuthClient;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.bugboard26frontend.helper.MyAlert;
+import org.example.bugboard26frontend.helper.Validator;
 
 public class CreazioneUtenteController {
 
@@ -15,6 +17,7 @@ public class CreazioneUtenteController {
     private String ruoloScelto = "";
 
     AuthClient authClient = new AuthClient();
+    private final MyAlert alert = new MyAlert();
 
     @FXML
     protected void onAdminSelezionato() {
@@ -39,49 +42,23 @@ public class CreazioneUtenteController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        // 1. Controllo campi vuoti
         if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi (Email e Password).");
-            return; // Blocca l'esecuzione
-        }
-
-        // 2. Controllo validità Email
-        if(!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
-            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Inserire un indirizzo email valido (@ e .com/.it).");
+            alert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi (Email e Password).");
             return;
         }
 
-        // 3. Controllo validità Password
-        if(!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$")){
-            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "La password deve essere di almeno 8 caratteri, contenere un numero, una lettera maiuscola, una minuscola e un carattere speciale (@,#,$,%,^,&,+,=,!).");
-            return;
-        }
+        Validator.emailValidator(email);
+        Validator.passwordValidator(password);
 
-        // 4. Controllo selezione Ruolo
         if(ruoloScelto.isEmpty()) {
-            mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
+            alert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
             return;
         }
 
-        // Se tutti i controlli vengono superati, procedi con la creazione!
         boolean success = authClient.registerUser(email, password, ruoloScelto);
 
-        if (success) {
-            // Chiudi il pop-up se la creazione è andata a buon fine
-            Stage stage = (Stage) confermaButton.getScene().getWindow();
-            stage.close();
-        } else {
-            mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
-        }
-    }
-
-    // Metodo di supporto per creare gli Alert senza ripetere sempre le stesse righe
-    private void mostraAlert(Alert.AlertType tipo, String titolo, String messaggio) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titolo);
-        alert.setHeaderText(null);
-        alert.setContentText(messaggio);
-        alert.showAndWait();
+        if (success) chiudiFinestra();
+        else alert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
     }
 
     @FXML
