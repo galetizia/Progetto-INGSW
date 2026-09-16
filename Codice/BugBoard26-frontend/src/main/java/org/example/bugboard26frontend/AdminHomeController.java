@@ -1,31 +1,19 @@
 package org.example.bugboard26frontend;
 
-import client.AuthClient;
+import client.AuthSession;
 import client.IssueClient;
 import enums.Ruolo;
-import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.stage.Window;
 import model.Issue;
-import org.example.bugboard26frontend.helper.CambioPassword;
-import org.example.bugboard26frontend.helper.FiltroEOrdinaHelper;
-import org.example.bugboard26frontend.helper.IssueTableHelper;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
+import org.example.bugboard26frontend.helper.*;
 
 public class AdminHomeController {
     @FXML
@@ -59,13 +47,15 @@ public class AdminHomeController {
     @FXML
     private ChoiceBox<String> ordinaChoiceBox;
 
-    AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
-    private ObservableList<Issue> masterData = FXCollections.observableArrayList();
+    private final ObservableList<Issue> masterData = FXCollections.observableArrayList();
+    private final ObservableList<Issue> masterDataArchiviate = FXCollections.observableArrayList();
 
     @FXML
     public void initialize()
     {
+        issueTable.setItems(masterData);
+        archiviatiTable.setItems(masterDataArchiviate);
 
         IssueTableHelper.configuraTabella(issueTable, Ruolo.ADMIN, false);
 
@@ -74,7 +64,7 @@ public class AdminHomeController {
         FiltroEOrdinaHelper.configuraFiltroEOrdine(issueTable, masterData, filtroChoiceBox, ordinaChoiceBox, Ruolo.ADMIN);
 
 
-        issueTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
+        issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             if(newValue != null) {
                 descriptionArea.setText(newValue.getDescrizione());
                 visualizzaAllegatoButton.setDisable(newValue.getAllegato()==null);
@@ -90,210 +80,61 @@ public class AdminHomeController {
         });
     }
 
+    @FXML
     public void onElencoIssueButtonClick(){
-        boolean isVisible = colonnaSinistra.isVisible();
-        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-
-        if (!isVisible) {
-            loadOnTable();
-            colonnaDestra.setVisible(false);
-            colonnaDestra.setManaged(false);
-
-            colonnaSinistra.setOpacity(0.0);
-            colonnaSinistra.setVisible(true);
-            colonnaSinistra.setManaged(true);
-
-            stage.sizeToScene();
-            stage.centerOnScreen();
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), colonnaSinistra);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            fadeIn.play();
-        } else {
-            FadeTransition fadeout = new FadeTransition(Duration.millis(300), colonnaSinistra);
-            fadeout.setFromValue(1.0);
-            fadeout.setToValue(0.0);
-            fadeout.setOnFinished(event -> {
-                colonnaSinistra.setVisible(false);
-                colonnaSinistra.setManaged(false);
-                stage.sizeToScene();
-                stage.centerOnScreen();
-            });
-            fadeout.play();
-        }
+        VBoxVisibility.visibility(colonnaSinistra, colonnaDestra, () ->
+                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false));
     }
 
-    public void onSegnalaIssueButtonClick(){
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("segnalazione-issue-view.fxml"));
-            Parent root = fxmlLoader.load();
 
-            // nuova finestra(pop-up)
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Segnalazione");
-            dialogStage.setScene(new Scene(root));
-            dialogStage.setResizable(false);
-
-            // per bloccare le finestre sottostanti
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-
-            // recuperiamo finestra principale
-            Stage mainWindow = (Stage) logoutButton.getParentPopup().getOwnerWindow();
-            dialogStage.initOwner(mainWindow);
-
-            dialogStage.showAndWait();
-            loadOnTable();
-
-            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Errore nell'apertura finestra segnalazione");
-        }
-    }
     @FXML
     protected void onArchivioBugButtonClick() {
-        boolean isVisible = colonnaDestra.isVisible();
-        Stage stage = (Stage) colonnaDestra.getScene().getWindow();
-
-        if (!isVisible) {
-            loadArchiviatiOnTable();
-            colonnaSinistra.setVisible(false);
-            colonnaSinistra.setManaged(false);
-
-            colonnaDestra.setVisible(true);
-            colonnaDestra.setManaged(true);
-            stage.sizeToScene();
-            stage.centerOnScreen();
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), colonnaDestra);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            fadeIn.play();
-        } else {
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(300), colonnaDestra);
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            fadeOut.setOnFinished(event -> {
-                colonnaDestra.setVisible(false);
-                colonnaDestra.setManaged(false);
-                stage.sizeToScene();
-                stage.centerOnScreen();
-            });
-            fadeOut.play();
-        }
+        VBoxVisibility.visibility(colonnaDestra, colonnaSinistra, () ->
+                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true));
     }
 
-    //Carica la tabella delle issue attive (TO DO oppure ASSEGNATE)
-    private void loadOnTable() {
-        List<Issue> issues = issueClient.getIssueAttive();
-        masterData.setAll(issues);
-    }
-
-    //Carica la tabella delle issue archiviate (ARCHIVIATE e RISOLTE)
-    private void loadArchiviatiOnTable() {
-        List<Issue> issues = issueClient.getIssueArchiviate();
-        ObservableList<Issue> observableList = FXCollections.observableArrayList(issues);
-        archiviatiTable.setItems(observableList);
-    }
 
     @FXML
-    protected void onLogoutButtonClick() {
-        authClient.logout();
-
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("BugBoard - Login");
-            stage.show();
-            stage.sizeToScene();
-            stage.centerOnScreen();
-
-        } catch (IOException e){
-            e.printStackTrace();
-            System.out.println("Errore nell'apertura schermata login");
-        }
+    protected void onCambioPasswordButtonClick(){
+        CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
+        cambioPassword.mostra();
     }
+
+
+
+    public void onSegnalaIssueButtonClick(){
+        WindowHelper.apriSegnalazione(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false));
+    }
+
 
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
-        if(issue != null && issue.getAllegato()!=null) {
-
-            try {
-                byte[] data = issue.getAllegato().getContenuto();
-                ByteArrayInputStream bais = new ByteArrayInputStream(data);
-                Image image = new Image(bais);
-
-                ImageView imageView = new ImageView(image);
-                imageView.setPreserveRatio(true);
-                imageView.setFitHeight(1000);
-                imageView.setFitWidth(800);
-
-                StackPane layout = new StackPane(imageView);
-                layout.setStyle("-fx-background-color: #0b0914; -fx-padding: 20;");
-
-                Stage imgStage = new Stage();
-                imgStage.setTitle("Allegato: "+issue.getAllegato().getNome());
-                imgStage.setScene(new Scene(layout));
-                //imgStage.initModality(Modality.APPLICATION_MODAL);
-
-                Stage mainWindow = (Stage) visualizzaAllegatoButton.getScene().getWindow();
-                imgStage.initOwner(mainWindow);
-                imgStage.showAndWait();
-            } catch (Exception e){
-                System.out.println("Errore nell'apertura allegato" + e.getMessage());
-            }
-        }
+        Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
+        WindowHelper.apriAllegato(issue, mainWindow);
     }
+
+    @FXML
+    protected void onLogoutButtonClick() {
+        AuthSession.getInstance().clearSession();
+        Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
+        WindowHelper.tornaAlLogin(stage);
+    }
+
 
     @FXML
     public void handleArchiviaIssue() {
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
-        if (issueSelezionata != null) {
-            Alert conferma = new Alert(Alert.AlertType.CONFIRMATION);
-            conferma.setTitle("Conferma Archiviazione");
-            conferma.setHeaderText("Archiviazione Issue #" + issueSelezionata.getId());
-            conferma.setContentText("Sei sicuro di voler archiviare: '" + issueSelezionata.getTitolo() + "'?");
+        IssueActionHandler.archivia(issueSelezionata, () -> {
+            IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false);
+            if (colonnaDestra.isVisible()) {
+                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true);
+            }
+            archiviaIssueButton.setDisable(true);
+            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
 
-            conferma.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    boolean successo = issueClient.archiviaIssue(issueSelezionata.getId());
-
-                    if (successo) {
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setTitle("Successo");
-                        successAlert.setHeaderText(null);
-                        successAlert.setContentText("Issue archiviata con successo!");
-                        successAlert.showAndWait();
-
-                        // Ricarichiamo le tabelle: sparirà da sinistra e andrà a destra!
-                        loadOnTable();
-                        if (colonnaDestra.isVisible()) {
-                            loadArchiviatiOnTable();
-                        }
-                        archiviaIssueButton.setDisable(true); // Resettiamo il bottone
-                    } else {
-                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                        errorAlert.setTitle("Errore");
-                        errorAlert.setHeaderText(null);
-                        errorAlert.setContentText("Si è verificato un problema di comunicazione col server.");
-                        errorAlert.showAndWait();
-                    }
-                }
-
-                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-            });
-        }
-    }
-    @FXML
-    protected void onCambioPasswordButtonClick(){
-        CambioPassword cambioPassword = new CambioPassword(authClient);
-        cambioPassword.mostra();
+        });
     }
 
     @FXML
@@ -327,7 +168,7 @@ public class AdminHomeController {
                         Alert error = new Alert(Alert.AlertType.ERROR);
                         error.setTitle("Errore");
                         error.setHeaderText(null);
-                        error.setContentText("Impossibile eliminare l'issue. Verifica la connessione al server.");
+                        error.setContentText("Impossibile eliminare issue. Verifica la connessione al server.");
                         error.showAndWait();
                     }
                 }
@@ -350,9 +191,6 @@ public class AdminHomeController {
         } catch(Exception e){
             e.printStackTrace();
         }
-
-
-
     }
 
 }

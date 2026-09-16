@@ -52,7 +52,7 @@ public class CreazioneUtenteController {
         }
 
         // 3. Controllo validità Password
-        if(!password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$")){
+        if(!password.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$")){
             mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "La password deve essere di almeno 8 caratteri, contenere un numero, una lettera maiuscola, una minuscola e un carattere speciale (@,#,$,%,^,&,+,=,!).");
             return;
         }

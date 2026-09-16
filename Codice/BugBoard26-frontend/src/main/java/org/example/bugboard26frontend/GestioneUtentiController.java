@@ -16,8 +16,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.AuthUser;
+import org.example.bugboard26frontend.helper.MyAlert;
+import org.example.bugboard26frontend.helper.WindowHelper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +26,9 @@ public class GestioneUtentiController {
 
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
-    private ObservableList<AuthUser> masterData = FXCollections.observableArrayList();
+    private final ObservableList<AuthUser> masterData = FXCollections.observableArrayList();
     private FilteredList<AuthUser> filteredData;
+    private final MyAlert alert = new MyAlert();
 
     @FXML
     private TableView<AuthUser> utentiTable;
@@ -458,39 +460,20 @@ public class GestioneUtentiController {
         AuthUser userSelezionato = utentiTable.getSelectionModel().getSelectedItem();
 
         if (userSelezionato != null) {
-            System.out.println("Richiesta cambio stato per utente ID: " + userSelezionato.getId());
-
             boolean success = authClient.cambiaStatoUtente(userSelezionato.getId());
 
             if (success) {
                 loadOnTable();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Errore");
-                alert.setHeaderText(null);
-                alert.setContentText("Impossibile cambiare lo stato dell'utente.");
-                alert.showAndWait();
+                alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile cambiare lo stato dell'utente.");
             }
         }
     }
 
     @FXML
     protected void onIndietroButtonClick() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("admin-home-view.fxml"));
-            Parent root = fxmlLoader.load();
-
             Stage stage = (Stage) indietroButton.getScene().getWindow();
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.setTitle("Admin Dashboard");
-            stage.show();
-            stage.sizeToScene();
-            stage.centerOnScreen();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Errore nel tornare alla schermata Admin.");
-        }
+            WindowHelper.apriHome(stage, Ruolo.ADMIN);
     }
 
 }
