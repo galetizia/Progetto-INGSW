@@ -25,7 +25,8 @@ public class CambioPasswordDialog {
 
         TextField emailField = new TextField();
         emailField.setText(AuthSession.getInstance().getUtenteCorrente().getEmail());
-        emailField.setDisable(true);
+        emailField.setEditable(false);
+        emailField.setStyle("-fx-background-color: #e0e0e0;");
 
         PasswordField oldPasswordField = new PasswordField();
         oldPasswordField.setPromptText("Password attuale");

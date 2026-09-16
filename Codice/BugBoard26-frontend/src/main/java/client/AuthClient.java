@@ -49,6 +49,7 @@ public class AuthClient {
                 AuthSession.getInstance().setToken(token);
                 AuthUser utenteLoggato = new AuthUser();
                 utenteLoggato.setRuolo(Ruolo.valueOf(ruoloString));
+                utenteLoggato.setEmail(email);
 
                 if (idString != null) {
                     utenteLoggato.setId(Integer.parseInt(idString));

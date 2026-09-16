@@ -5,21 +5,16 @@ import client.IssueClient;
 import enums.Ruolo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import jdk.jshell.Diag;
 import model.AuthUser;
-import org.example.bugboard26frontend.helper.MyAlert;
-import org.example.bugboard26frontend.helper.WindowHelper;
+import org.example.bugboard26frontend.helper.*;
 
-import java.util.List;
 import java.util.Map;
 
 public class GestioneUtentiController {
@@ -27,28 +22,17 @@ public class GestioneUtentiController {
     AuthClient authClient = new AuthClient();
     IssueClient issueClient = new IssueClient();
     private final ObservableList<AuthUser> masterData = FXCollections.observableArrayList();
-    private FilteredList<AuthUser> filteredData;
     private final MyAlert alert = new MyAlert();
 
     @FXML
     private TableView<AuthUser> utentiTable;
-    @FXML
-    private TableColumn<AuthUser, String> emailColumn;
-    @FXML
-    private TableColumn<AuthUser, Ruolo> ruoloColumn;
-    @FXML
-    private TableColumn<AuthUser, Boolean> statoAccountColumn;
+
 
     @FXML
     private PieChart bugChart;
     @FXML
     private BarChart<String, Number> bugPerUserChart;
-    @FXML
-    private TableColumn<AuthUser, Double> tempoMedioColumn;
-    @FXML
-    private TableColumn<AuthUser, Integer> issueAttiveColumn;
-    @FXML
-    private TableColumn<AuthUser, Integer> issueRisolteColumn;
+
 
     @FXML
     private VBox colonnaDashboard;
@@ -61,413 +45,108 @@ public class GestioneUtentiController {
     @FXML private Button indietroButton;
 
     @FXML void initialize() {
+        UserTableHelper.configuraTabella(utentiTable);
+        FiltroEOrdinaHelper.configuraFiltroUtenti(utentiTable, masterData, filtroChoiceBox);
 
-        colonnaDashboard.setVisible(false);
-        colonnaDashboard.setManaged(false);
-        colonnaGestione.setVisible(false);
-        colonnaGestione.setManaged(false);
+        configuraListenerSelezione();
+    }
 
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        ruoloColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getRuolo()));
 
-        ruoloColumn.setCellFactory(column -> new TableCell<AuthUser, Ruolo>() {
-            @Override
-            protected void updateItem(Ruolo item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {setText(null);}
-                else {String ruolo = item.name().replace("_USER","");
-                setText(ruolo);}
-            }
-        });
+    private void configuraListenerSelezione() {
+        utentiTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) ->
+            aggiornaBottoni(newSelection));
+    }
 
-        statoAccountColumn.setCellValueFactory(cellData ->
-                        new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getStatoAccount()));
-        statoAccountColumn.setStyle("-fx-alignment: CENTER;");
 
-        statoAccountColumn.setCellFactory(column -> new TableCell<AuthUser, Boolean>() {
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                }
-                else {
-                    setText(item ? "Attivo" : "Disattivato");
-                }
-            }
-        });
-
-        issueAttiveColumn.setCellValueFactory(new PropertyValueFactory<>("issueAttive"));
-
-        issueRisolteColumn.setCellValueFactory(new PropertyValueFactory<>("issueRisolte"));
-        issueRisolteColumn.setStyle("-fx-alignment: CENTER;");
-
-        tempoMedioColumn.setCellValueFactory(new PropertyValueFactory<>("tempoMedio"));
-        tempoMedioColumn.setCellFactory(column -> new TableCell<AuthUser, Double>() {
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null)
-                    setText(null);
-                else if (item == 0.0)
-                    setText("-");
-                else {
-                    int minutiTot = (int) Math.round(item * 60);
-                    int h = minutiTot / 60;
-                    int m = minutiTot % 60;
-
-                    if (h == 0)
-                        setText(m + "m");
-                    else if (m == 0)
-                        setText(h + "h");
-                    else
-                        setText(h + "h " + m + "m");
-                }
-                setStyle("-fx-alignment: CENTER;");
-            }
-        });
-
-        issueAttiveColumn.setStyle("-fx-alignment: CENTER;");
-
-        filteredData = new FilteredList<>(masterData, p -> true);
-        utentiTable.setItems(filteredData);
-
-        filtroChoiceBox.getItems().addAll("Tutti", "Attivi", "Non Attivi");
-        filtroChoiceBox.setValue("Tutti");
-
-        filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newValue) -> {
-            applicaFiltro();
-        });
-        utentiTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        utentiTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                cambiaStatoButton.setDisable(false);
-                if (newSelection.getStatoAccount()) {
-                    cambiaStatoButton.setText("Disattiva Utente");
-                } else {
-                    cambiaStatoButton.setText("Attiva Utente");
-                }
-            } else {
-                cambiaStatoButton.setDisable(true);
+    private void aggiornaBottoni(AuthUser user) {
+        if (user != null) {
+            cambiaStatoButton.setDisable(false);
+            if (user.getStatoAccount()) {
                 cambiaStatoButton.setText("Disattiva Utente");
+            } else {
+                cambiaStatoButton.setText("Attiva Utente");
             }
-        });
-        loadOnTable();
+        } else {
+            cambiaStatoButton.setDisable(true);
+            cambiaStatoButton.setText("Disattiva Utente");
+        }
     }
 
-    private void applicaFiltro() {
-        if(filteredData == null) return;
 
-        String filtro = filtroChoiceBox.getValue();
-
-        filteredData.setPredicate(user -> {
-            if ("Attivi".equals(filtro)) return user.getStatoAccount();
-            if("Non Attivi".equals(filtro)) return !user.getStatoAccount();
-            return true;
-        });
-    }
     @FXML
     protected void onStatoIssueButtonClick(){
         Map<String, Integer> dataStates = issueClient.countIssueStates();
-
-        int countToDo = dataStates.getOrDefault("TO_DO", 0);
-        int countAssegnati = dataStates.getOrDefault("ASSEGNATO", 0);
-
-        ObservableList<PieChart.Data> issueStates = FXCollections.observableArrayList();
-
-        if(countToDo > 0) issueStates.add(new PieChart.Data("To-Do (" + countToDo + ")", countToDo));
-        if(countAssegnati > 0) issueStates.add(new PieChart.Data("Assegnati (" + countAssegnati + ")", countAssegnati));
-
+        ObservableList<PieChart.Data> issueStates = DiagramDataLoader.configuraDiagrammaStatoIssueAttive(dataStates);
         bugChart.setData(issueStates);
         bugChart.setTitle("Stato Issue Attive");
     }
 
+
     @FXML
     protected void onTipoIssueButtonClick(){
         Map<String, Integer> issuesType = issueClient.countIssueTypes();
-
-        int countBug = issuesType.getOrDefault("BUG", 0);
-        int countFeature = issuesType.getOrDefault("FEATURE", 0);
-        int countQuestion = issuesType.getOrDefault("QUESTION", 0);
-        int countDocumentation = issuesType.getOrDefault("DOCUMENTATION", 0);
-
-        ObservableList<PieChart.Data> issueTypes = FXCollections.observableArrayList();
-
-        if(countBug > 0) issueTypes.add(new PieChart.Data("Bug (" + countBug + ")", countBug));
-        if(countFeature > 0) issueTypes.add(new PieChart.Data("Feature (" + countFeature + ")", countFeature));
-        if(countDocumentation > 0) issueTypes.add(new PieChart.Data("Documentation (" + countDocumentation + ")", countDocumentation));
-        if(countQuestion > 0) issueTypes.add(new PieChart.Data("Question (" + countQuestion + ")", countQuestion));
-
+        ObservableList<PieChart.Data> issueTypes = DiagramDataLoader.configuraDiagrammaTipoIssueAttive(issuesType);
         bugChart.setData(issueTypes);
-        bugChart.setTitle("Tipologia Issue Attive");
+        bugChart.setTitle("Tipologia Issue");
     }
+
 
     private void popolaDashboard() {
         onStatoIssueButtonClick();
         onIssueAssegnateButtonClick();
     }
 
+
     @FXML
     protected void onTempoButtonClick() {
         ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
+        bugPerUserChart.getData().clear();
+
         Map<String, Double> dataTimes = authClient.getTimePerUser();
 
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        String textMedia = DiagramDataLoader.calcoloTempoMedio(dataTimes);
+        XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiTempoMedio(dataTimes);
 
-        double oreTot = 0.0;
-        int utentiValidi = 0;
+        DiagramDataLoader.configuraDiagrammaTempoMedio(bugPerUserChart, textMedia);
 
-        for (Double tempo : dataTimes.values()) {
-            if (tempo != null && tempo > 0) {
-                oreTot += tempo;
-                utentiValidi++;
-            }
-        }
-
-        double media = 0.0;
-        String textMedia = "0m";
-        if(utentiValidi > 0){
-            media = oreTot / utentiValidi;
-            int minutiTot = (int) Math.round(media * 60);
-            int hMedia = minutiTot /60;
-            int mMedia = minutiTot % 60;
-
-            if(hMedia == 0){
-                textMedia = mMedia + "m";
-            } else if(mMedia == 0){
-                textMedia = hMedia + "h";
-            } else{
-                textMedia = hMedia + "h" + mMedia + "m";
-            }
-        }
-
-        dataTimes.entrySet().stream()
-                .filter(entry -> entry.getValue() > 0)
-                .sorted(Map.Entry.<String, Double>comparingByValue())
-                .limit(10)
-                .forEach(entry -> {
-                    Double tempo = entry.getValue();
-                    String email = entry.getKey();
-                    double tempoArrotondato = Math.round(tempo * 10.0) / 10.0;
-
-                    int minTot = (int) Math.round(tempoArrotondato * 60);
-                    String tempoStringa = (minTot / 60 > 0 ? (minTot / 60) + "h " : "") + (minTot % 60) + "m";
-
-                    String rawName = email.split("@")[0];
-                    String username = (rawName.length() > 10) ? rawName.substring(0, 10) + "..." : rawName;
-
-                    XYChart.Data<String, Number> data = new XYChart.Data<>(username, tempoArrotondato);
-                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
-                        if (newNode != null) {
-                            javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
-                                    "Utente: " + email + "\nTempo medio: " + tempoStringa
-                            );
-                            tooltip.setShowDelay(javafx.util.Duration.millis(100));
-                            javafx.scene.control.Tooltip.install(newNode, tooltip);
-                        }
-                    });
-
-                    series.getData().add(data);
-                });
-
-        CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
-        xAxis.setTickLabelRotation(315);
-
-        NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
-        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                int minutiTotali = (int) Math.round(object.doubleValue() * 60);
-                int h = minutiTotali / 60;
-                int m = minutiTotali % 60;
-
-                if (h == 0) {
-                    return m + "m";
-                } else if (m == 0) {
-                    return h + "h";
-                } else {
-                    return h + "h " + m + "m";
-                }
-            }
-            @Override
-            public Number fromString(String string){
-                return null;
-            }
-        });
-
-        bugPerUserChart.setTitle("Media Globale: " + textMedia +" | Top 10 utenti più veloci");
-        bugPerUserChart.setLegendVisible(false);
-        bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
     }
 
     @FXML
     protected void onIssueAssegnateButtonClick(){
-        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
 
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiIssueAssegnate(issuesPerUser);
 
-        issuesPerUser.entrySet().stream()
-                .filter(entry -> entry.getValue() > 0)
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(10)
-                .forEach(entry -> {
-                    String email = entry.getKey();
-                    int count = entry.getValue();
-                    String rawName = email.split("@")[0];
+        DiagramDataLoader.configuraDiagrammaIssueAssegnate(bugPerUserChart);
 
-                    String username = (rawName.length()>10) ? rawName.substring(0,10) + "..." : rawName;
-
-                    XYChart.Data<String, Number> data = new XYChart.Data<>(username, count);
-
-                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
-                        if (newNode != null) {
-                            javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
-                                    "Utente: " + email + "\nBug assegnati: " + count
-                            );
-                            tooltip.setShowDelay(javafx.util.Duration.millis(100)); // Comparsa rapida
-                            javafx.scene.control.Tooltip.install(newNode, tooltip);
-                        }
-                    });
-
-                    series.getData().add(data);
-                });
-
-        CategoryAxis xAxis = (CategoryAxis) bugPerUserChart.getXAxis();
-        xAxis.setTickLabelRotation(315);
-
-
-
-        bugPerUserChart.setTitle("Utenti con più Issue assegnate");
-        bugPerUserChart.setLegendVisible(false);
+        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
         bugPerUserChart.getData().clear();
         bugPerUserChart.getData().add(series);
-        NumberAxis yAxis = (NumberAxis) bugPerUserChart.getYAxis();
-        yAxis.setMinorTickVisible(false); // Nasconde le lineette piccole intermedie
-
-        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                // Se il numero è intero (resto della divisione per 1 è 0) lo stampa, altrimenti stringa vuota
-                if (object.doubleValue() % 1 == 0) {
-                    return String.valueOf(object.intValue());
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public Number fromString(String string) {
-                return null; // Non serve per i grafici
-            }
-        });
     }
 
     @FXML
     protected void onVisualizzaDashboardButtonClick() {
-        boolean isVisible = colonnaDashboard.isVisible();
-
-        if(!isVisible){
-            popolaDashboard(); // Aggiorna i grafici prima di mostrarli
-            colonnaDashboard.setVisible(true);
-            colonnaDashboard.setManaged(true);
-        } else {
-            colonnaDashboard.setVisible(false);
-            colonnaDashboard.setManaged(false);
-        }
-
-        Stage stage = (Stage) colonnaDashboard.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
-            stage.sizeToScene();
-            stage.centerOnScreen();
-        });
+        VBoxVisibility.visibility(colonnaDashboard, colonnaGestione, this::popolaDashboard);
     }
 
     @FXML
     protected void onGestioneUtentiButtonClick(){
-        boolean isVisible = colonnaGestione.isVisible();
-
-        if(!isVisible){
-            loadOnTable();
-            colonnaGestione.setVisible(true);
-            colonnaGestione.setManaged(true);
-        } else {
-            colonnaGestione.setVisible(false);
-            colonnaGestione.setManaged(false);
-        }
-
-        Stage stage = (Stage) colonnaGestione.getScene().getWindow();
-        javafx.application.Platform.runLater(() -> {
-            stage.sizeToScene();
-            stage.centerOnScreen();
-        });
-    }
-
-    private void loadOnTable() {
-        List<AuthUser> users = authClient.getUsers();
-
-        Map<String , Integer> issueRisoltePerUser = authClient.getRisoltePerUser();
-        Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
-        Map<String, Double> timeMap = authClient.getTimePerUser();
-
-        for(AuthUser user : users){
-            String email = user.getEmail();
-            int count = issueRisoltePerUser.getOrDefault(user.getEmail(), 0);
-            user.setIssueRisolte(count);
-
-            int bugAssegnati = issuesPerUser.getOrDefault(email, 0);
-            user.setIssueAttive(bugAssegnati);
-
-            double tempoMedio = timeMap.getOrDefault(email, 0.0);
-            double tempoArrotondato = Math.round(tempoMedio*10.0)/10.0;
-            user.setTempoMedio(tempoArrotondato);
-        }
-        masterData.setAll(users);
+        VBoxVisibility.visibility(colonnaGestione, colonnaDashboard, () ->
+                UserDataLoader.loadUserData(masterData));
     }
 
     @FXML
     protected void onCreaUtenteButtonClick() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("creazione-utente-view.fxml"));
-            Parent root = fxmlLoader.load();
-
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Creazione Utente");
-            dialogStage.setScene(new javafx.scene.Scene(root));
-            dialogStage.setResizable(false);
-
-            // Blocca la finestra sottostante finché il pop-up non viene chiuso
-            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            Stage mainWindow = (Stage) creaUtenteButton.getScene().getWindow();
-            dialogStage.initOwner(mainWindow);
-
-            dialogStage.showAndWait(); // Aspetta che il pop-up si chiuda
-
-            // Appena il pop-up si chiude, ricarichiamo la tabella per mostrare il nuovo utente!
-            loadOnTable();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Errore nell'apertura del pop-up di creazione utente.");
-        }
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        WindowHelper.apriCreazioneUtente(stage, () -> UserDataLoader.loadUserData(masterData));
     }
 
     @FXML
     protected void onCambiaStatoButtonClick() {
         AuthUser userSelezionato = utentiTable.getSelectionModel().getSelectedItem();
-
-        if (userSelezionato != null) {
-            boolean success = authClient.cambiaStatoUtente(userSelezionato.getId());
-
-            if (success) {
-                loadOnTable();
-            } else {
-                alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile cambiare lo stato dell'utente.");
-            }
-        }
+        UserActionHandler.cambiaStatoAccount(userSelezionato, () ->
+                UserDataLoader.loadUserData(masterData));
     }
 
     @FXML
@@ -475,5 +154,6 @@ public class GestioneUtentiController {
             Stage stage = (Stage) indietroButton.getScene().getWindow();
             WindowHelper.apriHome(stage, Ruolo.ADMIN);
     }
+
 
 }

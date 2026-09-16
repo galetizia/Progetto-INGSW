@@ -7,6 +7,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableView;
+import model.AuthUser;
 import model.Issue;
 
 import java.util.Comparator;
@@ -96,5 +97,34 @@ public class FiltroEOrdinaHelper {
         } else{
             sortedData.setComparator(null);
         }
+    }
+
+    public static void configuraFiltroUtenti(TableView<AuthUser> userTable,
+                                             ObservableList<AuthUser> masterData,
+                                             ChoiceBox<String> filtroChoiceBox){
+
+
+        FilteredList<AuthUser> filteredData = new FilteredList<>(masterData, p -> true);
+        userTable.setItems(filteredData);
+
+        filtroChoiceBox.getItems().clear();
+        filtroChoiceBox.getItems().addAll("Tutti", "Attivi", "Non Attivi");
+        filtroChoiceBox.setValue("Tutti");
+
+        filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((_, _, _) ->
+            applicaFiltroUtenti(filteredData, filtroChoiceBox));
+    }
+
+    private static void applicaFiltroUtenti(FilteredList<AuthUser> filteredData, ChoiceBox<String> filtroChoiceBox){
+        if(filteredData == null) return;
+
+        String filtro = filtroChoiceBox.getValue();
+
+        filteredData.setPredicate(user -> {
+            if ("Attivi".equals(filtro)) return user.getStatoAccount();
+            if("Non Attivi".equals(filtro)) return !user.getStatoAccount();
+            return true;
+        });
+
     }
 }
