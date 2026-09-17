@@ -10,6 +10,8 @@ import java.util.Map;
 public class UserDataLoader {
     private static final AuthClient authClient = new AuthClient();
 
+    private UserDataLoader(){}
+
     public static void loadUserData(ObservableList<AuthUser> masterData) {
         List<AuthUser> users = authClient.getUsers();
         Map<String , Integer> issueRisoltePerUser = authClient.getRisoltePerUser();

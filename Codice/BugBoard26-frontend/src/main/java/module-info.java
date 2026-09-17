@@ -11,9 +11,13 @@ module org.example.bugboard26frontend {
     opens model to com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
     requires jdk.jshell;
+    requires org.slf4j;
 
     exports org.example.bugboard26frontend;
     exports model;
 
     exports enums;
+    exports org.example.bugboard26frontend.controller;
+    exports client;
+    opens org.example.bugboard26frontend.controller to javafx.fxml;
 }

@@ -9,8 +9,9 @@ import javafx.util.Duration;
 
 public class VBoxVisibility {
 
-    public static void visibility(VBox colonnaTrue, VBox colonnaFalse, Runnable onSuccess) {
+    private VBoxVisibility() {}
 
+    public static void visibility(VBox colonnaTrue, VBox colonnaFalse, Runnable onSuccess) {
 
         boolean isVisible = colonnaTrue.isVisible();
         Stage stage = (Stage) colonnaTrue.getScene().getWindow();

@@ -32,15 +32,10 @@ public class AuthUserController {
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return ResponseEntity.ok("Logout effettuato");
-    }
-
     @PostMapping("/change_password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
-            authUserService.changePassword(request.email(), request.newPassword(), request.oldPassword());
+            authUserService.changePassword(request.email(), request.oldPassword(), request.newPassword());
             return ResponseEntity.ok("Password cambiata con successo");
 
         } catch (IllegalArgumentException e) {

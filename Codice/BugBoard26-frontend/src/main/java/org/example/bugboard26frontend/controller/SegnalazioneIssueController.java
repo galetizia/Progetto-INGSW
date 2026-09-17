@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,7 +32,6 @@ public class SegnalazioneIssueController {
     private String tipologiaScelta = "";
 
     private File file = null;
-    private final MyAlert alert = new MyAlert();
 
     @FXML
     protected void onPrioritaAltaSelezionata(){
@@ -85,7 +84,7 @@ public class SegnalazioneIssueController {
         Stage stage = (Stage) titoloField.getScene().getWindow();
         file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Immagine allegata con successo");
+            MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Immagine allegata con successo");
         }
     }
 
@@ -95,7 +94,7 @@ public class SegnalazioneIssueController {
         String descrizione = descrizioneField.getText();
 
         if (titolo.isBlank() || tipologiaScelta.isBlank() || descrizione.isBlank()) {
-            alert.mostraAlert(Alert.AlertType.WARNING, "Dati mancanti", "Inserire Titolo, Descrizione e Tipologia.");
+            MyAlert.mostraAlert(Alert.AlertType.WARNING, "Dati mancanti", "Inserire Titolo, Descrizione e Tipologia.");
             return;
         }
 

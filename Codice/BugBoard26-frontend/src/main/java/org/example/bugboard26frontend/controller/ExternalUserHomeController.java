@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import client.AuthSession;
 import enums.Ruolo;

@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import enums.Ruolo;
 import javafx.collections.FXCollections;
@@ -29,7 +29,6 @@ public class UserHomeController {
     private Button rilasciaIssueButton;
     @FXML
     private TextArea descriptionArea;
-
 
     @FXML
     private TableView<Issue> archiviatiTable;

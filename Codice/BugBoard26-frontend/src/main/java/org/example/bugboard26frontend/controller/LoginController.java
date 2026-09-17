@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import client.AuthClient;
 import javafx.fxml.FXML;
@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.bugboard26frontend.helper.MyAlert;
 import org.example.bugboard26frontend.helper.WindowHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginController {
     @FXML
@@ -13,8 +15,12 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
-    AuthClient authClient = new AuthClient();
-    MyAlert alert = new MyAlert();
+    AuthClient authClient;
+    public void setAuthClient(AuthClient authClient){
+        this.authClient = authClient;
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @FXML
     protected void onLoginButtonClick() {
@@ -22,7 +28,7 @@ public class LoginController {
         String password = passwordField.getText();
 
         if(email.isEmpty() || password.isEmpty()) {
-            alert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi!");
+            MyAlert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi!");
             return;
         }
 
@@ -35,14 +41,19 @@ public class LoginController {
 
                 WindowHelper.apriHome(stage, ruolo);
             } else {
-                alert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Errore imprevisto");
+                MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Errore imprevisto");
             }
         } catch (IllegalAccessException e) {
-            alert.mostraAlert(Alert.AlertType.ERROR, "Accesso negato!", e.getMessage());
-            e.printStackTrace();
+            MyAlert.mostraAlert(Alert.AlertType.ERROR, "Accesso negato!", e.getMessage());
+            logger.error(e.getMessage());
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error(e.getMessage());
+
         } catch (Exception e) {
-            alert.mostraAlert(Alert.AlertType.ERROR, "Errore di Sistema", "Impossibile contattare il server. Riprova più tardi.");
-            e.printStackTrace();
+            MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore di Sistema", "Impossibile contattare il server. Riprova più tardi.");
+            logger.error(e.getMessage());
         }
     }
 }

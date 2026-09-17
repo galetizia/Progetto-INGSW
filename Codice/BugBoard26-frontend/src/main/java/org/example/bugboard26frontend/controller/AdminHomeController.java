@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import client.AuthSession;
 import client.IssueClient;
@@ -6,8 +6,6 @@ import enums.Ruolo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -47,9 +45,13 @@ public class AdminHomeController {
     @FXML
     private ChoiceBox<String> ordinaChoiceBox;
 
-    IssueClient issueClient = new IssueClient();
     private final ObservableList<Issue> masterData = FXCollections.observableArrayList();
     private final ObservableList<Issue> masterDataArchiviate = FXCollections.observableArrayList();
+
+    private IssueClient issueClient;
+    public void setIssueClient(IssueClient issueClient) {
+        this.issueClient = issueClient;
+    }
 
     @FXML
     public void initialize()
@@ -140,57 +142,36 @@ public class AdminHomeController {
     @FXML
     protected void onSegnalaComeDuplicatoButtonClick(){
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
-        if(issue != null){
-            Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmDelete.setTitle("Conferma eliminazione");
-            confirmDelete.setHeaderText("Segnalazione Issue #" + issue.getId());
-            confirmDelete.setContentText("Sei sicuro di voler segnalare la issue come duplicata?\n\nATTENZIONE: Questa operazione eliminerà definitivamente la issue e non potrà essere recuperata.");
-            confirmDelete.showAndWait().ifPresent(response -> {
-                if(response == ButtonType.OK){
 
-                    boolean success = issueClient.eliminaIssue(issue.getId());
-                    if(success){
-                        masterData.remove(issue);
+        if (issue == null) return;
 
-                        // Pop-up di successo
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setTitle("Successo");
-                        successAlert.setHeaderText(null);
-                        successAlert.setContentText("Issue eliminata con successo.");
-                        successAlert.showAndWait();
+        Alert confirmDelete = MyAlert.mostraAlertConfirmation(
+                "Conferma eliminazione",
+                "Segnalazione Issue",
+                "Sei sicuro di voler segnalare la issue come duplicata?\n\nATTENZIONE: Questa operazione eliminerà definitivamente la issue e non potrà essere recuperata.");
 
-                        // Disabilitiamo i bottoni visto che la issue non c'è più
-                        segnalaComeDuplicatoButton.setDisable(true);
-                        archiviaIssueButton.setDisable(true);
-                        visualizzaAllegatoButton.setDisable(true);
+        confirmDelete.showAndWait().ifPresent(response -> {
+            if(response == ButtonType.OK){
 
-                    } else {
-                        Alert error = new Alert(Alert.AlertType.ERROR);
-                        error.setTitle("Errore");
-                        error.setHeaderText(null);
-                        error.setContentText("Impossibile eliminare issue. Verifica la connessione al server.");
-                        error.showAndWait();
-                    }
+                boolean success = issueClient.eliminaIssue(issue.getId());
+                if(success){
+                    masterData.remove(issue);
+                    segnalaComeDuplicatoButton.setDisable(true);
+                    archiviaIssueButton.setDisable(true);
+                    visualizzaAllegatoButton.setDisable(true);
+
+                    MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue eliminata con successo.");
+                } else {
+                    MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile eliminare issue. Verifica la connessione al server.");
                 }
-
-                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-            });
-        }
+            }
+            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+        });
     }
 
     @FXML
     protected void onGestioneUtentiButtonClick(){
-        try{
-            Stage stage = (Stage) elencoButton.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("gestione-utenti-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            stage.setTitle("Gestione utenti");
-            stage.setScene(scene);
-            stage.sizeToScene();
-            stage.centerOnScreen();
-        } catch(Exception e){
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) elencoButton.getScene().getWindow();
+        WindowHelper.apriGestioneUtenti(stage);
     }
-
 }

@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import client.AuthClient;
 import client.IssueClient;
@@ -10,8 +10,6 @@ import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import jdk.jshell.Diag;
 import model.AuthUser;
 import org.example.bugboard26frontend.helper.*;
 
@@ -19,10 +17,7 @@ import java.util.Map;
 
 public class GestioneUtentiController {
 
-    AuthClient authClient = new AuthClient();
-    IssueClient issueClient = new IssueClient();
     private final ObservableList<AuthUser> masterData = FXCollections.observableArrayList();
-    private final MyAlert alert = new MyAlert();
 
     @FXML
     private TableView<AuthUser> utentiTable;
@@ -33,17 +28,24 @@ public class GestioneUtentiController {
     @FXML
     private BarChart<String, Number> bugPerUserChart;
 
-
     @FXML
     private VBox colonnaDashboard;
     @FXML
     private VBox colonnaGestione;
     @FXML
     private ChoiceBox<String> filtroChoiceBox;
-    @FXML private Button creaUtenteButton;
     @FXML private Button cambiaStatoButton;
     @FXML private Button indietroButton;
 
+    // per principio D solid
+    private IssueClient issueClient;
+    private AuthClient authClient;
+    public void setIssueClient(IssueClient issueClient) {
+        this.issueClient = issueClient;
+    }
+    public void setAuthClient(AuthClient authClient) {
+        this.authClient = authClient;
+    }
     @FXML void initialize() {
         UserTableHelper.configuraTabella(utentiTable);
         FiltroEOrdinaHelper.configuraFiltroUtenti(utentiTable, masterData, filtroChoiceBox);

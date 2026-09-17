@@ -1,4 +1,4 @@
-package org.example.bugboard26frontend;
+package org.example.bugboard26frontend.controller;
 
 import client.AuthClient;
 import javafx.fxml.FXML;
@@ -16,8 +16,10 @@ public class CreazioneUtenteController {
 
     private String ruoloScelto = "";
 
-    AuthClient authClient = new AuthClient();
-    private final MyAlert alert = new MyAlert();
+    AuthClient authClient;
+    public void setAuthClient(AuthClient authClient){
+        this.authClient = authClient;
+    }
 
     @FXML
     protected void onAdminSelezionato() {
@@ -43,7 +45,7 @@ public class CreazioneUtenteController {
         String password = passwordField.getText();
 
         if(email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            alert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi (Email e Password).");
+            MyAlert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Compilare tutti i campi (Email e Password).");
             return;
         }
 
@@ -51,14 +53,14 @@ public class CreazioneUtenteController {
         Validator.passwordValidator(password);
 
         if(ruoloScelto.isEmpty()) {
-            alert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
+            MyAlert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
             return;
         }
 
         boolean success = authClient.registerUser(email, password, ruoloScelto);
 
         if (success) chiudiFinestra();
-        else alert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
+        else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
     }
 
     @FXML

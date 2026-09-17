@@ -14,13 +14,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class FiltroEOrdinaHelper {
+
+    private FiltroEOrdinaHelper() {}
     public static void configuraFiltroEOrdine(TableView<Issue> issueTable,
                                               ObservableList<Issue> masterData,
                                               ChoiceBox<String> filtroChoiceBox,
                                               ChoiceBox<String> ordinaChoiceBox,
                                               Ruolo ruolo) {
 
-        FilteredList<Issue> filteredData = new FilteredList<>(masterData, p -> true);
+        FilteredList<Issue> filteredData = new FilteredList<>(masterData, _ -> true);
 
         SortedList<Issue> sortedData = new SortedList<>(filteredData);
 
@@ -59,44 +61,56 @@ public class FiltroEOrdinaHelper {
         String filtro = filtroChoiceBox.getValue();
         String ordina = ordinaChoiceBox.getValue();
 
-        filteredData.setPredicate(issue -> {
-            if ("To-do".equals(filtro)) return "TO_DO".equalsIgnoreCase(issue.getStato());
-            if ("Bug".equals(filtro)) return "BUG".equalsIgnoreCase(issue.getTipo().name());
-            if ("Feature".equals(filtro)) return "FEATURE".equalsIgnoreCase(issue.getTipo().name());
-            if ("Documentation".equals(filtro)) return "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
-            if ("Question".equals(filtro)) return "QUESTION".equalsIgnoreCase(issue.getTipo().name());
-            if ("Le mie issue".equals(filtro)) {
-                return "ASSEGNATO".equalsIgnoreCase(issue.getStato())
-                        && issue.getAssignee() != null
-                        && issue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId();
+        filter(filtro, filteredData);
+        sort(ordina, sortedData);
+
+    }
+
+    private static void sort(String ordina, SortedList<Issue> sortedData) {
+        switch (ordina) {
+            case "Priorità Alta" -> {
+                List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
+                sortedData.setComparator(Comparator.comparingInt(issue -> {
+                    String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                    int posizione = ordine.indexOf(priorita);
+                    return posizione == -1 ? Integer.MAX_VALUE : posizione;
+                }));
             }
-            if ("Assegnate".equals(filtro)) return "ASSEGNATO".equalsIgnoreCase(issue.getStato());
-            if ("Risolte".equals(filtro)) return "RISOLTO".equalsIgnoreCase(issue.getStato());
-            return true;
-        });
+            case "Priorità Bassa" -> {
+                List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
+                sortedData.setComparator(Comparator.comparingInt(issue -> {
+                    String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
+                    int posizione = ordine.indexOf(priorita);
+                    return posizione == -1 ? Integer.MAX_VALUE : posizione;
+                }));
 
-        if("Priorità Alta".equals(ordina)){
-            List<String> ordine = List.of("ALTA", "MEDIA", "BASSA", "NO");
-            sortedData.setComparator(Comparator.comparingInt(issue -> {
-                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
-                int posizione = ordine.indexOf(priorita);
-                return posizione == -1 ? Integer.MAX_VALUE : posizione;
-            }));
-        } else if ("Priorità Bassa".equals(ordina)) {
-            List<String> ordine = List.of("BASSA", "MEDIA", "ALTA", "NO");
-            sortedData.setComparator(Comparator.comparingInt(issue -> {
-                String priorita = String.valueOf(issue.getPriorita()).toUpperCase();
-                int posizione = ordine.indexOf(priorita);
-                return posizione == -1 ? Integer.MAX_VALUE : posizione;
-            }));
-
-        } else if("Più recenti".equals(ordina)){
-            sortedData.setComparator(
+            }
+            case "Più recenti" -> sortedData.setComparator(
                     Comparator.comparing(Issue::getData, Comparator.nullsLast(Comparator.naturalOrder()))
                             .reversed());
-        } else{
-            sortedData.setComparator(null);
+            case null, default -> sortedData.setComparator(null);
         }
+
+    }
+
+    private static void filter(String filtro, FilteredList<Issue> filteredData){
+        filteredData.setPredicate(issue -> {
+            if (filtro == null) return true;
+
+            return switch (filtro) {
+                case "To-do" -> "TO_DO".equalsIgnoreCase(issue.getStato());
+                case "Bug" -> "BUG".equalsIgnoreCase(issue.getTipo().name());
+                case "Feature" -> "FEATURE".equalsIgnoreCase(issue.getTipo().name());
+                case "Documentation" -> "DOCUMENTATION".equalsIgnoreCase(issue.getTipo().name());
+                case "Question" -> "QUESTION".equalsIgnoreCase(issue.getTipo().name());
+                case "Le mie issue" -> "ASSEGNATO".equalsIgnoreCase(issue.getStato())
+                        && issue.getAssignee() != null
+                        && issue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId();
+                case "Assegnate" -> "ASSEGNATO".equalsIgnoreCase(issue.getStato());
+                case "Risolte" -> "RISOLTO".equalsIgnoreCase(issue.getStato());
+                default -> true;
+            };
+        });
     }
 
     public static void configuraFiltroUtenti(TableView<AuthUser> userTable,
@@ -104,7 +118,7 @@ public class FiltroEOrdinaHelper {
                                              ChoiceBox<String> filtroChoiceBox){
 
 
-        FilteredList<AuthUser> filteredData = new FilteredList<>(masterData, p -> true);
+        FilteredList<AuthUser> filteredData = new FilteredList<>(masterData, _ -> true);
         userTable.setItems(filteredData);
 
         filtroChoiceBox.getItems().clear();

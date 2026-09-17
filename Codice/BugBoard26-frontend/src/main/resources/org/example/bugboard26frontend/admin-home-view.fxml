@@ -12,20 +12,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<!-- HBox principale: divide lo schermo in 3 colonne -->
-
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.ChoiceBox?>
-<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.AdminHomeController">
+<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" stylesheets="@styleHome.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.controller.AdminHomeController">
 
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
 
-    <!-- COLONNA SINISTRA: Elenco Issue Attive -->
     <VBox fx:id="colonnaSinistra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <HBox prefHeight="33.0" prefWidth="592.0" spacing="5.0">
-            <children>
                 <Label prefHeight="28.0" prefWidth="152.0" text="Issue Attive" textFill="WHITE">
                     <font>
                         <Font name="Segoe UI Bold" size="22.0" />
@@ -34,18 +30,17 @@
                 <Region prefHeight="200.0" prefWidth="200.0" />
                 <ChoiceBox fx:id="filtroChoiceBox" prefWidth="150.0" />
                 <ChoiceBox fx:id="ordinaChoiceBox" prefWidth="150.0" />
-            </children>
         </HBox>
 
 
-        <TableView fx:id="issueTable" prefHeight="321.0" prefWidth="650.0" styleClass="dark-table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="issueTable" prefHeight="321.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="idColumn" maxWidth="50.0" minWidth="50.0" text="ID" />
-                <TableColumn fx:id="titoloColumn" minWidth="150.0" text="Titolo" />
-                <TableColumn fx:id="prioritaColumn" minWidth="80.0" text="Priorità" />
-                <TableColumn fx:id="statoColumn" minWidth="100.0" text="Stato" />
-                <TableColumn fx:id="tipoColumn" minWidth="130.0" text="Tipo" />
-                <TableColumn fx:id="dataColumn" minWidth="140.0" text="Data" />
+                <TableColumn maxWidth="50.0" minWidth="50.0" text="ID" />
+                <TableColumn minWidth="150.0" text="Titolo" />
+                <TableColumn minWidth="80.0" text="Priorità" />
+                <TableColumn minWidth="100.0" text="Stato" />
+                <TableColumn minWidth="130.0" text="Tipo" />
+                <TableColumn minWidth="140.0" text="Data" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -53,40 +48,30 @@
         </TableView>
 
 
-
-        <!-- Text area spostata sotto la tabella di sinistra -->
         <Label text="Descrizione Issue Selezionata" textFill="#a29bb8" />
-        <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" styleClass="dark-text-area" wrapText="true" />
+        <TextArea fx:id="descriptionArea" editable="false" prefHeight="119.0" prefWidth="592.0" wrapText="true" />
         <HBox prefHeight="65.0" prefWidth="592.0" spacing="20.0">
-            <children>
                 <Button fx:id="archiviaIssueButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleArchiviaIssue" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Archivia Issue" HBox.hgrow="ALWAYS" />
                 <Button fx:id="segnalaComeDuplicatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaComeDuplicatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Segnala come duplicato" HBox.hgrow="ALWAYS"/>
                 <Button fx:id="visualizzaAllegatoButton" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onVisualizzaAllegatoButtonClick" prefHeight="66.0" prefWidth="380.0" styleClass="attachment-button" stylesheets="@style.css" text="Visualizza allegato" HBox.hgrow="ALWAYS"/>
-            </children>
         </HBox>
     </VBox>
 
 
 
-
-
-    <!-- COLONNA CENTRALE: Pannello di Controllo (Stile Pop-up) -->
     <VBox alignment="CENTER" maxWidth="350.0" minWidth="350.0" spacing="40.0" styleClass="vbox" stylesheets="@style.css">
         <padding>
             <Insets bottom="50.0" left="30.0" right="30.0" top="50.0" />
         </padding>
 
-        <!-- Titolo Neon -->
         <Label styleClass="title-bugboard" text="BugBoard" />
 
         <VBox alignment="CENTER" spacing="20.0" stylesheets="@style.css">
             <Button fx:id="elencoButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElencoIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Elenco Issue" />
-            <!-- Bottone Principale -->
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSegnalaIssueButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Segnala Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onArchivioBugButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Archivio Issue" />
             <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onGestioneUtentiButtonClick" prefHeight="50.0" prefWidth="250.0" styleClass="button-image" text="Gestisci utenti" />
 
-            <!-- Menu Impostazioni -->
             <MenuButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="6.0" prefWidth="266.0" text="Impostazioni">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#onCambioPasswordButtonClick" text="Cambio Password" />
@@ -99,30 +84,20 @@
 
 
 
-
-
-
-
-
-
-
-
-
-    <!-- COLONNA DESTRA: Bug Archiviati -->
     <VBox fx:id="colonnaDestra" managed="false" spacing="15.0" visible="false" HBox.hgrow="ALWAYS">
         <Label text="Bug Archiviati" textFill="#a29bb8">
             <font>
                 <Font name="Segoe UI Bold" size="22.0" />
             </font>
         </Label>
-        <TableView fx:id="archiviatiTable" styleClass="dark-table" VBox.vgrow="ALWAYS">
+        <TableView fx:id="archiviatiTable" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="idArchiviatiColumn" minWidth="50.0" maxWidth="50.0" text="ID" />
-                <TableColumn fx:id="titoloArchiviatiColumn" minWidth="150.0" text="Titolo" />
-                <TableColumn fx:id="prioritaArchiviatiColumn" minWidth="80.0" text="Priorità" />
-                <TableColumn fx:id="tipoArchiviatiColumn" minWidth="130.0" text="Tipo" />
-                <TableColumn fx:id="statoArchiviatiColumn" minWidth="110.0" text="Stato" />
-                <TableColumn fx:id="dataArchiviatiColumn" minWidth="140.0" text="Data Risoluzione" />
+                <TableColumn minWidth="50.0" maxWidth="50.0" text="ID" />
+                <TableColumn minWidth="150.0" text="Titolo" />
+                <TableColumn minWidth="80.0" text="Priorità" />
+                <TableColumn minWidth="130.0" text="Tipo" />
+                <TableColumn minWidth="110.0" text="Stato" />
+                <TableColumn minWidth="140.0" text="Data Risoluzione" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
