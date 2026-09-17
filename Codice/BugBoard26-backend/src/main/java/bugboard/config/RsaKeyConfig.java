@@ -15,9 +15,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 
+/**
+ * Gestisce il caricamento in memoria delle chiavi crittografiche RSA dal file system.
+ */
 @Configuration
 public class RsaKeyConfig {
 
+    /**
+     * Legge e decodifica la chiave pubblica dal file public.pem.
+     *
+     * @return L'oggetto chiave pubblica istanziato.
+     * @throws IOException              Se il file non viene trovato o non è leggibile.
+     * @throws NoSuchAlgorithmException Se l'algoritmo RSA non è supportato dall'ambiente.
+     * @throws InvalidKeySpecException  Se il formato del file PEM non è valido.
+     */
     @Bean
     public RSAPublicKey publicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
@@ -36,6 +47,14 @@ public class RsaKeyConfig {
         return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(keySpec);
     }
 
+    /**
+     * Legge e decodifica la chiave privata dal file private.pem.
+     *
+     * @return L'oggetto chiave privata istanziato.
+     * @throws IOException              Se il file non viene trovato o non è leggibile.
+     * @throws NoSuchAlgorithmException Se l'algoritmo RSA non è supportato dall'ambiente.
+     * @throws InvalidKeySpecException  Se il formato del file PEM non è valido.
+     */
     @Bean
     public RSAPrivateKey privateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException  {
 

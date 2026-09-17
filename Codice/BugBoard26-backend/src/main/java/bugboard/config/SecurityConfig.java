@@ -12,15 +12,31 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configurazione di Spring Security per la gestione degli accessi e delle autorizzazioni.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    /**
+     * L''algoritmo per l'hashing delle password.
+     *
+     * @return L'istanza di BCrypt utilizzata per cifrare e confrontare le password.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configura la catena dei filtri HTTP, definendo rotte pubbliche e rotte protette,
+     * e imposta la gestione delle sessioni in modalità stateless.
+     *
+     * @param http L'oggetto HttpSecurity da configurare.
+     * @return La catena di filtri di sicurezza configurata.
+     * @throws Exception Se si verifica un errore durante l'inizializzazione della configurazione.
+     */
     @SuppressWarnings("squid:S4502")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +51,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Converte i claim del token JWT in autorizzazioni comprese da Spring Security,
+     * aggiungendo automaticamente il prefisso "ROLE_".
+     *
+     * @return Il convertitore di autenticazione configurato.
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter authoritiesConverter =
