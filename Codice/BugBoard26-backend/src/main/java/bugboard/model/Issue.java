@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "issue")
 public class Issue {
@@ -50,18 +51,6 @@ public class Issue {
     private LocalDateTime dataAssegnazione;
 
     public Issue() {}
-
-    public Issue(String titolo, String descrizione) {
-        this.titolo = titolo;
-        this.descrizione = descrizione;
-
-    }
-
-    public Issue(String titolo, String descrizione, String priorita) {
-        this.titolo = titolo;
-        this.descrizione = descrizione;
-        this.priorita = priorita;
-    }
 
     public String getTitolo() {
         return titolo;

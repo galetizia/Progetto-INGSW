@@ -1,12 +1,12 @@
 package bugboard.controller;
 
-import bugboard.enums.Ruolo;
 import bugboard.model.AuthUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import bugboard.service.AuthUserService;
+import bugboard.dto.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class AuthUserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<Object> login(@RequestBody AuthRequest request) {
         try{
             String token = authUserService.login(request.email(), request.password());
             AuthUser utenteLoggato = authUserService.getUserByEmail(request.email());
@@ -97,7 +97,3 @@ public class AuthUserController {
     }
 
 }
-record AuthRequest(String email, String password) {}
-record LoginResponse(String token, Ruolo ruoloUtente, int id) {}
-record ChangePasswordRequest(String email, String oldPassword, String newPassword) {}
-record CreateUserRequest(String email, String password, String ruolo) {}

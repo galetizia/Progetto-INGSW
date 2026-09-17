@@ -16,12 +16,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/issues")
 public class IssueController {
-
     private final IssueService issueService;
+
 
     public IssueController(IssueService issueService) {
         this.issueService = issueService;
     }
+
 
     @PostMapping("/nuovaIssue")
     public ResponseEntity<String> nuovaIssue(@RequestParam("titolo") String titolo,
@@ -37,23 +38,27 @@ public class IssueController {
         }
     }
 
+
     @GetMapping("/elenco_issue")
     public ResponseEntity<List<Issue>> elencoIssue() {
             return ResponseEntity.ok(issueService.elencoIssue());
     }
 
+
     @GetMapping("/countIssueStates")
     public ResponseEntity<Map<String, Integer>> countIssueStates() {
         return ResponseEntity.ok(issueService.countIssueStates());
     }
+
+
     @GetMapping("/countIssueTypes")
     public ResponseEntity<Map<String, Integer>> countIssueTypes() {
         return ResponseEntity.ok(issueService.countIssueTypes());
     }
 
+
     @PostMapping("/{id}/prendiInCarico")
     public ResponseEntity<String> prendiInCarico(@PathVariable int id, Principal principal){
-
         try{
             String email = principal.getName();
             boolean successo = issueService.assegnaIssueUtente(id, email);
@@ -69,15 +74,18 @@ public class IssueController {
 
     }
 
+
     @GetMapping("/attive")
     public ResponseEntity<List<Issue>> getIssueAttive() {
         return ResponseEntity.ok(issueService.getIssueAttive());
     }
 
+
     @GetMapping("/storico")
     public ResponseEntity<List<Issue>> getIssueArchiviate() {
         return ResponseEntity.ok(issueService.getIssueArchiviate());
     }
+
 
     @DeleteMapping("/{id}/elimina")
     @PreAuthorize("hasRole('ADMIN')")
@@ -95,9 +103,10 @@ public class IssueController {
         }
     }
 
+
     @PutMapping("/{id}/archivia")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> archiviaIssue(@PathVariable int id) {
+    public ResponseEntity<Object> archiviaIssue(@PathVariable int id) {
         try {
             Issue issueArchiviata = issueService.archiviaIssue(id);
             return ResponseEntity.ok(issueArchiviata);
@@ -105,6 +114,7 @@ public class IssueController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @PutMapping("/{id}/risolvi")
     public ResponseEntity<String> risolviIssue(@PathVariable int id) {
@@ -115,6 +125,7 @@ public class IssueController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @PutMapping("/{id}/rilascia")
     public ResponseEntity<String> rilasciaIssue(@PathVariable int id) {

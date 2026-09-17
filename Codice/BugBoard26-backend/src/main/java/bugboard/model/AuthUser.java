@@ -4,6 +4,7 @@ import bugboard.enums.Ruolo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name ="auth_user")
 public class AuthUser {
@@ -58,6 +59,7 @@ public class AuthUser {
     }
     public void setRuolo(Ruolo ruolo) {this.ruolo = ruolo;}
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean getStatoAccount() {
         return statoAccount;
     }
