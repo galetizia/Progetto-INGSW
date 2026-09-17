@@ -16,11 +16,13 @@ public class AuthUserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+
     public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.authUserRepository = authUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
+
 
     public void registerAuthUser(String email, String password, String ruolo) {
         if (authUserRepository.existsByEmail(email)) {
@@ -35,6 +37,7 @@ public class AuthUserService {
         authUserRepository.save(newUser);
     }
 
+
     public void cambiaStatoUtente(int id) {
         AuthUser user = authUserRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
@@ -43,6 +46,7 @@ public class AuthUserService {
 
         authUserRepository.save(user);
     }
+
 
     public String login (String email, String password) {
 
@@ -57,6 +61,7 @@ public class AuthUserService {
 
         return jwtService.generateToken(user, user.getRuolo().name());
     }
+
 
     public void changePassword (String email, String oldPassword, String newPassword) {
 
@@ -74,17 +79,6 @@ public class AuthUserService {
         authUserRepository.save(user);
     }
 
-    public Map<String, Integer> getIssuesPerUser(){
-        List<Object[]> issuesPerUser = authUserRepository.findAllIssuesPerUser();
-
-        Map<String, Integer> map = new HashMap<>();
-        for(Object[] obj : issuesPerUser){
-            String email = (String) obj[0];
-            Integer count = ((Number) obj[1]).intValue();
-            map.put(email, count);
-        }
-        return map;
-    }
 
     public Map<String, Double> getTimePerUser(){
         List<Object[]> timePerUser = authUserRepository.findAllTimePerUser();
@@ -97,10 +91,23 @@ public class AuthUserService {
         return map;
     }
 
+
+    public Map<String, Integer> getIssuesPerUser(){
+        List<Object[]> issuesPerUser = authUserRepository.findAllIssuesPerUser();
+        return insertInMap(issuesPerUser);
+    }
+
+
     public Map<String, Integer> getRisoltePerUser(){
         List<Object[]> issuesPerUser = authUserRepository.findAllRisoltePerUser();
+        return insertInMap(issuesPerUser);
+
+    }
+
+
+    private Map<String, Integer> insertInMap(List<Object[]> list){
         Map<String, Integer> map = new HashMap<>();
-        for(Object[] obj : issuesPerUser){
+        for(Object[] obj : list){
             String email = (String) obj[0];
             Integer count = ((Number) obj[1]).intValue();
             map.put(email, count);
@@ -108,7 +115,9 @@ public class AuthUserService {
         return map;
     }
 
+
     public List<AuthUser> getAllUsers() {return authUserRepository.findAll();}
+
 
     public AuthUser getUserByEmail(String email) {
         return authUserRepository.findByEmail(email)

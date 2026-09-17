@@ -2,6 +2,7 @@ package bugboard.model;
 
 import jakarta.persistence.*;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "attachment")
 public class Attachment {
@@ -9,8 +10,10 @@ public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false)
     private String nome;
+
     @Column(nullable = false)
     private String tipo;
 
