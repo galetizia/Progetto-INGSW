@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+/**
+ * Gestisce la creazione e la configurazione dei token JWT necessari per l'autenticazione e l'autorizzazione all'interno dell'applicativo.
+ */
 @Service
 public class JwtService {
 
@@ -15,10 +18,22 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
+    /**
+     * Inizializza il servizio passando il componente per la firma crittografica del token.
+     *
+     * @param jwtEncoder L'encoder incaricato di firmare il token con le chiavi RSA.
+     */
     public JwtService(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
+    /**
+     * Genera un token JWT che attesta l'identità dell'utente, configurando le relative tempistiche di validità e passando i ruoli come permessi (claims).
+     *
+     * @param user  L'oggetto che rappresenta l'utente autenticato.
+     * @param ruolo Il ruolo associato all'utente, necessario a Spring Security per le autorizzazioni.
+     * @return Il token JWT in formato stringa pronto da essere inviato al client.
+     */
     public String generateToken(AuthUser user, String ruolo) {
         Instant now = Instant.now();
 

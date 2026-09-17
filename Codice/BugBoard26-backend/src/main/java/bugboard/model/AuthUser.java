@@ -4,7 +4,9 @@ import bugboard.enums.Ruolo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
-
+/**
+ * Rappresenta un account all'interno del sistema, utilizzato per l'autenticazione e l'autorizzazione basata sui ruoli.
+ */
 @Entity
 @Table(name ="auth_user")
 public class AuthUser {

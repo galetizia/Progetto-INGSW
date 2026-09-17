@@ -2,6 +2,9 @@ package bugboard.model;
 
 import jakarta.persistence.*;
 
+/**
+ * Rappresenta un file allegato a una specifica issue, memorizzato direttamente nel database.
+ */
 @SuppressWarnings("unused")
 @Entity
 @Table(name = "attachment")
