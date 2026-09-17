@@ -10,189 +10,131 @@ import model.Issue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class IssueTableHelper {
+
+    private IssueTableHelper() {}
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     public static void configuraTabella(TableView<Issue> tabella, Ruolo ruolo, boolean isArchiviati){
         tabella.getColumns().clear();
         tabella.setPrefHeight(321);
         tabella.setPrefWidth(670);
 
-        TableColumn<Issue, Integer> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        idColumn.setMinWidth(50);
-        idColumn.setMaxWidth(50);
+        TableColumn<Issue, Integer> idColumn = createColumnSemplice("ID", "id", 50, 50);
+        TableColumn<Issue, String> titoloColumn = createColumnSemplice("Titolo", "titolo", 150, -1);
+        TableColumn<Issue, String> tipoColumn = createColumnSemplice("Tipo", "tipo", 140, -1);
 
-        TableColumn<Issue, String> titoloColumn = new TableColumn<>("Titolo"); //si
-        titoloColumn.setCellValueFactory(new PropertyValueFactory<>("titolo"));
-        titoloColumn.setMinWidth(150);
+        TableColumn<Issue, String> prioritaColumn = createColumnPriorita();
+        TableColumn<Issue, String> statoColumn = creaColonnaStato(ruolo, isArchiviati);
+        TableColumn<Issue, LocalDateTime> dataColumn = creaColonnaData(isArchiviati);
 
-        TableColumn<Issue, String> prioritaColumn = new TableColumn<>("Priorita"); //si
-        prioritaColumn.setCellValueFactory(new PropertyValueFactory<>("priorita"));
-        prioritaColumn.setMinWidth(80);
-        prioritaColumn.setCellFactory(column -> new TableCell<Issue, String>() {
+        tabella.getColumns().addAll(List.of(
+                idColumn, titoloColumn, prioritaColumn, statoColumn, tipoColumn, dataColumn
+        ));
+    }
+
+
+    private static <T> TableColumn<Issue, T> createColumnSemplice(String titolo, String property, double minWidth, double maxWidth) {
+        TableColumn<Issue, T> column = new TableColumn<>(titolo);
+        column.setCellValueFactory(new PropertyValueFactory<>(property));
+        column.setMinWidth(minWidth);
+        if (maxWidth > 0) column.setMaxWidth(maxWidth);
+        return column;
+    }
+
+
+    private static TableColumn<Issue, String> createColumnPriorita(){
+        TableColumn<Issue, String> prioritaColumn = createColumnSemplice("Priorita", "priorita", 80, -1);
+        prioritaColumn.setStyle("-fx-alignment: CENTER;");
+
+        prioritaColumn.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    if(item.equalsIgnoreCase("no"))
-                        setText("-");
-                    else
-                        setText(item);
+                    setText(item.equalsIgnoreCase("no") ? "-" : item);
                 }
-                setStyle("-fx-alignment: CENTER;");
             }
         });
-
-        TableColumn<Issue, String> statoColumn = new TableColumn<>("Stato"); //si
-        statoColumn.setCellValueFactory(new PropertyValueFactory<>("stato"));
-        statoColumn.setMinWidth(100);
+        return prioritaColumn;
+    }
 
 
+    private static TableColumn<Issue, LocalDateTime> creaColonnaData(boolean isArchiviati) {
+        String titolo = isArchiviati ? "Data Risoluzione" : "Data";
+        String property = isArchiviati ? "dataRisoluzione" : "data";
 
+        TableColumn<Issue, LocalDateTime> colonna = createColumnSemplice(titolo, property, 140, -1);
+        colonna.setStyle("-fx-alignment: CENTER;");
 
-        TableColumn<Issue, String> tipoColumn = new TableColumn<>("Tipo"); //si
-        tipoColumn.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        tipoColumn.setMinWidth(140);
-
-
-
-
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        TableColumn<Issue, LocalDateTime> dataColumn;
-
-        if(isArchiviati){
-            dataColumn = new TableColumn<>("Data Risoluzione");
-            dataColumn.setCellValueFactory(new PropertyValueFactory<>("dataRisoluzione"));
-        } else {
-            dataColumn = new TableColumn<>("Data");
-            dataColumn.setCellValueFactory(new PropertyValueFactory<>("data"));
-
-        }
-
-
-        dataColumn.setCellFactory(column -> new TableCell<Issue, LocalDateTime>() {
+        colonna.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(LocalDateTime date, boolean empty) {
                 super.updateItem(date, empty);
-
-                if (empty || date == null) {
-                    setText(null); // Se la riga è vuota, non scrive nulla
-                } else {
-                    Issue issue = getTableRow().getItem();
-                    if(issue != null){
-                        if(isArchiviati){
-                            if(issue.getStato() != null && issue.getStato().toString().equalsIgnoreCase("RISOLTO"))
-                                setText(formatter.format(date));
-                            else
-                                setText("-");
-                        } else {
-                            setText(formatter.format(date));
-                        }
-                    } else {
-                        setText(null);
-                    }
+                if (empty || date == null || getTableRow() == null || getTableRow().getItem() == null) {
+                    setText(null);
+                    return;
                 }
-                dataColumn.setStyle("-fx-alignment: CENTER;");
-                dataColumn.setMinWidth(140);
+
+                Issue issue = getTableRow().getItem();
+                if (isArchiviati) {
+                    boolean isRisolto = "RISOLTO".equalsIgnoreCase(issue.getStato());
+                    setText(isRisolto ? formatter.format(date) : "-");
+                } else {
+                    setText(formatter.format(date));
+                }
             }
         });
+        return colonna;
+    }
 
 
+    private static TableColumn<Issue, String> creaColonnaStato(Ruolo ruolo, boolean isArchiviati) {
+        TableColumn<Issue, String> colonna = createColumnSemplice("Stato", "stato", 100, -1);
 
-        if(ruolo == Ruolo.INTERNAL_USER && !isArchiviati){
-            statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
-                @Override
-                protected void updateItem(String stato, boolean empty) {
-                    super.updateItem(stato, empty);
-
-                    if (empty || stato == null || getTableRow() == null || getTableRow().getItem() == null) {
-                        setText(null);
-                        return;
-                    }
-
-                    Issue issueCorrente = getTableRow().getItem();
-
-                    if ("TO_DO".equalsIgnoreCase(stato)) {
-                        setText("🟢 TO_DO");
-                    } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
-
-                        if (issueCorrente.getAssignee() != null
-                                && issueCorrente.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId()) {
-                            setText("👤 IN LAVORAZIONE");
-                        } else {
-                            setText("🔒 ASSEGNATO");
-                        }
-
-                    } else {
-                        setText(stato);
-                    }
+        colonna.setCellFactory(_ -> new TableCell<>() {
+            @Override
+            protected void updateItem(String stato, boolean empty) {
+                super.updateItem(stato, empty);
+                if (empty || stato == null || getTableRow() == null || getTableRow().getItem() == null) {
+                    setText(null);
+                } else {
+                    Issue issue = getTableRow().getItem();
+                    setText(ottieniTestoStato(stato, issue, ruolo, isArchiviati));
                 }
-            });
+            }
+        });
+        return colonna;
+    }
 
-        } else if (ruolo == Ruolo.ADMIN && !isArchiviati){
-            statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
-                @Override
-                protected void updateItem(String stato, boolean empty) {
-                    super.updateItem(stato, empty);
 
-                    if (empty || stato == null) {
-                        setText(null);
-                    } else {
-                        if ("TO_DO".equalsIgnoreCase(stato)) {
-                            setText("🟢 TO-DO");
-                        } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
-                            setText("🔒 ASSEGNATO");
-                        } else {
-                            setText(stato);
-                        }
-                    }
-                }
-            });
-        } else if (ruolo == Ruolo.EXTERNAL_USER && !isArchiviati){
-            statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
-                @Override
-                protected void updateItem(String stato, boolean empty) {
-                    super.updateItem(stato, empty);
+    private static String ottieniTestoStato(String stato, Issue issue, Ruolo ruolo, boolean isArchiviati) {
+        String statoUpper = stato.toUpperCase();
 
-                    if (empty || stato == null || getTableRow() == null || getTableRow().getItem() == null) {
-                        setText(null);
-                        return;
-                    }
-
-                    if ("TO_DO".equalsIgnoreCase(stato)) {
-                        setText("🟢 TO-DO");
-                    } else if ("ASSEGNATO".equalsIgnoreCase(stato)) {
-                        setText("🔒 ASSEGNATO");
-                    } else if ("RISOLTO".equalsIgnoreCase(stato)) {
-                        setText("✅ RISOLTO");
-                    } else {
-                        setText(stato);
-                    }
-                }
-            });
-        } else if(isArchiviati){
-            statoColumn.setCellFactory(column -> new TableCell<Issue, String>() {
-                @Override
-                protected void updateItem(String stato, boolean empty) {
-                    super.updateItem(stato, empty);
-                    if (empty || stato == null) {
-                        setText(null);
-                    } else {
-                        if ("RISOLTO".equalsIgnoreCase(stato)) {
-                            setText("✅ RISOLTO");
-                        } else if ("ARCHIVIATO".equalsIgnoreCase(stato)) {
-                            setText("📦 ARCHIVIATO");
-                        } else {
-                            setText(stato);
-                        }
-                    }
-                }
-            });
-
+        if (isArchiviati) {
+            return switch (statoUpper) {
+                case "RISOLTO" -> "✅ RISOLTO";
+                case "ARCHIVIATO" -> "📦 ARCHIVIATO";
+                default -> stato;
+            };
         }
-        tabella.getColumns().addAll(idColumn, titoloColumn, prioritaColumn ,statoColumn, tipoColumn, dataColumn);
+
+        return switch (statoUpper) {
+            case "TO_DO" -> "🟢 TO-DO";
+            case "ASSEGNATO" -> {
+                if (ruolo == Ruolo.INTERNAL_USER && issue.getAssignee() != null
+                        && issue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId()) {
+                    yield "👤 IN LAVORAZIONE";
+                }
+                yield "🔒 ASSEGNATO";
+            }
+            case "RISOLTO" -> (ruolo == Ruolo.EXTERNAL_USER) ? "✅ RISOLTO" : stato;
+            default -> stato;
+        };
     }
 }

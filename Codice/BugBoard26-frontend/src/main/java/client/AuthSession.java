@@ -4,10 +4,12 @@ import model.AuthUser;
 
 public class AuthSession {
     private static AuthSession instance = null;
-    private static String token;
-    private static AuthUser utenteCorrente;
+
+    private String token;
+    private AuthUser utenteCorrente;
 
     private AuthSession() {}
+
     public static AuthSession getInstance() {
         if (instance == null) {
             instance = new AuthSession();

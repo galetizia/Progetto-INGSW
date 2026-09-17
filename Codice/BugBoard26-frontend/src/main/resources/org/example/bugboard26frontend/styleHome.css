@@ -1,11 +1,9 @@
-/* =========================================
-   1. SFONDO PRINCIPALE E TITOLI
-   ========================================= */
+/* SFONDO PRINCIPALE E TITOLI */
 .root {
     -fx-background-color: #0b0914;
 }
 
-/* Logo "BugBoard" (Eclissi Neon scura) */
+/* Logo "BugBoard" */
 .logo {
     -fx-text-fill: #151122;
     -fx-font-family: "Segoe UI", sans-serif;
@@ -14,7 +12,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.8), 20, 0.5, 0, 0);
 }
 
-/* Titolo "Elenco Issue" (Bianco e pulito) */
+/* Titolo "Elenco Issue" */
 .page-title {
     -fx-text-fill: #ffffff;
     -fx-font-family: "Segoe UI", sans-serif;
@@ -22,9 +20,7 @@
     -fx-font-weight: bold;
 }
 
-/* =========================================
-   2. NAVIGAZIONE (Il tuo stile)
-   ========================================= */
+/* NAVIGAZIONE */
 .nav-button{
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -43,72 +39,61 @@
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
 }
 
-/* =========================================
-   3. AREA DESCRIZIONE ISSUE (Il tuo stile)
-   ========================================= */
+/* AREA DESCRIZIONE ISSUE */
 .text-area {
     -fx-background-color: transparent;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #2a2240; /* Bordo spento */
+    -fx-border-color: #2a2240;
     -fx-border-radius: 8;
     -fx-padding: 5;
 }
 
-/* Sfondo interno della TextArea */
+/* Sfondo interno */
 .text-area .content {
-    -fx-background-color: #0b0914; /* Sfondo scurissimo */
+    -fx-background-color: #0b0914;
     -fx-background-radius: 8;
 }
 
-/* Togliamo lo sfondo di default che JavaFX mette intorno al testo */
 .text-area .viewport {
     -fx-background-color: transparent;
 }
 
-/* Quando ci clicchi o selezioni il testo dentro */
 .text-area:focused {
-    -fx-border-color: #bf5afe; /* Si accende di Viola Neon */
+    -fx-border-color: #bf5afe;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
 }
 
-/* =========================================
-   4. TABELLA (Il tuo stile)
-   ========================================= */
+/* TABELLA */
 .table-view {
-    -fx-background-color: #0b0914; /* Sfondo scurissimo */
-    -fx-border-color: #2a2240; /* Bordo prugna spento */
+    -fx-background-color: #0b0914;
+    -fx-border-color: #2a2240;
     -fx-border-radius: 8;
-    -fx-padding: 0; /* Rimuove spazi bianchi fastidiosi */
+    -fx-padding: 0;
 }
 
-/* 2. Sfondo dell'intestazione (Risolve il problema della barra bianca) */
 .table-view .column-header-background {
-    -fx-background-color: #151122; /* Scuro, uguale alle card */
+    -fx-background-color: #151122;
     -fx-background-radius: 8 8 0 0;
 }
 
-/* 3. Stile delle singole celle di intestazione */
 .table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
-    -fx-size: 35px; /* Altezza della barra dei titoli */
-    -fx-border-color: transparent transparent #2a2240 transparent; /* Solo una linea sotto */
+    -fx-size: 35px;
+    -fx-border-color: transparent transparent #2a2240 transparent;
 }
 
-/* 4. Testo dell'intestazione (ID, Titolo, ecc.) */
 .table-view .column-header .label {
-    -fx-text-fill: #a29bb8; /* Un grigio/viola rilassante, non fluo */
+    -fx-text-fill: #a29bb8;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
     -fx-alignment: CENTER;
 }
 
-/* 5. Le righe dei dati */
 .table-row-cell {
     -fx-background-color: transparent;
-    -fx-cell-size: 30px; /* Altezza righe */
+    -fx-cell-size: 30px;
 }
 
-/* QUESTO È IL SEGRETO: Forza il testo BIANCO dentro le celle */
 .table-row-cell .text {
     -fx-fill: #ffffff;
 }
@@ -118,33 +103,25 @@
     -fx-padding: 0 10 0 10;
 }
 
-/* 6. Nasconde le righe vuote in basso che JavaFX crea di default */
 .table-row-cell:empty {
     -fx-background-color: transparent;
 }
 
-/* 7. Riga selezionata o hover */
 .table-row-cell:hover {
     -fx-background-color: #1a152e;
 }
 .table-row-cell:selected {
-    -fx-background-color: #3b2d59; /* Un viola scuro opaco, niente neon qui */
+    -fx-background-color: #3b2d59;
 }
 
-/* ======================================================================
-   FIX POP-UP: Mantiene i tuoi colori originali anche quando apri gli Alert
-   ====================================================================== */
-
-/* Mantiene il tuo sfondo viola scuro quando il pop-up è aperto */
 .table-view .table-row-cell:selected {
     -fx-background-color: #3b2d59;
 }
 
-/* Impedisce a JavaFX di far diventare il testo nero quando il pop-up è aperto */
 .table-view .table-row-cell:selected .table-cell {
     -fx-text-fill: #ffffff;
 }
-
+/* MENU BUTTON */
 .menu-button {
     -fx-background-color: transparent;
     -fx-padding: 15 20 15 20;
@@ -152,14 +129,13 @@
     -fx-alignment: CENTER;
 }
 
-/* 2. Coloriamo il testo come gli altri bottoni */
 .menu-button .label {
+    -fx-alignment: CENTER;
     -fx-text-fill: #a29bb8;
     -fx-font-weight: bold;
     -fx-font-size: 15px;
 }
 
-/* 3. Effetto Neon quando ci passi sopra o QUANDO È APERTO (:showing) */
 .menu-button:hover, .menu-button:showing {
     -fx-background-color: #151122;
     -fx-background-radius: 8;
@@ -170,60 +146,46 @@
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
 }
 
-/* 4. Disintegriamo la freccina e il suo spazietto grigio */
 .menu-button .arrow-button {
     -fx-background-color: transparent;
     -fx-padding: 0;
-    -fx-pref-width: 0; /* Uccide la larghezza del contenitore della freccia */
+    -fx-pref-width: 0;
     -fx-min-width: 0;
 }
 
 .menu-button .arrow {
     -fx-background-color: transparent;
     -fx-padding: 0;
-    -fx-shape: null; /* Rimuove letteralmente la geometria della freccia */
+    -fx-shape: null;
 }
 
-/* Assicuriamoci che l'etichetta di testo interna si espanda e si centri */
-.menu-button .label {
-    -fx-alignment: CENTER;
-    -fx-text-fill: #a29bb8;
-    -fx-font-weight: bold;
-    -fx-font-size: 15px;
-}
-/* =========================================
-   5. CHOICE BOX (Stile coerente con Tabella e Neon)
-   ========================================= */
+/* CHOICE BOX */
 .choice-box {
-    -fx-background-color: #0b0914; /* Stesso sfondo della tabella */
-    -fx-border-color: #2a2240;     /* Bordo prugna spento */
+    -fx-background-color: #0b0914;
+    -fx-border-color: #2a2240;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 4 10 4 10;
     -fx-cursor: hand;
 }
 
-/* Testo dell'elemento selezionato */
 .choice-box > .label {
     -fx-text-fill: #a29bb8;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
-/* Contenitore della freccina */
 .choice-box .open-button {
     -fx-background-color: transparent;
 }
 
-/* Freccia verso il basso */
 .choice-box .arrow {
-    -fx-background-color: #a29bb8; /* Grigio/viola come le intestazioni */
-    -fx-padding: 3.5px 5px 3.5px 5px;
+    -fx-background-color: #a29bb8;
+    -fx-padding: 4px 5px 4px 5px;
 }
 
-/* Stato Hover, Focus o Tendina Aperta (:showing) */
 .choice-box:hover, .choice-box:focused, .choice-box:showing {
-    -fx-border-color: #bf5afe; /* Si accende di Viola Neon */
+    -fx-border-color: #bf5afe;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0, 0, 0);
 }
 
@@ -232,12 +194,11 @@
 }
 
 .choice-box:hover .arrow, .choice-box:showing .arrow {
-    -fx-background-color: #bf5afe; /* La freccia diventa fluo */
+    -fx-background-color: #bf5afe;
 }
 
-/* Menu a discesa aperto (Popup) */
 .context-menu {
-    -fx-background-color: #151122; /* Sfondo scuro delle card/header */
+    -fx-background-color: #151122;
     -fx-border-color: #2a2240;
     -fx-border-width: 1px;
     -fx-border-radius: 8;
@@ -246,7 +207,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.7), 15, 0, 0, 5);
 }
 
-/* Singoli elementi della lista a tendina */
+
 .menu-item {
     -fx-background-color: transparent;
     -fx-background-radius: 6;
@@ -261,9 +222,9 @@
     -fx-font-size: 14px;
 }
 
-/* Elemento su cui passi sopra il cursore nella tendina */
+
 .menu-item:hover, .menu-item:focused {
-    -fx-background-color: #3b2d59; /* Stesso viola opaco della riga selezionata */
+    -fx-background-color: #3b2d59;
 }
 
 .menu-item:hover .label, .menu-item:focused .label {
@@ -275,12 +236,10 @@
     -fx-fill: white;
 }
 
-/* Colora di bianco le freccette stesse */
 .chart-pie-label-line {
     -fx-stroke: white;
 }
 
-/* Rende trasparente lo sfondo della legenda e bianco il suo testo */
 .chart-legend {
     -fx-background-color: transparent;
 }

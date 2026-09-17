@@ -7,7 +7,6 @@ import javafx.scene.layout.GridPane;
 
 public class CambioPasswordDialog {
     private static final AuthClient authClient = new AuthClient();
-    private static final MyAlert alert = new MyAlert();
 
     public void mostra() {
 
@@ -44,12 +43,8 @@ public class CambioPasswordDialog {
         javafx.scene.Node confirmBtnNode = dialog.getDialogPane().lookupButton(confermaButton);
         confirmBtnNode.setDisable(true);
 
-        javafx.beans.value.ChangeListener<String> inputListener = (obs, oldV, newV) -> {
-            confirmBtnNode.setDisable(
-                    oldPasswordField.getText().trim().isEmpty() ||
-                            newPasswordField.getText().trim().isEmpty()
-            );
-        };
+        javafx.beans.value.ChangeListener<String> inputListener = (_, _, _) ->
+            confirmBtnNode.setDisable(oldPasswordField.getText().trim().isEmpty() || newPasswordField.getText().trim().isEmpty());
 
         oldPasswordField.textProperty().addListener(inputListener);
         newPasswordField.textProperty().addListener(inputListener);
@@ -69,11 +64,10 @@ public class CambioPasswordDialog {
 
         boolean success = authClient.changePassword(email, oldPassword, newPassword);
 
-        // da implementare il controllo della password
         if (success){
-            alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
+            MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
         } else {
-            alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
+            MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
         }
     }
 }

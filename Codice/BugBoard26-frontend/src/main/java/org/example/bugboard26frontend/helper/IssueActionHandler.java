@@ -2,7 +2,6 @@ package org.example.bugboard26frontend.helper;
 
 import client.AuthSession;
 import client.IssueClient;
-import enums.Ruolo;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import model.Issue;
@@ -12,7 +11,9 @@ import java.io.File;
 public class IssueActionHandler {
 
     private static final IssueClient issueClient = new IssueClient();
-    private static final MyAlert alert = new MyAlert();
+
+    private IssueActionHandler() {}
+
 
     public static void archivia(Issue issue, Runnable onSuccess){
 
@@ -27,17 +28,18 @@ public class IssueActionHandler {
                     boolean successo = issueClient.archiviaIssue(issue.getId());
 
                     if (successo) {
-                        alert.mostraAlert(Alert.AlertType.INFORMATION,"Successo", "Issue archiviata con successo!");
+                        MyAlert.mostraAlert(Alert.AlertType.INFORMATION,"Successo", "Issue archiviata con successo!");
 
                         if (onSuccess != null) onSuccess.run();
 
                     } else {
-                        alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Si è verificato un problema di comunicazione col server.");
+                        MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Si è verificato un problema di comunicazione col server.");
                     }
                 }
             });
         }
     }
+
 
     public static void prendiInCarico(Issue issue, Runnable onSuccess){
         if (issue == null || !AuthSession.getInstance().isLoggedIn()) {
@@ -47,21 +49,22 @@ public class IssueActionHandler {
         if ("TO_DO".equalsIgnoreCase(issue.getStato())) {
             boolean success = issueClient.prendiInCarico(issue.getId());
             if (success) {
-                alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai preso in carico la issue #" + issue.getId());
+                MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai preso in carico la issue #" + issue.getId());
                 if (onSuccess != null) onSuccess.run();
             } else {
-                alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile prendere in carico la issue.");
+                MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile prendere in carico la issue.");
             }
         }
         else if ("ASSEGNATO".equalsIgnoreCase(issue.getStato())) {
             boolean success = issueClient.risolviIssue(issue.getId());
             if (success) {
-                alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue #" + issue.getId() + " segnata come Risolta!");
+                MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue #" + issue.getId() + " segnata come Risolta!");
             } else {
-                alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile risolvere la issue.");
+                MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile risolvere la issue.");
             }
         }
     }
+
 
     public static void rilascia(Issue issue, Runnable onSuccess){
         if (issue == null || !AuthSession.getInstance().isLoggedIn()) {
@@ -76,14 +79,15 @@ public class IssueActionHandler {
             if (response == ButtonType.OK) {
                 boolean success = issueClient.rilasciaIssue(issue.getId());
                 if (success) {
-                    alert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai rilasciato la issue.");
+                    MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai rilasciato la issue.");
                     if(onSuccess != null) onSuccess.run();
                 } else {
-                    alert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Si è verificato un problema di comunicazione col server.");
+                    MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Si è verificato un problema di comunicazione col server.");
                 }
             }
         });
     }
+
 
     public static void creazioneIssue(String titolo, String descrizione, String priorita, String tipologia, File file, Runnable onSuccess){
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -95,13 +99,12 @@ public class IssueActionHandler {
             if(response == ButtonType.OK){
                 boolean success = issueClient.createIssue(titolo, descrizione, priorita, tipologia, file);
                 if(success){
-                    alert.mostraAlert(Alert.AlertType.INFORMATION, "Issue creata", "Issue creata con successo");
+                    MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Issue creata", "Issue creata con successo");
                     if(onSuccess != null) onSuccess.run();
                 } else {
-                    alert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Errore nella creazione della issue!");
+                    MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Errore nella creazione della issue!");
                 }
             }
         });
-
     }
 }

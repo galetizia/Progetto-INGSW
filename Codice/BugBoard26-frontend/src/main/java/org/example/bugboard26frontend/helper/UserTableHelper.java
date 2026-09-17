@@ -1,116 +1,123 @@
 package org.example.bugboard26frontend.helper;
 
 import enums.Ruolo;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.AuthUser;
 
+import java.util.List;
+
 
 public class UserTableHelper {
+
+    private UserTableHelper() {}
+
     public static void configuraTabella(TableView<AuthUser> tabella){
         tabella.getColumns().clear();
 
-        TableColumn<AuthUser,String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        emailColumn.setMinWidth(250);
-        emailColumn.setMaxWidth(250);
+        TableColumn<AuthUser,String> emailColumn = creaColumnSemplice("Email", "email", 250);
+        TableColumn<AuthUser,Ruolo> ruoloColumn = creaColumnRuolo();
+        TableColumn<AuthUser, Boolean> statoAccountColumn = creaColumnStato();
+        TableColumn<AuthUser, Integer> issueAttiveColumn = creaColumnCentrata("Issue Attive", "issueAttive", 95);
+        TableColumn<AuthUser, Integer> issueRisolteColumn = creaColumnCentrata("Issue Risolte", "issueRisolte", 95);
+        TableColumn<AuthUser, Double> tempoMedioColumn = creaColumnTempoMedio();
 
-        TableColumn<AuthUser,Ruolo> ruoloColumn = new TableColumn<>("Ruolo");
-        ruoloColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getRuolo()));
 
-        ruoloColumn.setMinWidth(130);
-        ruoloColumn.setMaxWidth(130);
+        tabella.getColumns().addAll(List.of(emailColumn, ruoloColumn, statoAccountColumn, issueAttiveColumn, issueRisolteColumn, tempoMedioColumn));
+    }
 
-        ruoloColumn.setCellFactory(column -> new TableCell<AuthUser, Ruolo>() {
+    private static <T> TableColumn<AuthUser, T> creaColumnSemplice(String titolo, String property, double width) {
+        TableColumn<AuthUser, T> column = new TableColumn<>(titolo);
+        column.setCellValueFactory(new PropertyValueFactory<>(property));
+        column.setMinWidth(width);
+        column.setMaxWidth(width);
+        return column;
+    }
+
+
+    private static <T> TableColumn<AuthUser, T> creaColumnCentrata(String titolo, String property, double width) {
+        TableColumn<AuthUser, T> colonna = creaColumnSemplice(titolo, property, width);
+        colonna.setStyle("-fx-alignment: CENTER;");
+        return colonna;
+    }
+
+
+    private static TableColumn<AuthUser, Ruolo> creaColumnRuolo() {
+        TableColumn<AuthUser, Ruolo> colonna = new TableColumn<>("Ruolo");
+        colonna.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getRuolo()));
+        colonna.setMinWidth(130);
+        colonna.setMaxWidth(130);
+
+        colonna.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(Ruolo item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {setText(null);}
-                else {String ruolo = item.name().replace("_USER","");
-                    setText(ruolo);}
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.name().replace("_USER", ""));
+                }
             }
         });
+        return colonna;
+    }
 
-        TableColumn<AuthUser, Boolean> statoAccountColumn = new TableColumn<>("Stato");
-        statoAccountColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getStatoAccount()));
 
-        statoAccountColumn.setMinWidth(90);
-        statoAccountColumn.setMaxWidth(90);
-        statoAccountColumn.setStyle("-fx-alignment: CENTER;");
+    private static TableColumn<AuthUser, Boolean> creaColumnStato() {
+        TableColumn<AuthUser, Boolean> colonna = new TableColumn<>("Stato");
+        colonna.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatoAccount()));
+        colonna.setMinWidth(90);
+        colonna.setMaxWidth(90);
+        colonna.setStyle("-fx-alignment: CENTER;");
 
-        statoAccountColumn.setCellFactory(column -> new TableCell<AuthUser, Boolean>() {
+        colonna.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
+                } else {
+                    boolean isActive = item;
+                    setText(isActive ? "Attivo" : "Disattivato");
                 }
-                else {
-                    setText(item ? "Attivo" : "Disattivato");
-                }
-
             }
         });
+        return colonna;
+    }
 
 
-        TableColumn<AuthUser, Integer> issueAttiveColumn = new TableColumn<>("Issue Attive");
-        issueAttiveColumn.setCellValueFactory(new PropertyValueFactory<>("issueAttive"));
-        issueAttiveColumn.setMinWidth(90);
-        issueAttiveColumn.setMaxWidth(100);
-        issueAttiveColumn.setStyle("-fx-alignment: CENTER;");
+    private static TableColumn<AuthUser, Double> creaColumnTempoMedio() {
+        TableColumn<AuthUser, Double> colonna = creaColumnCentrata("Tempo Medio", "tempoMedio", 110);
 
-
-
-        TableColumn<AuthUser, Integer> issueRisolteColumn = new TableColumn<>("Issue Risolte");
-        issueRisolteColumn.setCellValueFactory(new PropertyValueFactory<>("issueRisolte"));
-
-
-
-        issueRisolteColumn.setMinWidth(90);
-        issueRisolteColumn.setMaxWidth(100);
-        issueRisolteColumn.setStyle("-fx-alignment: CENTER;");
-
-
-
-
-
-
-        TableColumn<AuthUser, Double> tempoMedioColumn =  new TableColumn<>("Tempo Medio");
-        tempoMedioColumn.setCellValueFactory(new PropertyValueFactory<>("tempoMedio"));
-
-        tempoMedioColumn.setMinWidth(110);
-        tempoMedioColumn.setMaxWidth(110);
-        tempoMedioColumn.setStyle("-fx-alignment: CENTER;");
-
-
-        tempoMedioColumn.setCellFactory(column -> new TableCell<AuthUser, Double>() {
+        colonna.setCellFactory(_ -> new TableCell<>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null)
+                if (empty || item == null) {
                     setText(null);
-                else if (item == 0.0)
+                } else if (item == 0.0) {
                     setText("-");
-                else {
+                } else {
                     int minutiTot = (int) Math.round(item * 60);
                     int h = minutiTot / 60;
                     int m = minutiTot % 60;
 
-                    if (h == 0)
+                    if (h == 0) {
                         setText(m + "m");
-                    else if (m == 0)
+                    } else if (m == 0) {
                         setText(h + "h");
-                    else
+                    } else {
                         setText(h + "h " + m + "m");
+                    }
                 }
             }
         });
-
-
-        tabella.getColumns().addAll(emailColumn, ruoloColumn, statoAccountColumn, issueAttiveColumn, issueRisolteColumn, tempoMedioColumn);
+        return colonna;
     }
+
+
+
 }

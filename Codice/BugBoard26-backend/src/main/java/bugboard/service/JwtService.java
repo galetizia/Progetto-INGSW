@@ -14,7 +14,7 @@ import java.time.Instant;
 @Service
 public class JwtService {
 
-    private static final long EXPIRATION_TIME_SECONDS = 60;
+    private static final long EXPIRATION_TIME_SECONDS = 3600;
 
     private final JwtEncoder jwtEncoder;
 

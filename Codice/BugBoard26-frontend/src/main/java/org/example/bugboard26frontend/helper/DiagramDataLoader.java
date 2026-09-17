@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class DiagramDataLoader {
 
+    private DiagramDataLoader(){}
+
     public static ObservableList<PieChart.Data> configuraDiagrammaTipoIssueAttive(Map<String, Integer> issuesType) {
 
         int countBug = issuesType.getOrDefault("BUG", 0);
@@ -58,12 +60,12 @@ public class DiagramDataLoader {
 
                     XYChart.Data<String, Number> data = new XYChart.Data<>(username, count);
 
-                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                    data.nodeProperty().addListener((_, _, newNode) -> {
                         if (newNode != null) {
                             javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
                                     "Utente: " + email + "\nBug assegnati: " + count
                             );
-                            tooltip.setShowDelay(javafx.util.Duration.millis(100)); // Comparsa rapida
+                            tooltip.setShowDelay(javafx.util.Duration.millis(100));
                             javafx.scene.control.Tooltip.install(newNode, tooltip);
                         }
                     });
@@ -82,10 +84,10 @@ public class DiagramDataLoader {
         NumberAxis yAxis = (NumberAxis) chart.getYAxis();
         yAxis.setMinorTickVisible(false);
 
-        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+        yAxis.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number object) {
-                // Se il numero è intero (resto della divisione per 1 è 0) lo stampa, altrimenti stringa vuota
+
                 if (object.doubleValue() % 1 == 0) {
                     return String.valueOf(object.intValue());
                 } else {
@@ -94,7 +96,7 @@ public class DiagramDataLoader {
             }
             @Override
             public Number fromString(String string) {
-                return null; // Non serve per i grafici
+                return null;
             }
         });
 
@@ -106,7 +108,7 @@ public class DiagramDataLoader {
 
         dataTimes.entrySet().stream()
                 .filter(entry -> entry.getValue() > 0)
-                .sorted(Map.Entry.<String, Double>comparingByValue())
+                .sorted(Map.Entry.comparingByValue())
                 .limit(10)
                 .forEach(entry -> {
                     Double tempo = entry.getValue();
@@ -120,7 +122,7 @@ public class DiagramDataLoader {
                     String username = (rawName.length() > 10) ? rawName.substring(0, 10) + "..." : rawName;
 
                     XYChart.Data<String, Number> data = new XYChart.Data<>(username, tempoArrotondato);
-                    data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                    data.nodeProperty().addListener((_, _, newNode) -> {
                         if (newNode != null) {
                             javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
                                     "Utente: " + email + "\nTempo medio: " + tempoStringa
@@ -165,7 +167,7 @@ public class DiagramDataLoader {
         xAxis.setTickLabelRotation(315);
 
         NumberAxis yAxis = (NumberAxis) chart.getYAxis();
-        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+        yAxis.setTickLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Number object) {
                 int minutiTotali = (int) Math.round(object.doubleValue() * 60);

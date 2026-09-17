@@ -3,10 +3,9 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.StatoIssue;
 import enums.TipoIssue;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {
 

@@ -47,26 +47,10 @@ public class AuthUserController {
         }
     }
 
-    /**
-     * Gestisce la richiesta di disconnessione di un utente.
-     *
-     * @return La conferma del logout.
-     */
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return ResponseEntity.ok("Logout effettuato");
-    }
-
-    /**
-     * Permette a un utente di aggiornare la propria password verificando prima quella attuale.
-     *
-     * @param request Oggetto DTO contenente l'email dell'utente, la vecchia password e la nuova password.
-     * @return Una risposta di successo o un messaggio di errore in caso di dati non validi.
-     */
     @PostMapping("/change_password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
-            authUserService.changePassword(request.email(), request.newPassword(), request.oldPassword());
+            authUserService.changePassword(request.email(), request.oldPassword(), request.newPassword());
             return ResponseEntity.ok("Password cambiata con successo");
 
         } catch (IllegalArgumentException e) {

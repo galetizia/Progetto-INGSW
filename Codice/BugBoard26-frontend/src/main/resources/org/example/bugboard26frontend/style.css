@@ -4,21 +4,20 @@
 
 .vbox {
     -fx-background-color: #151122;
-    -fx-background-radius: 15; /* Bordi arrotondati */
-    -fx-padding: 40; /* Spazio interno */
+    -fx-background-radius: 15;
+    -fx-padding: 40;
     -fx-border-color: #2a2240;
     -fx-border-radius: 12;
     -fx-border-width: 1.5;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 20, 0, 0, 10);
 }
 .title-bugboard {
-    -fx-text-fill: #151122; /* Esattamente lo stesso colore del VBox */
+    -fx-text-fill: #151122;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 48px;
     -fx-font-weight: bold;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.7), 20, 0.5, 0, 0);
 }
-
 
 .subtitle {
     -fx-text-fill: #a29bb8;
@@ -31,7 +30,6 @@
     -fx-font-size: 13px;
 }
 
-/* Stile per i campi di testo e password */
 .text-field, .password-field {
     -fx-background-color: #0b0914;
     -fx-text-fill: #ffffff;
@@ -59,29 +57,24 @@
     -fx-padding: 5;
 }
 
-/* Forziamo il colore scuro sul viewport interno (il vero responsabile del bianco) */
 .text-area .viewport {
     -fx-background-color: #0b0914;
 }
 
-/* Forziamo il colore scuro anche sul content */
 .text-area .content {
     -fx-background-color: #0b0914;
 }
 
-/* Manteniamo lo sfondo scuro anche quando il campo è selezionato (focused) */
 .text-area:focused .viewport,
 .text-area:focused .content {
     -fx-background-color: #0b0914;
 }
 
-/* Effetto Bordo Neon quando ci clicchi dentro */
 .text-area:focused {
     -fx-border-color: #bf5afe;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0.2, 0, 0);
 }
 
-/* Gestione barre di scorrimento */
 .text-area .scroll-pane {
     -fx-background-color: transparent;
 }
@@ -93,7 +86,6 @@
     -fx-background-radius: 5em;
 }
 
-/* Stile del pulsante di Login */
 .button {
     -fx-background-color: transparent;
     -fx-text-fill: #bf5afe;
@@ -106,7 +98,6 @@
     -fx-cursor: hand;
 }
 
-/* Effetto quando passi il mouse sul pulsante */
 .button:hover {
     -fx-background-color: #bf5afe;
     -fx-text-fill: #ffffff;
@@ -123,17 +114,14 @@
     -fx-cursor: hand;
 }
 
-/* Colore del testo all'interno del MenuButton */
 .menu-button > .label {
-    -fx-text-fill: #61567d; /* Usa #ffffff se preferisci il bianco acceso */
+    -fx-text-fill: #61567d;
 }
 
-/* Colore della freccina del menu a tendina per renderla visibile */
 .menu-button > .arrow-button > .arrow {
     -fx-background-color: #61567d;
 }
 
-/* Effetto quando ci passi sopra col mouse o clicchi */
 .menu-button:hover, .menu-button:showing, .menu-button:focused {
     -fx-border-color: #bf5afe;
     -fx-effect: dropshadow(three-pass-box, rgba(191, 90, 254, 0.4), 10, 0.2, 0, 0);
@@ -150,7 +138,6 @@
     -fx-cursor: hand;
 }
 
-/* Effetto neon quando ci passi sopra col mouse (hover) o lo clicchi */
 .button-image:hover, .button-image:pressed, .button-image:focused {
     -fx-background-color: #0b0914;
     -fx-border-color: #bf5afe;
@@ -160,101 +147,87 @@
 
 .attachment-button {
     -fx-background-color: transparent;
-    -fx-border-color: #2a2040; /* Bordino scuro e super delicato */
+    -fx-border-color: #2a2040;
     -fx-border-width: 1.5;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-text-fill: #61567d; /* Testo grigio-bluastro opaco */
+    -fx-text-fill: #61567d;
     -fx-font-weight: bold;
     -fx-padding: 5 15 5 15;
     -fx-cursor: hand;
 }
 
-/* Leggerissimo feedback quando ci passi sopra */
 .attachment-button:hover {
     -fx-background-color: #151024;
     -fx-text-fill: #a29bb8;
 }
 
-/* =========================================
-   6. GRAFICI (PieChart & BarChart)
-   ========================================= */
+/* GRAFICI (PieChart & BarChart) */
 
-/* Rimuove lo sfondo grigiolino dietro le colonne del grafico a barre */
 .chart-plot-background {
     -fx-background-color: transparent;
 }
 
-/* Colora il testo degli Assi X e Y (Nomi utenti e Numeri) */
 .axis {
     -fx-tick-label-fill: #ffffff;
     -fx-font-size: 11px;
 }
 
-/* Colora le linee della griglia (usiamo il tuo prugna spento) */
 .chart-vertical-grid-lines, .chart-horizontal-grid-lines {
     -fx-stroke: #2a2240;
 }
 
-/* Colora i Titoli dei grafici */
 .chart-title {
     -fx-text-fill: #ffffff;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
 
-/* --- COLORI DEL BARCHART --- */
-/* .default-color0 è la prima (e unica) serie del tuo BarChart */
+/* COLORI DEL BARCHART */
 .default-color0.chart-bar {
-    -fx-bar-fill: #bf5afe; /* Colonne Viola Neon */
+    -fx-bar-fill: #bf5afe;
 }
 
 .default-color0.chart-bar:hover {
-    -fx-bar-fill: #d18dff; /* Si illumina ancora di più */
+    -fx-bar-fill: #d18dff;
     -fx-cursor: hand;
 }
 
-/* --- COLORI DEL PIECHART --- */
-/* JavaFX assegna default-color0 alla prima fetta, color1 alla seconda, ecc. */
+/* COLORI DEL PIECHART */
 .default-color0.chart-pie {
-    -fx-pie-color: #bf5afe; /* 1° Fetta: Viola Neon */
-    -fx-border-color: #0b0914; /* Bordin scuro per separare le fette */
+    -fx-pie-color: #bf5afe;
+    -fx-border-color: #0b0914;
     -fx-border-width: 2px;
 }
 
 .default-color1.chart-pie {
-    -fx-pie-color: #6a0dad; /* 2° Fetta: Viola Scuro */
+    -fx-pie-color: #6a0dad;
     -fx-border-color: #0b0914;
     -fx-border-width: 2px;
 }
 
 .default-color2.chart-pie {
-    -fx-pie-color: #3b2d59; /* 3° Fetta: Viola Opaco */
+    -fx-pie-color: #3b2d59;
     -fx-border-color: #0b0914;
     -fx-border-width: 2px;
 }
 
 .default-color3.chart-pie {
-    -fx-pie-color: #a29bb8; /* 4° Fetta: Grigio/Viola */
+    -fx-pie-color: #a29bb8;
     -fx-border-color: #0b0914;
     -fx-border-width: 2px;
 }
-/* =========================================
-   TENDINA A DISCESA DEI MENU BUTTON (Popup)
-   ========================================= */
 
-/* Sfondo e bordo del riquadro aperto */
 .context-menu {
     -fx-background-color: #151122;
     -fx-border-color: #3b2d59;
-    -fx-border-width: 1.5px;
+    -fx-border-width: 2px;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 5;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 5);
 }
 
-/* Singola riga (Bug, Feature, Question...) */
 .menu-item {
     -fx-background-color: transparent;
     -fx-background-radius: 6;
@@ -262,14 +235,12 @@
     -fx-cursor: hand;
 }
 
-/* Testo della singola riga */
 .menu-item .label {
     -fx-text-fill: #a29bb8;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
-/* Effetto quando passi sopra con il cursore (Hover) */
 .menu-item:hover, .menu-item:focused {
     -fx-background-color: #3b2d59;
 }
