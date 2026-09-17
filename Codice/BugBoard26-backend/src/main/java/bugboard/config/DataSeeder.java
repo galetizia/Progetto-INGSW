@@ -8,9 +8,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configurazione per popolare il database con dati essenziali.
+ * Viene eseguita da Spring Boot all'avvio dell'applicazione.
+ */
 @Configuration
 public class DataSeeder {
 
+    /**
+     * Inserisce nel database gli utenti di default (Admin, External e Internal)
+     * se non sono già presenti.
+     *
+     * @param authUserRepository La repository per gli utenti autenticati.
+     * @param passwordEncoder    Il codificatore per cifrare le password prima di salvarla.
+     * @return Il blocco di codice eseguito all'avvio da Spring.
+     */
     @Bean
     public CommandLineRunner inizializzaUtenteTest(
             AuthUserRepository authUserRepository,

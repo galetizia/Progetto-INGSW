@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
+
+/**
+ * Entità che rappresenta una issue all'interno del sistema e ne traccia l'intero ciclo di vita.
+ */
 @SuppressWarnings("unused")
 @Entity
 @Table(name = "issue")
