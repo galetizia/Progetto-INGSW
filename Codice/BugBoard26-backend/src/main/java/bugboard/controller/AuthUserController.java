@@ -20,7 +20,7 @@ public class AuthUserController {
     private final AuthUserService authUserService;
 
     /**
-     * Inizializza il controller passando il il service, necessario per le operazioni sugli utenti.
+     * Inizializza il controller passando il service, necessario per le operazioni sugli utenti.
      *
      * @param authUserService Il service che contiene la logica di business per gli utenti.
      */
@@ -32,7 +32,7 @@ public class AuthUserController {
      * Autentica un utente verificandone le credenziali e genera un token JWT.
      *
      * @param request Oggetto DTO contenente l'email e la password fornite dall'utente.
-     * @return Una risposta contenente il token JWT, il ruolo e l'ID dell'utente se il login ha successo,
+     * @return Una risposta contenente il token JWT, il ruolo e l'id dell'utente se il login ha successo,
      *         oppure un errore 401 (Unauthorized) se le credenziali sono errate.
      */
     @PostMapping("/login")
@@ -47,7 +47,7 @@ public class AuthUserController {
         }
     }
 
-    @PostMapping("/change_password")
+    @PostMapping("/cambia-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
             authUserService.changePassword(request.email(), request.oldPassword(), request.newPassword());
@@ -66,7 +66,7 @@ public class AuthUserController {
      * @return Messaggio di successo o errore.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/crea_utenti")
+    @PostMapping("/crea-utenti")
     public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request) {
         try {
             authUserService.registerAuthUser(request.email(), request.password(), request.ruolo());
@@ -83,7 +83,7 @@ public class AuthUserController {
      * @return Messaggio di conferma del cambio di stato o errore se l'utente non viene trovato.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}/cambia_stato")
+    @PutMapping("/{id}/cambia-stato")
     public ResponseEntity<String> changeState(@PathVariable int id) {
         try {
             authUserService.cambiaStatoUtente(id);
@@ -110,7 +110,7 @@ public class AuthUserController {
      * @return Una mappa con l'email dell'utente come chiave e il conteggio delle issue risolte.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/resolved_issues")
+    @GetMapping("/issue-risolte")
     public ResponseEntity<Map<String, Integer>> getRisoltePerUser() {
         return  ResponseEntity.ok(authUserService.getRisoltePerUser());
     }
@@ -122,7 +122,7 @@ public class AuthUserController {
      * @return Una mappa con l'email dell'utente come chiave e il tempo medio di risoluzione (in ore).
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/time_per_user")
+    @GetMapping("/tempo-per-user")
     public ResponseEntity<Map<String, Double>> getTimePerUser() {
         return ResponseEntity.ok(authUserService.getTimePerUser());
     }
@@ -132,7 +132,7 @@ public class AuthUserController {
      *
      * @return Una lista di oggetti AuthUser.
      */
-    @GetMapping("/elenco_utenti")
+    @GetMapping("/elenco-utenti")
     public ResponseEntity<List<AuthUser>> getUsers() {
         return ResponseEntity.ok(authUserService.getAllUsers());
     }

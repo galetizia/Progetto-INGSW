@@ -17,8 +17,10 @@ public class VBoxVisibility {
         Stage stage = (Stage) colonnaTrue.getScene().getWindow();
 
         if (!isVisible) {
-            colonnaFalse.setVisible(false);
-            colonnaFalse.setManaged(false);
+            if(colonnaFalse != null) {
+                colonnaFalse.setVisible(false);
+                colonnaFalse.setManaged(false);
+            }
 
             colonnaTrue.setOpacity(0.0);
             colonnaTrue.setVisible(true);

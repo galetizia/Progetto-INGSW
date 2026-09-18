@@ -41,6 +41,9 @@ public class CreazioneUtenteController {
 
     @FXML
     protected void onConfermaButtonClick() {
+        Stage stage =  (Stage) confermaButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return ;
+
         String email = emailField.getText();
         String password = passwordField.getText();
 
@@ -57,10 +60,12 @@ public class CreazioneUtenteController {
             return;
         }
 
-        boolean success = authClient.registerUser(email, password, ruoloScelto);
+        Validator.backEndValidator(() -> {
+            boolean success = authClient.registerUser(email, password, ruoloScelto);
 
-        if (success) chiudiFinestra();
-        else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
+            if (success) chiudiFinestra();
+            else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
+        });
     }
 
     @FXML

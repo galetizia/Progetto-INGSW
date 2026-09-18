@@ -76,21 +76,25 @@ public class IssueTableHelper {
             @Override
             protected void updateItem(LocalDateTime date, boolean empty) {
                 super.updateItem(date, empty);
-                if (empty || date == null || getTableRow() == null || getTableRow().getItem() == null) {
+
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
                     setText(null);
                     return;
                 }
 
                 Issue issue = getTableRow().getItem();
-                if (isArchiviati) {
-                    boolean isRisolto = "RISOLTO".equalsIgnoreCase(issue.getStato());
-                    setText(isRisolto ? formatter.format(date) : "-");
-                } else {
-                    setText(formatter.format(date));
-                }
+                setText(isArchivioData(issue, date, isArchiviati));
             }
         });
         return colonna;
+    }
+
+    private static String isArchivioData(Issue issue, LocalDateTime date, boolean isArchiviati) {
+        if (!isArchiviati) {
+            return date != null ? formatter.format(date) : "";
+        }
+        boolean isRisolto = "RISOLTO".equalsIgnoreCase(issue.getStato());
+        return (isRisolto && date!=null) ? formatter.format(date) : "-";
     }
 
 

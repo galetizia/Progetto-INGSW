@@ -45,15 +45,15 @@ public class LoginController {
             }
         } catch (IllegalAccessException e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Accesso negato!", e.getMessage());
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
 
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore di Sistema", "Impossibile contattare il server. Riprova più tardi.");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 }

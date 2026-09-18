@@ -77,19 +77,29 @@ public class GestioneUtentiController {
 
     @FXML
     protected void onStatoIssueButtonClick(){
-        Map<String, Integer> dataStates = issueClient.countIssueStates();
-        ObservableList<PieChart.Data> issueStates = DiagramDataLoader.configuraDiagrammaStatoIssueAttive(dataStates);
-        bugChart.setData(issueStates);
-        bugChart.setTitle("Stato Issue Attive");
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
+        Validator.backEndValidator(() -> {
+            Map<String, Integer> dataStates = issueClient.countIssueStates();
+            ObservableList<PieChart.Data> issueStates = DiagramDataLoader.configuraDiagrammaStatoIssueAttive(dataStates);
+            bugChart.setData(issueStates);
+            bugChart.setTitle("Stato Issue Attive");
+        });
     }
 
 
     @FXML
     protected void onTipoIssueButtonClick(){
-        Map<String, Integer> issuesType = issueClient.countIssueTypes();
-        ObservableList<PieChart.Data> issueTypes = DiagramDataLoader.configuraDiagrammaTipoIssueAttive(issuesType);
-        bugChart.setData(issueTypes);
-        bugChart.setTitle("Tipologia Issue");
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
+        Validator.backEndValidator(() -> {
+            Map<String, Integer> issuesType = issueClient.countIssueTypes();
+            ObservableList<PieChart.Data> issueTypes = DiagramDataLoader.configuraDiagrammaTipoIssueAttive(issuesType);
+            bugChart.setData(issueTypes);
+            bugChart.setTitle("Tipologia Issue");
+        });
     }
 
 
@@ -101,61 +111,83 @@ public class GestioneUtentiController {
 
     @FXML
     protected void onTempoButtonClick() {
-        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
-        bugPerUserChart.getData().clear();
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
 
-        Map<String, Double> dataTimes = authClient.getTimePerUser();
+        Validator.backEndValidator(() -> {
+            ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
+            bugPerUserChart.getData().clear();
 
-        String textMedia = DiagramDataLoader.calcoloTempoMedio(dataTimes);
-        XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiTempoMedio(dataTimes);
+            Map<String, Double> dataTimes = authClient.getTimePerUser();
 
-        DiagramDataLoader.configuraDiagrammaTempoMedio(bugPerUserChart, textMedia);
+            String textMedia = DiagramDataLoader.calcoloTempoMedio(dataTimes);
+            XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiTempoMedio(dataTimes);
 
-        bugPerUserChart.getData().add(series);
+            DiagramDataLoader.configuraDiagrammaTempoMedio(bugPerUserChart, textMedia);
+
+            bugPerUserChart.getData().add(series);
+        });
     }
 
     @FXML
     protected void onIssueAssegnateButtonClick(){
-        Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
 
-        XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiIssueAssegnate(issuesPerUser);
+        Validator.backEndValidator(() -> {
+            Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
 
-        DiagramDataLoader.configuraDiagrammaIssueAssegnate(bugPerUserChart);
+            XYChart.Series<String, Number> series = DiagramDataLoader.preparaDatiIssueAssegnate(issuesPerUser);
 
-        ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
-        bugPerUserChart.getData().clear();
-        bugPerUserChart.getData().add(series);
+            DiagramDataLoader.configuraDiagrammaIssueAssegnate(bugPerUserChart);
+
+            ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
+            bugPerUserChart.getData().clear();
+            bugPerUserChart.getData().add(series);
+        });
     }
 
     @FXML
     protected void onVisualizzaDashboardButtonClick() {
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         VBoxVisibility.visibility(colonnaDashboard, colonnaGestione, this::popolaDashboard);
     }
 
     @FXML
     protected void onGestioneUtentiButtonClick(){
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         VBoxVisibility.visibility(colonnaGestione, colonnaDashboard, () ->
-                UserDataLoader.loadUserData(masterData));
+                Validator.backEndValidator(() -> UserDataLoader.loadUserData(masterData)));
     }
 
     @FXML
     protected void onCreaUtenteButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        WindowHelper.apriCreazioneUtente(stage, () -> UserDataLoader.loadUserData(masterData));
+        if(!Validator.sessionValidator(stage)) return;
+
+        WindowHelper.apriCreazioneUtente(stage, () -> Validator.backEndValidator(() -> UserDataLoader.loadUserData(masterData)));
     }
 
     @FXML
     protected void onCambiaStatoButtonClick() {
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         AuthUser userSelezionato = utentiTable.getSelectionModel().getSelectedItem();
-        UserActionHandler.cambiaStatoAccount(userSelezionato, () ->
-                UserDataLoader.loadUserData(masterData));
+        if(userSelezionato == null) return;
+
+        Validator.backEndValidator(() ->
+                UserActionHandler.cambiaStatoAccount(userSelezionato, () -> UserDataLoader.loadUserData(masterData)));
     }
 
     @FXML
     protected void onIndietroButtonClick() {
-            Stage stage = (Stage) indietroButton.getScene().getWindow();
-            WindowHelper.apriHome(stage, Ruolo.ADMIN);
+        Stage stage = (Stage) indietroButton.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+        WindowHelper.apriHome(stage, Ruolo.ADMIN);
     }
-
-
 }

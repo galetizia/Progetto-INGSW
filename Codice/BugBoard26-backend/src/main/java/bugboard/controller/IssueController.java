@@ -41,7 +41,7 @@ public class IssueController {
      * @param file        L'eventuale file multimediale allegato (opzionale).
      * @return Un messaggio di conferma della creazione, o un errore 400 in caso di dati non validi o problemi di I/O.
      */
-    @PostMapping("/nuovaIssue")
+    @PostMapping("/nuova-issue")
     public ResponseEntity<String> nuovaIssue(@RequestParam("titolo") String titolo,
                                              @RequestParam("descrizione") String descrizione,
                                              @RequestParam("tipologia") TipoIssue tipologia,
@@ -61,7 +61,7 @@ public class IssueController {
      *
      * @return Una lista contenente tutte le issue.
      */
-    @GetMapping("/elenco_issue")
+    @GetMapping("/elenco-issue")
     public ResponseEntity<List<Issue>> elencoIssue() {
             return ResponseEntity.ok(issueService.elencoIssue());
     }
@@ -72,7 +72,7 @@ public class IssueController {
      *
      * @return Una mappa che associa ogni stato al relativo numero di issue.
      */
-    @GetMapping("/countIssueStates")
+    @GetMapping("/count-issue-states")
     public ResponseEntity<Map<String, Integer>> countIssueStates() {
         return ResponseEntity.ok(issueService.countIssueStates());
     }
@@ -83,7 +83,7 @@ public class IssueController {
      *
      * @return Una mappa che associa ogni tipologia al relativo numero di issue.
      */
-    @GetMapping("/countIssueTypes")
+    @GetMapping("/count-issue-types")
     public ResponseEntity<Map<String, Integer>> countIssueTypes() {
         return ResponseEntity.ok(issueService.countIssueTypes());
     }
@@ -97,7 +97,7 @@ public class IssueController {
      * @param principal L'oggetto passato da Spring Security che indica l'utente attualmente loggato.
      * @return Messaggio di conferma o errore nel caso l'issue non sia trovabile.
      */
-    @PostMapping("/{id}/prendiInCarico")
+    @PostMapping("/{id}/prendi-in-carico")
     public ResponseEntity<String> prendiInCarico(@PathVariable int id, Principal principal){
         try{
             String email = principal.getName();

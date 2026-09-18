@@ -62,7 +62,7 @@ public class IssueClient {
 
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "nuovaIssue"))
+                    .uri(URI.create(BASE_URL + "nuova-issue"))
                     .header("Content-Type", "multipart/form-data; boundary=" + boundary)
                     .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.ofByteArrays(data))
@@ -83,7 +83,7 @@ public class IssueClient {
 
     public boolean prendiInCarico(int issueId){
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + issueId + "/prendiInCarico"))
+                .uri(URI.create(BASE_URL + issueId + "/prendi-in-carico"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
@@ -133,7 +133,7 @@ public class IssueClient {
 
     public List<Issue> elencoIssue() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "elenco_issue"))
+                .uri(URI.create(BASE_URL + "elenco-issue"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET()
                 .build();
@@ -143,7 +143,7 @@ public class IssueClient {
 
     public Map<String, Integer> countIssueStates() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "countIssueStates"))
+                .uri(URI.create(BASE_URL + "count-issue-states"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET()
                 .build();
@@ -153,7 +153,7 @@ public class IssueClient {
 
     public Map<String, Integer> countIssueTypes() {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "countIssueTypes"))
+                .uri(URI.create(BASE_URL + "count-issue-types"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET()
                 .build();

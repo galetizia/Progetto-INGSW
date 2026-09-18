@@ -6,6 +6,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.bugboard26frontend.helper.IssueActionHandler;
 import org.example.bugboard26frontend.helper.MyAlert;
+import org.example.bugboard26frontend.helper.Validator;
 
 import java.io.File;
 
@@ -90,6 +91,10 @@ public class SegnalazioneIssueController {
 
     @FXML
     protected void onConfermaButtonClick(){
+        Stage stage = (Stage) confermaButton.getScene().getWindow();
+
+        if(!Validator.sessionValidator(stage)) return;
+
         String titolo = titoloField.getText();
         String descrizione = descrizioneField.getText();
 
@@ -98,10 +103,10 @@ public class SegnalazioneIssueController {
             return;
         }
 
-        IssueActionHandler.creazioneIssue(titolo, descrizione, prioritaScelta, tipologiaScelta, file, () -> {
-                Stage stage = (Stage) confermaButton.getScene().getWindow();
-                stage.close();
-        });
+        Validator.backEndValidator(() ->
+                IssueActionHandler.creazioneIssue(titolo, descrizione, prioritaScelta, tipologiaScelta, file, () -> {
+                    stage.close();
+                }));
     }
 
 

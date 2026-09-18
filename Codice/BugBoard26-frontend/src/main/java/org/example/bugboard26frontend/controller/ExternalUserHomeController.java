@@ -36,9 +36,7 @@ public class ExternalUserHomeController {
     @FXML
     public void initialize() {
         IssueTableHelper.configuraTabella(issueTable, Ruolo.EXTERNAL_USER, false);
-
         FiltroEOrdinaHelper.configuraFiltroEOrdine(issueTable, masterData, filtroChoiceBox, ordinaChoiceBox, Ruolo.EXTERNAL_USER);
-
 
         issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             if(newValue != null) {
@@ -55,13 +53,19 @@ public class ExternalUserHomeController {
 
     @FXML
     protected void onElencoBugButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return ;
+
         VBoxVisibility.visibility(colonnaSinistra, null, () ->
-                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false));
+                Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.EXTERNAL_USER, masterData, false)));
     }
 
 
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return ;
+
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
         Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
         WindowHelper.apriAllegato(issue, mainWindow);
@@ -69,6 +73,7 @@ public class ExternalUserHomeController {
 
     @FXML
     protected void onLogoutButtonClick() {
+
         AuthSession.getInstance().clearSession();
         Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
         WindowHelper.tornaAlLogin(stage);
@@ -76,6 +81,9 @@ public class ExternalUserHomeController {
 
     @FXML
     protected void onCambioPasswordButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return ;
+
         CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
         cambioPassword.mostra();
     }

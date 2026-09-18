@@ -15,11 +15,6 @@ import org.example.bugboard26frontend.helper.*;
 
 public class AdminHomeController {
     @FXML
-    private MenuItem logoutButton;
-
-    @FXML
-    private Button elencoButton;
-    @FXML
     private Button segnalaComeDuplicatoButton;
 
     @FXML
@@ -84,33 +79,49 @@ public class AdminHomeController {
 
     @FXML
     public void onElencoIssueButtonClick(){
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         VBoxVisibility.visibility(colonnaSinistra, colonnaDestra, () ->
-                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false));
+            Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false)));
     }
 
 
     @FXML
     protected void onArchivioBugButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         VBoxVisibility.visibility(colonnaDestra, colonnaSinistra, () ->
-                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true));
+                Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true)));
     }
 
 
     @FXML
     protected void onCambioPasswordButtonClick(){
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
         cambioPassword.mostra();
+
     }
 
 
 
     public void onSegnalaIssueButtonClick(){
-        WindowHelper.apriSegnalazione(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false));
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
+        WindowHelper.apriSegnalazione(() -> Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false)));
     }
 
 
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
         Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
         WindowHelper.apriAllegato(issue, mainWindow);
@@ -118,60 +129,73 @@ public class AdminHomeController {
 
     @FXML
     protected void onLogoutButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         AuthSession.getInstance().clearSession();
-        Stage stage = (Stage) logoutButton.getParentPopup().getOwnerWindow();
         WindowHelper.tornaAlLogin(stage);
     }
 
 
     @FXML
     public void handleArchiviaIssue() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
-        IssueActionHandler.archivia(issueSelezionata, () -> {
-            IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false);
-            if (colonnaDestra.isVisible()) {
-                IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true);
-            }
-            archiviaIssueButton.setDisable(true);
-            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-
-        });
+        Validator.backEndValidator(() ->
+                IssueActionHandler.archivia(issueSelezionata, () -> {
+                    IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false);
+                    if (colonnaDestra.isVisible()) {
+                        IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true);
+                    }
+                    archiviaIssueButton.setDisable(true);
+                    javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+                })
+        );
     }
 
     @FXML
     protected void onSegnalaComeDuplicatoButtonClick(){
-        Issue issue = issueTable.getSelectionModel().getSelectedItem();
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
 
-        if (issue == null) return;
+        Validator.backEndValidator(() -> {
+            Issue issue = issueTable.getSelectionModel().getSelectedItem();
 
-        Alert confirmDelete = MyAlert.mostraAlertConfirmation(
-                "Conferma eliminazione",
-                "Segnalazione Issue",
-                "Sei sicuro di voler segnalare la issue come duplicata?\n\nATTENZIONE: Questa operazione eliminerà definitivamente la issue e non potrà essere recuperata.");
+            if (issue == null) return;
 
-        confirmDelete.showAndWait().ifPresent(response -> {
-            if(response == ButtonType.OK){
+            Alert confirmDelete = MyAlert.mostraAlertConfirmation(
+                    "Conferma eliminazione",
+                    "Segnalazione Issue",
+                    "Sei sicuro di voler segnalare la issue come duplicata?\n\nATTENZIONE: Questa operazione eliminerà definitivamente la issue e non potrà essere recuperata.");
 
-                boolean success = issueClient.eliminaIssue(issue.getId());
-                if(success){
-                    masterData.remove(issue);
-                    segnalaComeDuplicatoButton.setDisable(true);
-                    archiviaIssueButton.setDisable(true);
-                    visualizzaAllegatoButton.setDisable(true);
+            confirmDelete.showAndWait().ifPresent(response -> {
+                if(response == ButtonType.OK){
 
-                    MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue eliminata con successo.");
-                } else {
-                    MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile eliminare issue. Verifica la connessione al server.");
+                    boolean success = issueClient.eliminaIssue(issue.getId());
+                    if(success){
+                        masterData.remove(issue);
+                        segnalaComeDuplicatoButton.setDisable(true);
+                        archiviaIssueButton.setDisable(true);
+                        visualizzaAllegatoButton.setDisable(true);
+
+                        MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue eliminata con successo.");
+                    } else {
+                        MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile eliminare issue. Verifica la connessione al server.");
+                    }
                 }
-            }
-            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+                javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+            });
         });
     }
 
     @FXML
     protected void onGestioneUtentiButtonClick(){
-        Stage stage = (Stage) elencoButton.getScene().getWindow();
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(!Validator.sessionValidator(stage)) return;
+
         WindowHelper.apriGestioneUtenti(stage);
     }
 }

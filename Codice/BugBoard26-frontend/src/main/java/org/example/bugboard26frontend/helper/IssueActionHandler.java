@@ -45,24 +45,25 @@ public class IssueActionHandler {
         if (issue == null || !AuthSession.getInstance().isLoggedIn()) {
             return;
         }
+        boolean success = false;
 
         if ("TO_DO".equalsIgnoreCase(issue.getStato())) {
-            boolean success = issueClient.prendiInCarico(issue.getId());
+            success = issueClient.prendiInCarico(issue.getId());
             if (success) {
                 MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Hai preso in carico la issue #" + issue.getId());
-                if (onSuccess != null) onSuccess.run();
             } else {
                 MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile prendere in carico la issue.");
             }
         }
         else if ("ASSEGNATO".equalsIgnoreCase(issue.getStato())) {
-            boolean success = issueClient.risolviIssue(issue.getId());
+            success = issueClient.risolviIssue(issue.getId());
             if (success) {
                 MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Issue #" + issue.getId() + " segnata come Risolta!");
             } else {
                 MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Impossibile risolvere la issue.");
             }
         }
+        if(success && onSuccess != null) onSuccess.run();
     }
 
 

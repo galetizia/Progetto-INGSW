@@ -81,7 +81,7 @@ public class AuthClient {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "change_password"))
+                    .uri(URI.create(BASE_URL + "cambia-password"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                     .POST(HttpRequest.BodyPublishers.ofString(json))
@@ -102,7 +102,7 @@ public class AuthClient {
 
     public List<AuthUser> getUsers(){
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "elenco_utenti"))
+                .uri(URI.create(BASE_URL + "elenco-utenti"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET().build();
         return SendRequest.sendRequestGet(request, new TypeReference<List<AuthUser>>() {}, new ArrayList<>(), client);
@@ -120,7 +120,7 @@ public class AuthClient {
 
     public Map<String, Integer> getRisoltePerUser(){
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "resolved_issues"))
+                .uri(URI.create(BASE_URL + "issue-risolte"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET().build();
         return SendRequest.sendRequestGet(request, new TypeReference<Map<String, Integer>>(){}, new HashMap<>(), client);
@@ -129,7 +129,7 @@ public class AuthClient {
 
     public Map<String, Double> getTimePerUser(){
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "time_per_user"))
+                .uri(URI.create(BASE_URL + "tempo-per-user"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .GET().build();
         return SendRequest.sendRequestGet(request, new TypeReference<Map<String, Double>>() {}, new HashMap<>(), client);
@@ -146,7 +146,7 @@ public class AuthClient {
                 """.formatted(email, password, ruolo);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "crea_utenti"))
+                .uri(URI.create(BASE_URL + "crea-utenti"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .POST(HttpRequest.BodyPublishers.ofString(json))
@@ -168,7 +168,7 @@ public class AuthClient {
 
     public boolean cambiaStatoUtente(int id) {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + id + "/cambia_stato"))
+                .uri(URI.create(BASE_URL + id + "/cambia-stato"))
                 .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
