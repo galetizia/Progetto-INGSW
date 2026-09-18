@@ -5,9 +5,18 @@ import client.AuthSession;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+/**
+ * Finestra di dialogo JavaFX che permette all'utente attualmente autenticato di modificare la propria password.
+ * Gestisce l'interfaccia grafica di input e delega la logica di aggiornamento al client di autenticazione.
+ */
 public class CambioPasswordDialog {
     private static final AuthClient authClient = new AuthClient();
 
+    /**
+     * Costruisce e mostra a schermo la finestra per il cambio password.
+     * Precompila il campo email leggendo i dati dalla sessione corrente e vincola l'abilitazione
+     * del pulsante di conferma alla compilazione di tutti i campi obbligatori.
+     */
     public void mostra() {
 
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -60,6 +69,14 @@ public class CambioPasswordDialog {
         });
     }
 
+    /**
+     * Gestisce la logica successiva al click sul pulsante di conferma, inviando la richiesta
+     * al server tramite AuthClient e mostrando un alert visivo con il risultato dell'operazione.
+     *
+     * @param email       L'email dell'utente in sessione, non modificabile.
+     * @param oldPassword La password attuale inserita dall'utente.
+     * @param newPassword La nuova password desiderata.
+     */
     private void gestioneConferma(String email, String oldPassword, String newPassword) {
 
         boolean success = authClient.changePassword(email, oldPassword, newPassword);

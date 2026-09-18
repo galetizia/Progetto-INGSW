@@ -47,6 +47,12 @@ public class AuthUserController {
         }
     }
 
+    /**
+     * Permette a un utente di aggiornare la propria password verificando prima quella attuale.
+     *
+     * @param request Oggetto DTO contenente l'email dell'utente, la vecchia password e la nuova password.
+     * @return Una risposta di successo o un messaggio di errore (Bad Request) in caso di dati non validi.
+     */
     @PostMapping("/cambia-password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
         try {

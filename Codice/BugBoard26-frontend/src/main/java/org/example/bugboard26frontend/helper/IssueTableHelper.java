@@ -12,12 +12,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Classe Helper responsabile della configurazione e formattazione visiva della tabella delle issue.
+ * Gestisce la creazione delle colonne, il binding dei dati e la personalizzazione grafica delle celle (es. formattazione date, inserimento di emoji negli stati).
+ */
 public class IssueTableHelper {
 
     private IssueTableHelper() {}
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    /**
+     * Pulisce e configura la struttura della tabella JavaFX, instanziando e dimensionando dinamicamente
+     * le colonne in base alla schermata corrente ed ai permessi dell'utente.
+     *
+     * @param tabella      L'oggetto TableView grafico da configurare.
+     * @param ruolo        Il ruolo dell'utente loggato, necessario per personalizzare la visibilità di alcuni stati.
+     * @param isArchiviati Booleano che indica se la tabella sta mostrando l'archivio (true) o le issue attive (false).
+     */
     public static void configuraTabella(TableView<Issue> tabella, Ruolo ruolo, boolean isArchiviati){
         tabella.getColumns().clear();
         tabella.setPrefHeight(321);
@@ -36,7 +48,17 @@ public class IssueTableHelper {
         ));
     }
 
-
+    /**
+     * Metodo di supporto per snellire la creazione di colonne standard.
+     * Collega automaticamente la colonna alla proprietà corrispondente nel modello (Issue).
+     *
+     * @param titolo   L'intestazione testuale della colonna.
+     * @param property Il nome esatto dell'attributo nella classe Issue (es. "titolo").
+     * @param minWidth La larghezza minima garantita della colonna.
+     * @param maxWidth La larghezza massima consentita (se > 0).
+     * @param <T>      Il tipo di dato contenuto nella colonna (es. String, Integer).
+     * @return La colonna configurata e pronta da aggiungere alla tabella.
+     */
     private static <T> TableColumn<Issue, T> createColumnSemplice(String titolo, String property, double minWidth, double maxWidth) {
         TableColumn<Issue, T> column = new TableColumn<>(titolo);
         column.setCellValueFactory(new PropertyValueFactory<>(property));
@@ -45,7 +67,12 @@ public class IssueTableHelper {
         return column;
     }
 
-
+    /**
+     * Crea e formatta la colonna "Priorità".
+     * Nasconde il valore di sistema "no" dietro a un trattino visivo ("-") per una UI più pulita.
+     *
+     * @return La colonna formattata per la priorità.
+     */
     private static TableColumn<Issue, String> createColumnPriorita(){
         TableColumn<Issue, String> prioritaColumn = createColumnSemplice("Priorita", "priorita", 80, -1);
         prioritaColumn.setStyle("-fx-alignment: CENTER;");
@@ -64,7 +91,13 @@ public class IssueTableHelper {
         return prioritaColumn;
     }
 
-
+    /**
+     * Crea la colonna per le date, adattandosi dinamicamente al contesto.
+     * Se siamo nell'archivio mostra la Data Risoluzione, altrimenti la Data di creazione.
+     *
+     * @param isArchiviati Indica se la tabella è in modalità archivio.
+     * @return La colonna per le date configurata.
+     */
     private static TableColumn<Issue, LocalDateTime> creaColonnaData(boolean isArchiviati) {
         String titolo = isArchiviati ? "Data Risoluzione" : "Data";
         String property = isArchiviati ? "dataRisoluzione" : "data";
@@ -89,6 +122,16 @@ public class IssueTableHelper {
         return colonna;
     }
 
+    /**
+     * Logica di estrazione e formattazione della data.
+     * Converte l'oggetto LocalDateTime in una stringa leggibile (dd/MM/yyyy HH:mm).
+     * Nel caso dell'archivio, gestisce eventuali anomalie in cui una issue non ha una data di risoluzione valida.
+     *
+     * @param issue        La issue in analisi.
+     * @param date         Il valore della data da parsare.
+     * @param isArchiviati Indica il contesto di visualizzazione.
+     * @return La stringa formattata da mostrare nella cella.
+     */
     private static String isArchivioData(Issue issue, LocalDateTime date, boolean isArchiviati) {
         if (!isArchiviati) {
             return date != null ? formatter.format(date) : "";
@@ -97,7 +140,14 @@ public class IssueTableHelper {
         return (isRisolto && date!=null) ? formatter.format(date) : "-";
     }
 
-
+    /**
+     * Crea la colonna che mostra lo stato di avanzamento della issue, applicando
+     * trasformazioni grafiche tramite una CellFactory personalizzata.
+     *
+     * @param ruolo        Il ruolo dell'utente loggato.
+     * @param isArchiviati Indica se la tabella archivio è attiva o meno.
+     * @return La colonna configurata per mostrare lo stato.
+     */
     private static TableColumn<Issue, String> creaColonnaStato(Ruolo ruolo, boolean isArchiviati) {
         TableColumn<Issue, String> colonna = createColumnSemplice("Stato", "stato", 100, -1);
 
@@ -116,7 +166,17 @@ public class IssueTableHelper {
         return colonna;
     }
 
-
+    /**
+     * Valuta lo stato grezzo della issue e lo converte in un'etichetta user-friendly.
+     * Aggiunge icone visive per un'immediata comprensione. Se una issue è assegnata all'utente che sta
+     * guardando lo schermo, le cambia l'etichetta in "👤 IN LAVORAZIONE".
+     *
+     * @param stato        Lo stato salvato a database.
+     * @param issue        L'oggetto issue completo per verifiche incrociate (es. l'assegnatario).
+     * @param ruolo        Il ruolo dell'utente.
+     * @param isArchiviati Il flag che indica la vista corrente.
+     * @return La stringa finale (arricchita di emoji) da mostrare nella UI.
+     */
     private static String ottieniTestoStato(String stato, Issue issue, Ruolo ruolo, boolean isArchiviati) {
         String statoUpper = stato.toUpperCase();
 
