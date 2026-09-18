@@ -20,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     /**
-     * L''algoritmo per l'hashing delle password.
+     * L''algoritmo di hashing delle password.
      *
      * @return L'istanza di BCrypt utilizzata per cifrare e confrontare le password.
      */

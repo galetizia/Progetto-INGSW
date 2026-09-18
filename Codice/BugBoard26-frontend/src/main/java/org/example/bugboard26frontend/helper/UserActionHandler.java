@@ -21,6 +21,7 @@ public class UserActionHandler {
      * @param user      L'utente selezionato di cui si desidera modificare lo stato di accesso.
      * @param onSuccess L'azione di callback da eseguire in caso di successo.
      */
+
     public static void cambiaStatoAccount(AuthUser user, Runnable onSuccess){
         if(user == null) return;
 

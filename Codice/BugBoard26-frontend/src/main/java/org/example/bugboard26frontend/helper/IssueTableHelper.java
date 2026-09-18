@@ -132,6 +132,7 @@ public class IssueTableHelper {
      * @param isArchiviati Indica il contesto di visualizzazione.
      * @return La stringa formattata da mostrare nella cella.
      */
+
     private static String isArchivioData(Issue issue, LocalDateTime date, boolean isArchiviati) {
         if (!isArchiviati) {
             return date != null ? formatter.format(date) : "";

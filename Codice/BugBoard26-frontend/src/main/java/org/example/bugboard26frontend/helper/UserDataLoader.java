@@ -24,6 +24,7 @@ public class UserDataLoader {
      * @param masterData La lista osservabile (collegata alla UI) da popolare con gli oggetti utente completi di statistiche.
      */
     public static void loadUserData(ObservableList<AuthUser> masterData) {
+
         List<AuthUser> users = authClient.getUsers();
         Map<String , Integer> issueRisoltePerUser = authClient.getRisoltePerUser();
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();

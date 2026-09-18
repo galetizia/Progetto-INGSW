@@ -180,6 +180,7 @@ public class DiagramDataLoader {
      * @param dataTimes Mappa dei tempi medi per singolo utente (in ore).
      * @return Una stringa formattata nel formato "ore minuti" (es. "2h 30m"). Restituisce "0m" se non ci sono dati.
      */
+
     public static String calcoloTempoMedio(Map<String, Double> dataTimes) {
         double oreTot = 0.0;
         int utentiValidi = 0;

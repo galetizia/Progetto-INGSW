@@ -58,7 +58,7 @@ public class WindowHelper {
             }
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -78,7 +78,7 @@ public class WindowHelper {
                 imgStage.showAndWait();
             } catch (Exception e){
                 MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-                logger.error(e.getMessage());
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -136,7 +136,7 @@ public class WindowHelper {
             stageAttuale.centerOnScreen();
         } catch (Exception e){
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -171,7 +171,7 @@ public class WindowHelper {
 
         } catch (IOException e){
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -204,7 +204,7 @@ public class WindowHelper {
 
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -214,6 +214,7 @@ public class WindowHelper {
      *
      * @param stage La finestra su cui applicare il cambio di scena.
      */
+
     public static void apriGestioneUtenti(Stage stage){
         try{
             FXMLLoader loader = new FXMLLoader(WindowHelper.class.getResource("/org/example/bugboard26frontend/gestione-utenti-view.fxml"));
@@ -229,9 +230,8 @@ public class WindowHelper {
             stage.centerOnScreen();
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
-
 
 }

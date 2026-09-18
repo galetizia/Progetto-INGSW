@@ -42,7 +42,7 @@ public class CreazioneUtenteController {
     @FXML
     protected void onConfermaButtonClick() {
         Stage stage =  (Stage) confermaButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return ;
+        if(Validator.sessionInvalid(stage)) return;
 
         String email = emailField.getText();
         String password = passwordField.getText();
@@ -52,20 +52,20 @@ public class CreazioneUtenteController {
             return;
         }
 
-        Validator.emailValidator(email);
-        Validator.passwordValidator(password);
 
         if(ruoloScelto.isEmpty()) {
             MyAlert.mostraAlert(Alert.AlertType.WARNING, "Attenzione!", "Selezionare un ruolo dal menu a tendina.");
             return;
         }
 
-        Validator.backEndValidator(() -> {
-            boolean success = authClient.registerUser(email, password, ruoloScelto);
+        if(Validator.emailValidator(email) && Validator.passwordValidator(password)){
+            Validator.backEndValidator(() -> {
+                boolean success = authClient.registerUser(email, password, ruoloScelto);
 
-            if (success) chiudiFinestra();
-            else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
-        });
+                if (success) chiudiFinestra();
+                else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
+            });
+        }
     }
 
     @FXML
