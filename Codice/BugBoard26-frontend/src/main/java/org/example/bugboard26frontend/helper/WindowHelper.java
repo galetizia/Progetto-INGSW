@@ -24,6 +24,10 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+/**
+ * Classe Helper responsabile della navigazione e della gestione delle finestre in JavaFX.
+ * Centralizza il caricamento dei file FXML, l'inizializzazione dei Controller grafici e l'apertura delle finestre modali.
+ */
 public class WindowHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(WindowHelper.class);
@@ -31,6 +35,11 @@ public class WindowHelper {
     private WindowHelper() {}
 
 
+    /**
+     * Carica e mostra in sovrimpressione la schermata per la creazione di una nuova Issue.
+     *
+     * @param azioneDopoChiusura Azione opzionale da eseguire quando l'utente chiude la finestra.
+     */
     public static void apriSegnalazione(Runnable azioneDopoChiusura){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(WindowHelper.class.getResource("/org/example/bugboard26frontend/segnalazione-issue-view.fxml"));
@@ -54,6 +63,13 @@ public class WindowHelper {
     }
 
 
+    /**
+     * Verifica la presenza di un file allegato associato alla issue e, in caso affermativo,
+     * apre una nuova finestra dedicata esclusivamente alla sua visualizzazione.
+     *
+     * @param issue      La segnalazione contenente l'allegato da mostrare.
+     * @param mainWindow La finestra genitore su cui ancorare il pop-up.
+     */
     public static void apriAllegato(Issue issue, Window mainWindow){
 
         if(issue != null && issue.getAllegato()!=null) {
@@ -67,7 +83,14 @@ public class WindowHelper {
         }
     }
 
-
+    /**
+     * Metodo di supporto che converte l'array di byte dell'allegato in un'immagine renderizzabile da JavaFX
+     * e prepara la finestra con le corrette proporzioni e stili per la visualizzazione.
+     *
+     * @param issue      La segnalazione contenente i dati grezzi dell'immagine.
+     * @param mainWindow La finestra principale.
+     * @return Lo Stage configurato e pronto per essere mostrato a schermo.
+     */
     private static Stage creaStageAllegato(Issue issue, Window mainWindow){
             byte[] data = issue.getAllegato().getContenuto();
             ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -92,6 +115,12 @@ public class WindowHelper {
     }
 
 
+    /**
+     * Sostituisce la scena della finestra attuale con la schermata di Login.
+     * Reinizializza il controller dedicato e ricalcola le dimensioni della finestra per adattarle alla nuova UI.
+     *
+     * @param stageAttuale La finestra attualmente visibile su cui effettuare il cambio di scena.
+     */
     public static void tornaAlLogin(Stage stageAttuale){
         try{
             FXMLLoader loader = new FXMLLoader(WindowHelper.class.getResource("/org/example/bugboard26frontend/login-view.fxml"));
@@ -112,6 +141,13 @@ public class WindowHelper {
     }
 
 
+    /**
+     * Carica dinamicamente la dashboard principale corretta (Admin, Internal User o External User)
+     * in base al ruolo specificato, sostituendo la scena corrente.
+     *
+     * @param stage La finestra attuale da aggiornare.
+     * @param ruolo Il ruolo dell'utente autenticato, che determina quale file FXML caricare.
+     */
     public static void apriHome(Stage stage, Ruolo ruolo){
         try{
             String viewToLoad = switch (ruolo) {
@@ -140,6 +176,12 @@ public class WindowHelper {
     }
 
 
+    /**
+     * Mostra una finestra dedicata agli amministratori per la registrazione di un nuovo account utente.
+     *
+     * @param stage   La finestra principale a cui ancorare il pop-up.
+     * @param onClose Azione opzionale da eseguire alla chiusura della finestra.
+     */
     public static void apriCreazioneUtente(Stage stage, Runnable onClose){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(WindowHelper.class.getResource("/org/example/bugboard26frontend/creazione-utente-view.fxml"));
@@ -166,6 +208,12 @@ public class WindowHelper {
         }
     }
 
+    /**
+     * Sostituisce la scena attuale con il pannello di controllo per l'amministrazione degli utenti,
+     * preoccupandosi di passare correttamente i client di rete nel controller FXML.
+     *
+     * @param stage La finestra su cui applicare il cambio di scena.
+     */
 
     public static void apriGestioneUtenti(Stage stage){
         try{

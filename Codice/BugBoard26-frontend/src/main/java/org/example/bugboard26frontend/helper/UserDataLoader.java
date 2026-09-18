@@ -7,11 +7,22 @@ import model.AuthUser;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Classe Helper incaricata di recuperare l'anagrafica degli utenti dal backend
+ * e di arricchirla incrociandola con le statistiche operative (issue attive, issue risolte e tempo medio).
+ */
 public class UserDataLoader {
     private static final AuthClient authClient = new AuthClient();
 
     private UserDataLoader(){}
 
+    /**
+     * Esegue chiamate di rete per ottenere la lista base degli utenti e le varie mappe statistiche.
+     * Successivamente, itera su ogni utente per iniettare al suo interno le statistiche calcolate dal backend,
+     * aggiornando infine la lista osservabile per il rendering nella tabella JavaFX.
+     *
+     * @param masterData La lista osservabile (collegata alla UI) da popolare con gli oggetti utente completi di statistiche.
+     */
     public static void loadUserData(ObservableList<AuthUser> masterData) {
 
         List<AuthUser> users = authClient.getUsers();

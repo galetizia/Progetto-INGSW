@@ -10,10 +10,21 @@ import javafx.util.StringConverter;
 
 import java.util.Map;
 
+/**
+ * Classe Helper che fornisce metodi statici per la conversione e l'adattamento dei dati grezzi
+ * provenienti dal backend nei formati grafici richiesti dalle librerie di JavaFX.
+ */
 public class DiagramDataLoader {
 
     private DiagramDataLoader(){}
 
+    /**
+     * Trasforma la mappa delle tipologie di issue in una lista di dati compatibile con un grafico a torta.
+     * Ignora le categorie con conteggio zero.
+     *
+     * @param issuesType Mappa contenente come chiave il nome della tipologia ed il conteggio totale.
+     * @return Una lista osservabile di spicchi pronta per essere inserita nel grafico.
+     */
     public static ObservableList<PieChart.Data> configuraDiagrammaTipoIssueAttive(Map<String, Integer> issuesType) {
 
         int countBug = issuesType.getOrDefault("BUG", 0);
@@ -31,6 +42,13 @@ public class DiagramDataLoader {
         return issueTypes;
     }
 
+    /**
+     * Trasforma la mappa degli stati delle issue in una lista di dati compatibile con un grafico a torta.
+     * Si concentra esclusivamente sulle issue ancora attive.
+     *
+     * @param dataStates Mappa contenente come chiave lo stato ed il conteggio totale.
+     * @return Una lista osservabile di spicchi pronta per essere inserita nel grafico.
+     */
     public static ObservableList<PieChart.Data> configuraDiagrammaStatoIssueAttive(Map<String, Integer> dataStates) {
         int countToDo = dataStates.getOrDefault("TO_DO", 0);
         int countAssegnati = dataStates.getOrDefault("ASSEGNATO", 0);
@@ -44,6 +62,13 @@ public class DiagramDataLoader {
     }
 
 
+    /**
+     * Prepara una serie di dati per un grafico a barre che mostra i 10 utenti con il maggior numero di issue assegnate.
+     * Estrae la prima parte dell'email dell'utente come etichetta e aggiunge un Tooltip interattivo al passaggio del mouse.
+     *
+     * @param issuesPerUser Mappa con l'email dell'utente come chiave ed il numero di issue.
+     * @return Una serie di coordinate (XYChart.Series) pronta da visualizzare.
+     */
     public static XYChart.Series<String, Number> preparaDatiIssueAssegnate(Map<String, Integer> issuesPerUser) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
 
@@ -74,6 +99,12 @@ public class DiagramDataLoader {
         return series;
     }
 
+    /**
+     * Imposta l'aspetto visivo del grafico a barre relativo alle issue assegnate.
+     * Applica l'inclinazione delle etichette sull'asse X e forza l'asse Y a mostrare solo numeri interi (evitando issue frazionarie).
+     *
+     * @param chart Il grafico JavaFX da formattare.
+     */
     public static void configuraDiagrammaIssueAssegnate(XYChart<String, Number> chart) {
         chart.setTitle("Utenti con più Issue assegnate");
         chart.setLegendVisible(false);
@@ -103,6 +134,13 @@ public class DiagramDataLoader {
     }
 
 
+    /**
+     * Prepara una serie di dati per un grafico a barre che mostra i 10 utenti più rapidi nel risolvere le issue.
+     * Ordina i dati in modo crescente e formatta il tooltip per visualizzare ore e minuti.
+     *
+     * @param dataTimes Mappa con l'email dell'utente come chiave e il tempo medio di risoluzione in ore.
+     * @return Una serie di coordinate (XYChart.Series) pronta da visualizzare.
+     */
     public static XYChart.Series<String, Number> preparaDatiTempoMedio(Map<String, Double> dataTimes) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
 
@@ -136,6 +174,12 @@ public class DiagramDataLoader {
         return series;
     }
 
+    /**
+     * Calcola la media aritmetica globale dei tempi di risoluzione di tutti gli utenti e la formatta in una stringa leggibile.
+     *
+     * @param dataTimes Mappa dei tempi medi per singolo utente (in ore).
+     * @return Una stringa formattata nel formato "ore minuti" (es. "2h 30m"). Restituisce "0m" se non ci sono dati.
+     */
 
     public static String calcoloTempoMedio(Map<String, Double> dataTimes) {
         double oreTot = 0.0;
@@ -160,6 +204,13 @@ public class DiagramDataLoader {
         return hMedia + "h" + mMedia + "m";
     }
 
+    /**
+     * Imposta l'aspetto visivo del grafico a barre relativo ai tempi medi di risoluzione.
+     * Inserisce la media globale nel titolo e implementa un formatter personalizzato per tradurre l'asse Y nel formato testuale "ore minuti".
+     *
+     * @param chart     Il grafico JavaFX da formattare.
+     * @param textMedia La stringa contenente il tempo medio globale, da inserire nel titolo.
+     */
     public static void configuraDiagrammaTempoMedio(XYChart<String, Number> chart, String textMedia) {
         chart.setTitle("Media Globale: " + textMedia +" | Top 10 utenti più veloci");
         chart.setLegendVisible(false);

@@ -11,10 +11,20 @@ import model.AuthUser;
 import java.util.List;
 
 
+/**
+ * Classe Helper responsabile della configurazione e formattazione visiva della tabella degli utenti.
+ * Gestisce la creazione delle colonne, il binding dei dati anagrafici e statistici, e la personalizzazione dell'aspetto delle celle.
+ */
 public class UserTableHelper {
 
     private UserTableHelper() {}
 
+    /**
+     * Inizializza e compone le colonne della tabella utenti, ripulendo eventuali configurazioni precedenti.
+     * Definisce le larghezze, l'ordine di visualizzazione dei dati ed inserisce le formattazioni personalizzate.
+     *
+     * @param tabella L'oggetto TableView grafico da configurare.
+     */
     public static void configuraTabella(TableView<AuthUser> tabella){
         tabella.getColumns().clear();
 
@@ -28,6 +38,15 @@ public class UserTableHelper {
         tabella.getColumns().addAll(List.of(emailColumn, ruoloColumn, statoAccountColumn, issueAttiveColumn, issueRisolteColumn, tempoMedioColumn));
     }
 
+    /**
+     * Metodo di supporto per la creazione rapida di una colonna standard testuale, ancorata all'attributo del modello.
+     *
+     * @param titolo   L'intestazione testuale della colonna.
+     * @param property Il nome esatto dell'attributo nella classe AuthUser.
+     * @param width    La larghezza fissa della colonna.
+     * @param <T>      Il tipo di dato contenuto nella colonna.
+     * @return La colonna configurata.
+     */
     private static <T> TableColumn<AuthUser, T> creaColumnSemplice(String titolo, String property, double width) {
         TableColumn<AuthUser, T> column = new TableColumn<>(titolo);
         column.setCellValueFactory(new PropertyValueFactory<>(property));
@@ -36,14 +55,27 @@ public class UserTableHelper {
         return column;
     }
 
-
+    /**
+     * Crea una colonna standard e ne centra il contenuto testuale.
+     *
+     * @param titolo   L'intestazione testuale della colonna.
+     * @param property Il nome esatto dell'attributo nella classe AuthUser.
+     * @param width    La larghezza fissa della colonna.
+     * @param <T>      Il tipo di dato contenuto nella colonna.
+     * @return La colonna configurata con allineamento centrale.
+     */
     private static <T> TableColumn<AuthUser, T> creaColumnCentrata(String titolo, String property, double width) {
         TableColumn<AuthUser, T> colonna = creaColumnSemplice(titolo, property, width);
         colonna.setStyle("-fx-alignment: CENTER;");
         return colonna;
     }
 
-
+    /**
+     * Crea e formatta la colonna dedicata al Ruolo dell'utente.
+     * Rimuove il suffisso "_USER" (es. INTERNAL_USER diventa INTERNAL) per una maggiore pulizia dell'interfaccia.
+     *
+     * @return La colonna formattata per la visualizzazione dei ruoli.
+     */
     private static TableColumn<AuthUser, Ruolo> creaColumnRuolo() {
         TableColumn<AuthUser, Ruolo> colonna = new TableColumn<>("Ruolo");
         colonna.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getRuolo()));
@@ -64,7 +96,12 @@ public class UserTableHelper {
         return colonna;
     }
 
-
+    /**
+     * Crea e formatta la colonna per lo stato dell'account.
+     * Traduce il valore booleano di base in un testo leggibile per l'utente ("Attivo" se true, "Disattivato" se false).
+     *
+     * @return La colonna formattata per lo stato dell'account.
+     */
     private static TableColumn<AuthUser, Boolean> creaColumnStato() {
         TableColumn<AuthUser, Boolean> colonna = new TableColumn<>("Stato");
         colonna.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatoAccount()));
@@ -87,7 +124,13 @@ public class UserTableHelper {
         return colonna;
     }
 
-
+    /**
+     * Crea e formatta la colonna del tempo medio di risoluzione.
+     * Converte il valore numerico decimale (ore) nel formato testuale standard "Xh Ym".
+     * Mostra un trattino ("-") se il valore è zero (nessuna statistica disponibile).
+     *
+     * @return La colonna formattata per i tempi medi.
+     */
     private static TableColumn<AuthUser, Double> creaColumnTempoMedio() {
         TableColumn<AuthUser, Double> colonna = creaColumnCentrata("Tempo Medio", "tempoMedio", 110);
 
