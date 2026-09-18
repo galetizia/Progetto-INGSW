@@ -49,7 +49,7 @@ public class WindowHelper {
             }
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -62,7 +62,7 @@ public class WindowHelper {
                 imgStage.showAndWait();
             } catch (Exception e){
                 MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-                logger.error(e.getMessage());
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -107,7 +107,7 @@ public class WindowHelper {
             stageAttuale.centerOnScreen();
         } catch (Exception e){
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -135,7 +135,7 @@ public class WindowHelper {
 
         } catch (IOException e){
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -162,9 +162,10 @@ public class WindowHelper {
 
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
+
 
     public static void apriGestioneUtenti(Stage stage){
         try{
@@ -181,9 +182,8 @@ public class WindowHelper {
             stage.centerOnScreen();
         } catch (Exception e) {
             MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel caricare la schermata");
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
-
 
 }

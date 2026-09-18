@@ -78,7 +78,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onStatoIssueButtonClick(){
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Validator.backEndValidator(() -> {
             Map<String, Integer> dataStates = issueClient.countIssueStates();
@@ -92,7 +92,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onTipoIssueButtonClick(){
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Validator.backEndValidator(() -> {
             Map<String, Integer> issuesType = issueClient.countIssueTypes();
@@ -112,7 +112,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onTempoButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Validator.backEndValidator(() -> {
             ((javafx.scene.chart.CategoryAxis) bugPerUserChart.getXAxis()).getCategories().clear();
@@ -132,7 +132,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onIssueAssegnateButtonClick(){
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Validator.backEndValidator(() -> {
             Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();
@@ -150,7 +150,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onVisualizzaDashboardButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         VBoxVisibility.visibility(colonnaDashboard, colonnaGestione, this::popolaDashboard);
     }
@@ -158,7 +158,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onGestioneUtentiButtonClick(){
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         VBoxVisibility.visibility(colonnaGestione, colonnaDashboard, () ->
                 Validator.backEndValidator(() -> UserDataLoader.loadUserData(masterData)));
@@ -167,7 +167,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onCreaUtenteButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         WindowHelper.apriCreazioneUtente(stage, () -> Validator.backEndValidator(() -> UserDataLoader.loadUserData(masterData)));
     }
@@ -175,7 +175,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onCambiaStatoButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         AuthUser userSelezionato = utentiTable.getSelectionModel().getSelectedItem();
         if(userSelezionato == null) return;
@@ -187,7 +187,7 @@ public class GestioneUtentiController {
     @FXML
     protected void onIndietroButtonClick() {
         Stage stage = (Stage) indietroButton.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
         WindowHelper.apriHome(stage, Ruolo.ADMIN);
     }
 }

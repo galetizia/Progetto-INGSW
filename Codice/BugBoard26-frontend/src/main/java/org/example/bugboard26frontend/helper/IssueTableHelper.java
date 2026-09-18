@@ -89,6 +89,7 @@ public class IssueTableHelper {
         return colonna;
     }
 
+
     private static String isArchivioData(Issue issue, LocalDateTime date, boolean isArchiviati) {
         if (!isArchiviati) {
             return date != null ? formatter.format(date) : "";

@@ -16,6 +16,7 @@ import java.util.List;
 public class FiltroEOrdinaHelper {
 
     private FiltroEOrdinaHelper() {}
+
     public static void configuraFiltroEOrdine(TableView<Issue> issueTable,
                                               ObservableList<Issue> masterData,
                                               ChoiceBox<String> filtroChoiceBox,
@@ -128,6 +129,7 @@ public class FiltroEOrdinaHelper {
         filtroChoiceBox.getSelectionModel().selectedItemProperty().addListener((_, _, _) ->
             applicaFiltroUtenti(filteredData, filtroChoiceBox));
     }
+
 
     private static void applicaFiltroUtenti(FilteredList<AuthUser> filteredData, ChoiceBox<String> filtroChoiceBox){
         if(filteredData == null) return;

@@ -34,6 +34,7 @@ public class VBoxVisibility {
             fadeIn.setToValue(1.0);
             fadeIn.play();
             if(onSuccess != null) onSuccess.run();
+
         } else {
             FadeTransition fadeout = new FadeTransition(Duration.millis(300), colonnaTrue);
             fadeout.setFromValue(1.0);

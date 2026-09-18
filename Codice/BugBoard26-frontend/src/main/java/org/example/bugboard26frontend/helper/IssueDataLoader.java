@@ -11,6 +11,7 @@ public class IssueDataLoader {
     private static final IssueClient issueClient = new IssueClient();
 
     private IssueDataLoader() {}
+
     public static void loadOnTable(Ruolo ruolo, ObservableList<Issue> masterData, boolean isArchivio) {
         if (isArchivio) {
             List<Issue> issues = issueClient.getIssueArchiviate();
@@ -28,3 +29,4 @@ public class IssueDataLoader {
         }
     }
 }
+

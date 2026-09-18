@@ -33,9 +33,11 @@ public class SendRequest {
 
         } catch (InterruptedException e){
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
 
         return defaultValue;
@@ -48,12 +50,12 @@ public class SendRequest {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.statusCode() == 200;
         } catch (InterruptedException e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-
-        return false;
     }
 }

@@ -23,11 +23,11 @@ import java.security.interfaces.RSAPublicKey;
 public class JwtConfig {
 
     /**
-     * Crea l'encoder utilizzato per i nuovi token JWT.
+     * Crea encoder utilizzato per i nuovi token JWT.
      *
      * @param publicKey  La chiave pubblica.
      * @param privateKey La chiave privata per firmare il token.
-     * @return L'istanza dell'encoder JWT.
+     * @return L'istanza encoder JWT.
      */
     @Bean
     public JwtEncoder jwtEncoder(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
@@ -39,7 +39,7 @@ public class JwtConfig {
     }
 
     /**
-     * Crea il decoder utilizzato per verificare la validità dei token JWT in input.
+     * Crea il decoder utilizzato per verificare la validità dei token JWT in ingresso.
      *
      * @param publicKey La chiave pubblica per verificare la firma.
      * @return L'istanza del decoder JWT.

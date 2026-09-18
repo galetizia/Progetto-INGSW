@@ -9,6 +9,7 @@ public class UserActionHandler {
 
     private UserActionHandler() {}
 
+
     public static void cambiaStatoAccount(AuthUser user, Runnable onSuccess){
         if(user == null) return;
 
