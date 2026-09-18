@@ -61,13 +61,15 @@ public class CambioPasswordDialog {
     }
 
     private void gestioneConferma(String email, String oldPassword, String newPassword) {
+        if(!Validator.passwordValidator(newPassword)) return;
 
-        boolean success = authClient.changePassword(email, oldPassword, newPassword);
-
-        if (success){
-            MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
-        } else {
-            MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
-        }
+        Validator.backEndValidator(() -> {
+            boolean success = authClient.changePassword(email, oldPassword, newPassword);
+            if (success){
+                MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo", "Password aggiornata con successo");
+            } else {
+                MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore", "Errore nel cambio password, ricontrollare i dati");
+            }
+        });
     }
 }

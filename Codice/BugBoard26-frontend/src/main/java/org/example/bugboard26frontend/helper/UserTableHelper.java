@@ -25,7 +25,6 @@ public class UserTableHelper {
         TableColumn<AuthUser, Integer> issueRisolteColumn = creaColumnCentrata("Issue Risolte", "issueRisolte", 95);
         TableColumn<AuthUser, Double> tempoMedioColumn = creaColumnTempoMedio();
 
-
         tabella.getColumns().addAll(List.of(emailColumn, ruoloColumn, statoAccountColumn, issueAttiveColumn, issueRisolteColumn, tempoMedioColumn));
     }
 
@@ -117,7 +116,5 @@ public class UserTableHelper {
         });
         return colonna;
     }
-
-
 
 }

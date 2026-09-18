@@ -18,10 +18,9 @@ public class IssueActionHandler {
     public static void archivia(Issue issue, Runnable onSuccess){
 
         if (issue != null && AuthSession.getInstance().isLoggedIn()) {
-            Alert conferma = new Alert(Alert.AlertType.CONFIRMATION);
-            conferma.setTitle("Conferma Archiviazione");
-            conferma.setHeaderText("Archiviazione Issue #" + issue.getId());
-            conferma.setContentText("Sei sicuro di voler archiviare: '" + issue.getTitolo() + "'?");
+
+            Alert conferma = MyAlert.mostraAlertConfirmation("Conferma Archiviazione", "Archiviazione Issue #" + issue.getId(),
+                    "Sei sicuro di voler archiviare: '" + issue.getTitolo() + "'?");
 
             conferma.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
@@ -71,10 +70,8 @@ public class IssueActionHandler {
         if (issue == null || !AuthSession.getInstance().isLoggedIn()) {
             return;
         }
-        Alert conferma = new Alert(Alert.AlertType.CONFIRMATION);
-        conferma.setTitle("Conferma");
-        conferma.setHeaderText("Rilascio Issue #" + issue.getId());
-        conferma.setContentText("Sei sicuro di voler rimettere questa issue in stato TO_DO?");
+        Alert conferma = MyAlert.mostraAlertConfirmation("Conferma", "Rilascio Issue #" + issue.getId(),
+                "Sei sicuro di voler rimettere questa issue in stato TO_DO?");
 
         conferma.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
@@ -91,10 +88,8 @@ public class IssueActionHandler {
 
 
     public static void creazioneIssue(String titolo, String descrizione, String priorita, String tipologia, File file, Runnable onSuccess){
-        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationAlert.setTitle("Conferma operazione");
-        confirmationAlert.setHeaderText("Stai per creare una nuova issue");
-        confirmationAlert.setContentText("Procedere?");
+        Alert confirmationAlert = MyAlert.mostraAlertConfirmation("Conferma operazione", "Stai per creare una nuova issue", "Procedere?");
+
         confirmationAlert.showAndWait().ifPresent(response -> {
 
             if(response == ButtonType.OK){

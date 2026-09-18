@@ -80,7 +80,7 @@ public class AdminHomeController {
     @FXML
     public void onElencoIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         VBoxVisibility.visibility(colonnaSinistra, colonnaDestra, () ->
             Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false)));
@@ -90,7 +90,7 @@ public class AdminHomeController {
     @FXML
     protected void onArchivioBugButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         VBoxVisibility.visibility(colonnaDestra, colonnaSinistra, () ->
                 Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterDataArchiviate, true)));
@@ -100,7 +100,7 @@ public class AdminHomeController {
     @FXML
     protected void onCambioPasswordButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
         cambioPassword.mostra();
@@ -111,7 +111,7 @@ public class AdminHomeController {
 
     public void onSegnalaIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         WindowHelper.apriSegnalazione(() -> Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.ADMIN, masterData, false)));
     }
@@ -120,7 +120,7 @@ public class AdminHomeController {
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
         Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
@@ -130,7 +130,7 @@ public class AdminHomeController {
     @FXML
     protected void onLogoutButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         AuthSession.getInstance().clearSession();
         WindowHelper.tornaAlLogin(stage);
@@ -140,7 +140,7 @@ public class AdminHomeController {
     @FXML
     public void handleArchiviaIssue() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
 
@@ -159,7 +159,7 @@ public class AdminHomeController {
     @FXML
     protected void onSegnalaComeDuplicatoButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         Validator.backEndValidator(() -> {
             Issue issue = issueTable.getSelectionModel().getSelectedItem();
@@ -194,7 +194,7 @@ public class AdminHomeController {
     @FXML
     protected void onGestioneUtentiButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         WindowHelper.apriGestioneUtenti(stage);
     }

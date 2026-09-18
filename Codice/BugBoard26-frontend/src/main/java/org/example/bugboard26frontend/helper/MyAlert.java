@@ -14,6 +14,7 @@ public class MyAlert {
         alert.showAndWait();
     }
 
+
     public static Alert mostraAlertConfirmation(String titolo, String headerText, String contentText) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(titolo);

@@ -13,6 +13,7 @@ public class UserDataLoader {
     private UserDataLoader(){}
 
     public static void loadUserData(ObservableList<AuthUser> masterData) {
+
         List<AuthUser> users = authClient.getUsers();
         Map<String , Integer> issueRisoltePerUser = authClient.getRisoltePerUser();
         Map<String, Integer> issuesPerUser = authClient.getIssuesPerUser();

@@ -54,7 +54,7 @@ public class ExternalUserHomeController {
     @FXML
     protected void onElencoBugButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return ;
+        if(Validator.sessionInvalid(stage)) return;
 
         VBoxVisibility.visibility(colonnaSinistra, null, () ->
                 Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.EXTERNAL_USER, masterData, false)));
@@ -64,7 +64,7 @@ public class ExternalUserHomeController {
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return ;
+        if(Validator.sessionInvalid(stage)) return;
 
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
         Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
@@ -82,7 +82,7 @@ public class ExternalUserHomeController {
     @FXML
     protected void onCambioPasswordButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
-        if(!Validator.sessionValidator(stage)) return ;
+        if(Validator.sessionInvalid(stage)) return;
 
         CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
         cambioPassword.mostra();

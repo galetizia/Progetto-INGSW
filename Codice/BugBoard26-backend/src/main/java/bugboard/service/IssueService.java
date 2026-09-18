@@ -109,7 +109,7 @@ public class IssueService {
 
 
     /**
-     * Segna una issue come completata aggiornando il suo stato ed impostando la data di risoluzione esatta.
+     * Segna una issue come completata aggiornando il suo stato e impostando la data di risoluzione esatta.
      *
      * @param issueId L'identificativo della issue da risolvere.
      * @throws RuntimeException Se la issue non è presente nel database.
@@ -163,7 +163,7 @@ public class IssueService {
      *
      * @param idIssue L'ID della issue da archiviare.
      * @return L'oggetto issue aggiornato.
-     * @throws IllegalArgumentException Se non viene trovata alcuna issue con l'ID specificato.
+     * @throws IllegalArgumentException Se non viene trovata alcuna issue con l'id specificato.
      */
     public Issue archiviaIssue(int idIssue) {
         Issue issue = issueRepository.findById(idIssue)
@@ -210,7 +210,7 @@ public class IssueService {
      * @param tipologia   La tipologia della issue (es. Bug, Feature).
      * @param priorita    L'urgenza (opzionale).
      * @param file        Un file caricato per supportare la segnalazione (opzionale).
-     * @throws RuntimeException Se si verifica un errore I/O durante la lettura dei byte del file allegato.
+     * @throws RuntimeException Se si verifica un errore I/O durante la lettura di byte del file allegato.
      */
     public void createIssue(String titolo, String descrizione, TipoIssue tipologia , String priorita, MultipartFile file) {
         Issue issue = new Issue();

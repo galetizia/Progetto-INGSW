@@ -93,7 +93,7 @@ public class SegnalazioneIssueController {
     protected void onConfermaButtonClick(){
         Stage stage = (Stage) confermaButton.getScene().getWindow();
 
-        if(!Validator.sessionValidator(stage)) return;
+        if(Validator.sessionInvalid(stage)) return;
 
         String titolo = titoloField.getText();
         String descrizione = descrizioneField.getText();
@@ -104,9 +104,7 @@ public class SegnalazioneIssueController {
         }
 
         Validator.backEndValidator(() ->
-                IssueActionHandler.creazioneIssue(titolo, descrizione, prioritaScelta, tipologiaScelta, file, () -> {
-                    stage.close();
-                }));
+                IssueActionHandler.creazioneIssue(titolo, descrizione, prioritaScelta, tipologiaScelta, file, stage::close));
     }
 
 

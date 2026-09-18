@@ -28,7 +28,7 @@ public class DataSeeder {
             AuthUserRepository authUserRepository,
             PasswordEncoder passwordEncoder) {
 
-        return args -> {
+        return _ -> {
 
             AuthUser admin = authUserRepository.findByEmail("admin@bugboard.com").orElse(new AuthUser());
             admin.setEmail("admin@bugboard.com");

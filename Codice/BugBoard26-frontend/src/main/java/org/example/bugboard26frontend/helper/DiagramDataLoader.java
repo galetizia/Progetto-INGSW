@@ -136,6 +136,7 @@ public class DiagramDataLoader {
         return series;
     }
 
+
     public static String calcoloTempoMedio(Map<String, Double> dataTimes) {
         double oreTot = 0.0;
         int utentiValidi = 0;
