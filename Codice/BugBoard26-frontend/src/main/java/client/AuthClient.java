@@ -183,6 +183,13 @@ public class AuthClient {
         return SendRequest.sendRequestGet(request, new TypeReference<Map<String, Double>>() {}, new HashMap<>(), client);
     }
 
+    /**
+     * Invia una richiesta PUT per invertire logicamente lo stato di attivazione di un account.
+     * Da disabilitato diventa abilitato, e viceversa.
+     *
+     * @param id L'identificativo univoco dell'utente di cui cambiare lo stato.
+     * @return true se l'operazione ha avuto successo, altrimenti false.
+     */
     public boolean cambiaStatoUtente(int id) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + id + "/cambia-stato"))
@@ -232,20 +239,4 @@ public class AuthClient {
         }
     }
 
-
-    /**
-     * Invia una richiesta PUT per invertire logicamente lo stato di attivazione di un account.
-     * Da disabilitato diventa abilitato, e viceversa.
-     *
-     * @param id L'identificativo univoco dell'utente di cui cambiare lo stato.
-     * @return true se l'operazione ha avuto successo, altrimenti false.
-     */
-    public boolean cambiaStatoUtente(int id) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + id + "/cambia-stato"))
-                .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
-                .PUT(HttpRequest.BodyPublishers.noBody())
-                .build();
-        return SendRequest.sendRequestPut(request, client);
-    }
 }
