@@ -118,11 +118,12 @@ public class AuthClient {
             return response.statusCode() == 200;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
 
@@ -182,6 +183,15 @@ public class AuthClient {
         return SendRequest.sendRequestGet(request, new TypeReference<Map<String, Double>>() {}, new HashMap<>(), client);
     }
 
+    public boolean cambiaStatoUtente(int id) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + id + "/cambia-stato"))
+                .header("Authorization", "Bearer " + AuthSession.getInstance().getToken())
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        return SendRequest.sendRequestPut(request, client);
+    }
+
 
     /**
      * Invia una richiesta al server per creare un nuovo account utente.
@@ -214,11 +224,12 @@ public class AuthClient {
             return response.statusCode() == 200 || response.statusCode() == 201;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
 

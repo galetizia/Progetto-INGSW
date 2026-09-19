@@ -97,12 +97,13 @@ public class IssueClient {
 
             return response.statusCode() == 200 || response.statusCode() == 201;
         } catch (InterruptedException e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
 
@@ -251,11 +252,12 @@ public class IssueClient {
             return response.statusCode() == 200 || response.statusCode() == 204;
         } catch (InterruptedException e){
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
 
@@ -277,10 +279,11 @@ public class IssueClient {
             return response.statusCode() == 200;
         } catch (InterruptedException e){
             Thread.currentThread().interrupt();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         } catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 }

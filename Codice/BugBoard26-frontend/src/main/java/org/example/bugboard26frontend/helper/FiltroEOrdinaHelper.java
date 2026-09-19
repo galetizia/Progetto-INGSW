@@ -181,6 +181,7 @@ public class FiltroEOrdinaHelper {
      * @param filteredData    La lista filtrata di utenti da aggiornare.
      * @param filtroChoiceBox Il componente grafico contenente la scelta di filtraggio.
      */
+
     private static void applicaFiltroUtenti(FilteredList<AuthUser> filteredData, ChoiceBox<String> filtroChoiceBox){
         if(filteredData == null) return;
 

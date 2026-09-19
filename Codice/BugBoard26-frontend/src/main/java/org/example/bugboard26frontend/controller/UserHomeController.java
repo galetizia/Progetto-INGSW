@@ -122,8 +122,11 @@ public class UserHomeController {
      */
     @FXML
     public void onElencoIssueButtonClick(){
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         VBoxVisibility.visibility(colonnaSinistra, colonnaDestra, () ->
-                IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false));
+                Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false)));
     }
 
 
@@ -133,8 +136,11 @@ public class UserHomeController {
      */
     @FXML
     protected void onBugArchiviatiButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         VBoxVisibility.visibility(colonnaDestra, colonnaSinistra, () ->
-                IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterDataArchiviate, true));
+                Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterDataArchiviate, true)));
     }
 
 
@@ -144,7 +150,10 @@ public class UserHomeController {
      */
     @FXML
     protected void onSegnalaIssueButtonClick(){
-        WindowHelper.apriSegnalazione(() -> IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false));
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
+        WindowHelper.apriSegnalazione(() -> Validator.backEndValidator(() -> IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false)));
     }
 
 
@@ -154,6 +163,9 @@ public class UserHomeController {
      */
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         Issue issue = issueTable.getSelectionModel().getSelectedItem();
         Window mainWindow = visualizzaAllegatoButton.getScene().getWindow();
         WindowHelper.apriAllegato(issue, mainWindow);
@@ -177,11 +189,16 @@ public class UserHomeController {
      */
     @FXML
     protected void prendiInCaricoButtonClick(){
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
-        IssueActionHandler.prendiInCarico(issueSelezionata, () -> {
-            IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false);
-            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-        });
+        Validator.backEndValidator(() ->
+                IssueActionHandler.prendiInCarico(issueSelezionata, () -> {
+                    IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false);
+                    javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+                })
+        );
     }
 
     /**
@@ -190,11 +207,16 @@ public class UserHomeController {
      */
     @FXML
     protected void rilasciaIssueButtonClick() {
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         Issue issueSelezionata = issueTable.getSelectionModel().getSelectedItem();
-        IssueActionHandler.rilascia(issueSelezionata, () -> {
-            IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false);
-            javafx.application.Platform.runLater(() -> issueTable.requestFocus());
-        });
+        Validator.backEndValidator(() ->
+                IssueActionHandler.rilascia(issueSelezionata, () -> {
+                    IssueDataLoader.loadOnTable(Ruolo.INTERNAL_USER, masterData, false);
+                    javafx.application.Platform.runLater(() -> issueTable.requestFocus());
+                })
+        );
     }
 
     /**
@@ -202,6 +224,9 @@ public class UserHomeController {
      */
     @FXML
     protected void onCambioPasswordButtonClick(){
+        Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
+        if(Validator.sessionInvalid(stage)) return;
+
         CambioPasswordDialog cambioPassword = new CambioPasswordDialog();
         cambioPassword.mostra();
     }

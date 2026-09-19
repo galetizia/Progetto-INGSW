@@ -36,6 +36,7 @@ public class MyAlert {
      * @param contentText Il messaggio descrittivo o di avviso sottostante.
      * @return L'oggetto Alert di tipo CONFIRMATION pronto per essere mostrato e gestito.
      */
+
     public static Alert mostraAlertConfirmation(String titolo, String headerText, String contentText) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(titolo);
