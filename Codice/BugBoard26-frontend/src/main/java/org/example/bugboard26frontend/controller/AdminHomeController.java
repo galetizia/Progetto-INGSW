@@ -13,28 +13,28 @@ import javafx.stage.Window;
 import model.Issue;
 import org.example.bugboard26frontend.helper.*;
 
+/**
+ * Controller della schermata dedicata all'Admin.
+ * Gestisce l'interfaccia utente per la visualizzazione delle issue (sia attive chè archiviate),
+ * l'interazione con le tabelle, l'eliminazione dei duplicati e la navigazione verso gli altri pannelli.
+ */
 public class AdminHomeController {
     @FXML
     private Button segnalaComeDuplicatoButton;
-
     @FXML
     private Button visualizzaAllegatoButton;
     @FXML
     private TextArea descriptionArea;
-
     @FXML
     private TableView<Issue> archiviatiTable;
     @FXML
     private TableView<Issue> issueTable;
-
     @FXML
     private VBox colonnaSinistra;
     @FXML
     private VBox colonnaDestra;
-
     @FXML
     private Button archiviaIssueButton;
-
     @FXML
     private ChoiceBox<String> filtroChoiceBox;
     @FXML
@@ -44,10 +44,22 @@ public class AdminHomeController {
     private final ObservableList<Issue> masterDataArchiviate = FXCollections.observableArrayList();
 
     private IssueClient issueClient;
+
+    /**
+     * Passa il client per le chiamate HTTP al backend.
+     * Necessario per disaccoppiare la logica di rete dalla classe grafica.
+     *
+     * @param issueClient L'istanza configurata del client delle issue.
+     */
     public void setIssueClient(IssueClient issueClient) {
         this.issueClient = issueClient;
     }
 
+    /**
+     * Metodo invocato automaticamente dal runtime di JavaFX al termine del caricamento del file FXML.
+     * Inizializza l'aspetto delle tabelle, applica i filtri per il ruolo Admin e imposta i listener
+     * di selezione per abilitare/disabilitare i pulsanti d'azione in base alla riga cliccata.
+     */
     @FXML
     public void initialize()
     {
@@ -77,6 +89,11 @@ public class AdminHomeController {
         });
     }
 
+    /**
+     * Gestisce il click sul pulsante per visualizzare le issue attive.
+     * Alterna la visibilità dei pannelli nascondendo l'archivio e
+     * innesca il caricamento protetto dei dati aggiornati dal server.
+     */
     @FXML
     public void onElencoIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -87,6 +104,11 @@ public class AdminHomeController {
     }
 
 
+    /**
+     * Gestisce il click sul pulsante dell'Archivio.
+     * Mostra la tabella dedicata allo storico delle issue chiuse e innesca la chiamata di rete
+     * per scaricare i dati archiviati.
+     */
     @FXML
     protected void onArchivioBugButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -97,6 +119,9 @@ public class AdminHomeController {
     }
 
 
+    /**
+     * Apre la finestra modale per permettere all'admin di aggiornare la propria password.
+     */
     @FXML
     protected void onCambioPasswordButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -108,7 +133,11 @@ public class AdminHomeController {
     }
 
 
-
+    /**
+     * Richiama l'helper per aprire la finestra di creazione di una nuova issue.
+     * Configura una callback affinché, alla chiusura del modulo, la tabella delle issue
+     * si ricarichi automaticamente per mostrare la nuova issue appena inserita.
+     */
     public void onSegnalaIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
         if(Validator.sessionInvalid(stage)) return;
@@ -117,6 +146,10 @@ public class AdminHomeController {
     }
 
 
+    /**
+     * Estrae l'allegato dalla issue selezionata e apre una finestra dedicata
+     * per visualizzare l'immagine ingrandita a schermo.
+     */
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -127,6 +160,9 @@ public class AdminHomeController {
         WindowHelper.apriAllegato(issue, mainWindow);
     }
 
+    /**
+     * Invalida la sessione dell'utente corrente e riporta l'applicazione alla schermata iniziale di login.
+     */
     @FXML
     protected void onLogoutButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -137,6 +173,11 @@ public class AdminHomeController {
     }
 
 
+    /**
+     * Delega all'helper la logica di archiviazione della issue selezionata in tabella.
+     * In caso di successo, richiede al backend i dati aggiornati per sincronizzare sia
+     * la tabella delle issue attive che quella dell'archivio, azzerando poi la selezione.
+     */
     @FXML
     public void handleArchiviaIssue() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -156,6 +197,11 @@ public class AdminHomeController {
         );
     }
 
+    /**
+     * Intercetta la richiesta di eliminazione di un duplicato.
+     * Essendo un'operazione critica, mostra prima un Alert visivo per chiedere
+     * una doppia conferma. Se accettata, elimina l'elemento sia dal database che dalla tabella local.
+     */
     @FXML
     protected void onSegnalaComeDuplicatoButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -191,6 +237,9 @@ public class AdminHomeController {
         });
     }
 
+    /**
+     * Sostituisce la vista corrente con la schermata dedicata all'amministrazione degli utenti.
+     */
     @FXML
     protected void onGestioneUtentiButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();

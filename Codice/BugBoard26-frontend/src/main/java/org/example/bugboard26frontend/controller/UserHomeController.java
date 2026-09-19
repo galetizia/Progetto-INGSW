@@ -12,15 +12,18 @@ import javafx.stage.Window;
 import model.Issue;
 import org.example.bugboard26frontend.helper.*;
 
+/**
+ * Controller della schermata principale dedicata all'Internal User.
+ * Rappresenta l'area di lavoro per gli operatori, permette di visualizzare le issue attive,
+ * prenderle in carico, segnarle come risolte, rilasciarle e consultare l'archivio.
+ */
 public class UserHomeController {
     @FXML
     private MenuItem logoutButton;
     private final ObservableList<Issue> masterData = FXCollections.observableArrayList();
     private final ObservableList<Issue> masterDataArchiviate = FXCollections.observableArrayList();
-
     @FXML
     private TableView<Issue> issueTable;
-
     @FXML
     private Button visualizzaAllegatoButton;
     @FXML
@@ -29,19 +32,22 @@ public class UserHomeController {
     private Button rilasciaIssueButton;
     @FXML
     private TextArea descriptionArea;
-
     @FXML
     private TableView<Issue> archiviatiTable;
     @FXML
     private VBox colonnaSinistra;
     @FXML
     private VBox colonnaDestra;
-
     @FXML
     private ChoiceBox<String> filtroChoiceBox;
     @FXML
     private ChoiceBox<String> ordinaChoiceBox;
 
+    /**
+     * Metodo invocato automaticamente da JavaFX al termine del caricamento del file FXML.
+     * Inizializza le tabelle applicando i filtri di visibilità specifici
+     * per il ruolo INTERNAL_USER e configura i listener di interazione sulle righe.
+     */
     @FXML
     public void initialize()
     {
@@ -57,11 +63,23 @@ public class UserHomeController {
         configuraListenerSelezione();
     }
 
+    /**
+     * Associa un listener alla tabella delle issue per intercettare i cambi di selezione dell'utente
+     * e aggiornare in tempo reale la vista di dettaglio e i bottoni operativi.
+     */
     private void configuraListenerSelezione(){
         issueTable.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) ->
                 aggiornaBottoni(newValue));
     }
 
+    /**
+     * Logica di User Experience (UX) che adatta dinamicamente l'interfaccia in base alla issue selezionata.
+     * Cambia il testo del bottone ("Prendi in carico" e "Segna come Risolto") e
+     * abilita/disabilita azioni come il rilascio in base allo stato della issue e al fatto che sia
+     * assegnata o meno all'utente attualmente loggato.
+     *
+     * @param issue La issue selezionata dall'utente.
+     */
     private void aggiornaBottoni(Issue issue){
         if(issue == null) {
             descriptionArea.setText("");
@@ -98,6 +116,10 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Alterna la visibilità dei pannelli per mostrare l'elenco issue attive
+     * e richiede l'aggiornamento dei dati tramite l'helper.
+     */
     @FXML
     public void onElencoIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -108,6 +130,10 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Alterna la visibilità dei pannelli per mostrare l'archivio delle issue risolte o chiuse,
+     * effettuando il caricamento dei dati specifici.
+     */
     @FXML
     protected void onBugArchiviatiButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -118,6 +144,10 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Apre la finestra per la creazione di una nuova issue.
+     * Alla chiusura del pop-up, innesca il ricaricamento della tabella per mostrare il nuovo elemento.
+     */
     @FXML
     protected void onSegnalaIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -127,6 +157,10 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Estrae l'allegato dalla issue selezionata in tabella e ne comanda la visualizzazione
+     * tramite una finestra dedicata.
+     */
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -138,6 +172,9 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Pulisce i dati della sessione corrente e reindirizza l'applicazione alla schermata di login.
+     */
     @FXML
     protected void onLogoutButtonClick() {
         AuthSession.getInstance().clearSession();
@@ -146,6 +183,10 @@ public class UserHomeController {
     }
 
 
+    /**
+     * Invoca l'helper per gestire il flusso operativo sulla issue selezionata (presa in carico o risoluzione,
+     * a seconda dello stato attuale). Al termine, ricarica la tabella e ripristina il focus.
+     */
     @FXML
     protected void prendiInCaricoButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -160,6 +201,10 @@ public class UserHomeController {
         );
     }
 
+    /**
+     * Invoca l'helper per completare il rilascio di una issue (rimettendola in stato TO_DO).
+     * Al termine, ricarica i dati in tabella per sincronizzare la vista con il backend.
+     */
     @FXML
     protected void rilasciaIssueButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -174,6 +219,9 @@ public class UserHomeController {
         );
     }
 
+    /**
+     * Apre la finestra di dialogo per permettere all'utente di cambiare la propria password.
+     */
     @FXML
     protected void onCambioPasswordButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();

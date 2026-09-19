@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * Modello dati che rappresenta un file allegato associato a una Issue.
+ * Contiene i metadati del file e il suo contenuto binario grezzo, pronto per essere inviato al server
+ * o renderizzato graficamente nell'interfaccia JavaFX.
+ */
 @SuppressWarnings("unused")
 public class Attachment {
 

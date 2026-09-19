@@ -3,6 +3,10 @@ package model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.Ruolo;
 
+/**
+ * Modello dati che rappresenta un utente del sistema.
+ * Mappa i dati anagrafici, le credenziali e le statistiche operative calcolate dal backend.
+ */
 @SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthUser {
