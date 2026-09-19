@@ -12,19 +12,22 @@ import javafx.stage.Window;
 import model.Issue;
 import org.example.bugboard26frontend.helper.*;
 
+/**
+ * Controller della schermata dedicata all'External User.
+ * Offre un'interfaccia semplificata rispetto agli utenti interni o agli amministratori,
+ * limitata alla sola visualizzazione delle issue pubbliche e dei relativi allegati.
+ */
 public class ExternalUserHomeController {
 
     @FXML
     private MenuItem logoutButton;
     private final ObservableList<Issue> masterData = FXCollections.observableArrayList();
-
     @FXML
     private TableView<Issue> issueTable;
     @FXML
     private Button visualizzaAllegatoButton;
     @FXML
     private TextArea descriptionArea;
-
     @FXML
     private VBox colonnaSinistra;
     @FXML
@@ -33,6 +36,11 @@ public class ExternalUserHomeController {
     private ChoiceBox<String> ordinaChoiceBox;
 
 
+    /**
+     * Metodo invocato automaticamente da JavaFX al termine del caricamento del file FXML.
+     * Prepara la tabella applicando la formattazione e i filtri previsti esclusivamente
+     * per il ruolo EXTERNAL_USER. Collega inoltre la selezione delle righe all'aggiornamento della vista di dettaglio.
+     */
     @FXML
     public void initialize() {
         IssueTableHelper.configuraTabella(issueTable, Ruolo.EXTERNAL_USER, false);
@@ -51,6 +59,11 @@ public class ExternalUserHomeController {
     }
 
 
+    /**
+     * Gestisce il click sul pulsante di caricamento delle issue.
+     * Anima l'ingresso del pannello principale e richiede al backend la lista
+     * aggiornata delle issue, delegando il fetch all'apposito helper.
+     */
     @FXML
     protected void onElencoBugButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -61,6 +74,10 @@ public class ExternalUserHomeController {
     }
 
 
+    /**
+     * Recupera l'allegato associato alla issue attualmente selezionata in tabella
+     * e apre un pop-up dedicato per visualizzare l'immagine ingrandita.
+     */
     @FXML
     protected void onVisualizzaAllegatoButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
@@ -71,6 +88,9 @@ public class ExternalUserHomeController {
         WindowHelper.apriAllegato(issue, mainWindow);
     }
 
+    /**
+     * Invalida la sessione dell'utente corrente e reindirizza l'applicazione alla schermata di login.
+     */
     @FXML
     protected void onLogoutButtonClick() {
 
@@ -79,6 +99,9 @@ public class ExternalUserHomeController {
         WindowHelper.tornaAlLogin(stage);
     }
 
+    /**
+     * Apre la finestra per permettere all'utente esterno di aggiornare la propria password.
+     */
     @FXML
     protected void onCambioPasswordButtonClick() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();

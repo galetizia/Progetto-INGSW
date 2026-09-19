@@ -5,6 +5,11 @@ import enums.StatoIssue;
 import enums.TipoIssue;
 import java.time.LocalDateTime;
 
+/**
+ * Modello dati che rappresenta una Issue all'interno del sistema.
+ * Incapsula i dettagli descrittivi (titolo, priorità), il ciclo di vita (stato, tipo)
+ * e i riferimenti temporali o relazionali (data creazione, utente assegnatario, allegato).
+ */
 @SuppressWarnings("unused")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Issue {

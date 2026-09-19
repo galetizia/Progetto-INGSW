@@ -9,6 +9,12 @@ import org.example.bugboard26frontend.helper.WindowHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller dedicato alla schermata del Login.
+ * Gestisce l'acquisizione delle credenziali, la validazione formale lato client,
+ * l'invio della richiesta al server e il successivo reindirizzamento
+ * verso la schermata corretta in base al ruolo dell'utente riconosciuto.
+ */
 public class LoginController {
     @FXML
     private TextField emailField;
@@ -16,12 +22,20 @@ public class LoginController {
     private PasswordField passwordField;
 
     AuthClient authClient;
+
     public void setAuthClient(AuthClient authClient){
         this.authClient = authClient;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
+    /**
+     * Gestisce il flusso del click sul pulsante di Login.
+     * Verifica che i campi non siano vuoti e tenta l'autenticazione tramite il server.
+     * In caso di successo, interroga la sessione appena creata per scoprire il ruolo
+     * dell'utente e delega al WindowHelper il compito di caricare la schermata appropriata.
+     * Intercetta e gestisce visivamente eccezioni specifiche.
+     */
     @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText();
