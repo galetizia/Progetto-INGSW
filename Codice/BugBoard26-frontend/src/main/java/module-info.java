@@ -12,6 +12,7 @@ module org.example.bugboard26frontend {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires jdk.jshell;
     requires org.slf4j;
+    requires com.auth0.jwt;
 
     exports org.example.bugboard26frontend;
     exports model;

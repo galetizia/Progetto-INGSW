@@ -46,7 +46,7 @@ public class DiagramDataLoader {
      * Trasforma la mappa degli stati delle issue in una lista di dati compatibile con un grafico a torta.
      * Si concentra esclusivamente sulle issue ancora attive.
      *
-     * @param dataStates Mappa contenente come chiave lo stato ed il conteggio totale.
+     * @param dataStates Mappa contenente come chiave lo stato e il conteggio totale.
      * @return Una lista osservabile di spicchi pronta per essere inserita nel grafico.
      */
     public static ObservableList<PieChart.Data> configuraDiagrammaStatoIssueAttive(Map<String, Integer> dataStates) {
@@ -66,7 +66,7 @@ public class DiagramDataLoader {
      * Prepara una serie di dati per un grafico a barre che mostra i 10 utenti con il maggior numero di issue assegnate.
      * Estrae la prima parte dell'email dell'utente come etichetta e aggiunge un Tooltip interattivo al passaggio del mouse.
      *
-     * @param issuesPerUser Mappa con l'email dell'utente come chiave ed il numero di issue.
+     * @param issuesPerUser Mappa con l'email dell'utente come chiave e il numero di issue.
      * @return Una serie di coordinate (XYChart.Series) pronta da visualizzare.
      */
     public static XYChart.Series<String, Number> preparaDatiIssueAssegnate(Map<String, Integer> issuesPerUser) {

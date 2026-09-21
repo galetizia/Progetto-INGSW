@@ -138,7 +138,7 @@ public class AuthUserService {
 
 
     /**
-     * Recupera il numero totale di issue attualmente assegnate e in lavorazione per ciascun utente.
+     * Recupera il numero totale di issue attualmente assegnate e in corso per ciascun utente.
      *
      * @return Una mappa avente l'email come chiave e il conteggio delle issue.
      */

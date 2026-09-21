@@ -38,7 +38,7 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
     @Query(value = "SELECT u.email, AVG(EXTRACT(EPOCH FROM i.data_risoluzione) - EXTRACT(EPOCH FROM i.data_assegnazione)) / 3600.0 " +
             "FROM issue i " +
             "JOIN auth_user u ON i.assignee_id = u.id " +
-            "WHERE i.stato = 'RISOLTO'" +
+            "WHERE i.stato = 'RISOLTO' and u.stato_account = true " +
             "GROUP BY u.email", nativeQuery = true)
     List<Object[]> findAllTimePerUser();
 

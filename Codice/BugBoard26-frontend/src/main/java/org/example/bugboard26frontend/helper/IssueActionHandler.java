@@ -54,7 +54,7 @@ public class IssueActionHandler {
     /**
      * Gestisce l'avanzamento di stato operativo di una issue.
      * Se la issue è nello stato TO_DO, la assegna all'utente corrente.
-     * Se è già in lavorazione, la contrassegna come RISOLTA.
+     * Se è già in corso, la contrassegna come RISOLTA.
      *
      * @param issue     La issue da prendere in carico o da marcare come risolta.
      * @param onSuccess L'azione di callback da eseguire per aggiornare l'interfaccia grafica dopo l'operazione.

@@ -121,6 +121,44 @@
 .table-view .table-row-cell:selected .table-cell {
     -fx-text-fill: #ffffff;
 }
+
+/* Colore di sfondo della barra (la "pista" su cui scorre il cursore) */
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: #1e1e2e; /* Colore scuro per lo sfondo */
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #45455e;
+    -fx-background-radius: 5px;
+}
+
+.table-view .scroll-bar:horizontal .thumb:hover,
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a5a7a;
+}
+
+.table-view .scroll-bar .increment-button,
+.table-view .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.table-view .scroll-bar .increment-arrow,
+.table-view .scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+/* Rende le barre leggermente più sottili */
+.table-view .scroll-bar:vertical {
+    -fx-pref-width: 12px;
+}
+.table-view .scroll-bar:horizontal {
+    -fx-pref-height: 12px;
+}
 /* MENU BUTTON */
 .menu-button {
     -fx-background-color: transparent;
