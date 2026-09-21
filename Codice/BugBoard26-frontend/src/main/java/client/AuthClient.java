@@ -145,7 +145,7 @@ public class AuthClient {
     /**
      * Richiede le statistiche relative al numero di issue attualmente assegnate a ciascun utente.
      *
-     * @return Una mappa in cui la chiave è l'email dell'utente e il valore è il conteggio delle issue in lavorazione.
+     * @return Una mappa in cui la chiave è l'email dell'utente e il valore è il conteggio delle issue in corso.
      */
     public Map<String, Integer> getIssuesPerUser(){
         HttpRequest request = HttpRequest.newBuilder()

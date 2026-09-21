@@ -21,7 +21,7 @@ public class UserTableHelper {
 
     /**
      * Inizializza e compone le colonne della tabella utenti, ripulendo eventuali configurazioni precedenti.
-     * Definisce le larghezze, l'ordine di visualizzazione dei dati ed inserisce le formattazioni personalizzate.
+     * Definisce le larghezze, l'ordine di visualizzazione dei dati e inserisce le formattazioni personalizzate.
      *
      * @param tabella L'oggetto TableView grafico da configurare.
      */
@@ -79,8 +79,8 @@ public class UserTableHelper {
     private static TableColumn<AuthUser, Ruolo> creaColumnRuolo() {
         TableColumn<AuthUser, Ruolo> colonna = new TableColumn<>("Ruolo");
         colonna.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getRuolo()));
-        colonna.setMinWidth(130);
-        colonna.setMaxWidth(130);
+        colonna.setMinWidth(100);
+        colonna.setMaxWidth(100);
 
         colonna.setCellFactory(_ -> new TableCell<>() {
             @Override

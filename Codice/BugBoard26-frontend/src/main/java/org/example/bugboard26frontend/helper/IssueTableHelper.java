@@ -24,7 +24,7 @@ public class IssueTableHelper {
 
     /**
      * Pulisce e configura la struttura della tabella JavaFX, instanziando e dimensionando dinamicamente
-     * le colonne in base alla schermata corrente ed ai permessi dell'utente.
+     * le colonne in base alla schermata corrente e i permessi dell'utente.
      *
      * @param tabella      L'oggetto TableView grafico da configurare.
      * @param ruolo        Il ruolo dell'utente loggato, necessario per personalizzare la visibilità di alcuni stati.
@@ -33,7 +33,7 @@ public class IssueTableHelper {
     public static void configuraTabella(TableView<Issue> tabella, Ruolo ruolo, boolean isArchiviati){
         tabella.getColumns().clear();
         tabella.setPrefHeight(321);
-        tabella.setPrefWidth(670);
+        tabella.setPrefWidth(730);
 
         TableColumn<Issue, Integer> idColumn = createColumnSemplice("ID", "id", 50, 50);
         TableColumn<Issue, String> titoloColumn = createColumnSemplice("Titolo", "titolo", 150, -1);
@@ -150,7 +150,7 @@ public class IssueTableHelper {
      * @return La colonna configurata per mostrare lo stato.
      */
     private static TableColumn<Issue, String> creaColonnaStato(Ruolo ruolo, boolean isArchiviati) {
-        TableColumn<Issue, String> colonna = createColumnSemplice("Stato", "stato", 100, -1);
+        TableColumn<Issue, String> colonna = createColumnSemplice("Stato", "stato", 110, -1);
 
         colonna.setCellFactory(_ -> new TableCell<>() {
             @Override
@@ -170,7 +170,7 @@ public class IssueTableHelper {
     /**
      * Valuta lo stato grezzo della issue e lo converte in un'etichetta user-friendly.
      * Aggiunge icone visive per un'immediata comprensione. Se una issue è assegnata all'utente che sta
-     * guardando lo schermo, le cambia l'etichetta in "👤 IN LAVORAZIONE".
+     * guardando lo schermo, le cambia l'etichetta in "👤 IN CORSO".
      *
      * @param stato        Lo stato salvato a database.
      * @param issue        L'oggetto issue completo per verifiche incrociate (es. l'assegnatario).
@@ -194,12 +194,14 @@ public class IssueTableHelper {
             case "ASSEGNATO" -> {
                 if (ruolo == Ruolo.INTERNAL_USER && issue.getAssignee() != null
                         && issue.getAssignee().getId() == AuthSession.getInstance().getUtenteCorrente().getId()) {
-                    yield "👤 IN LAVORAZIONE";
+                    yield "👤 IN CORSO";
                 }
                 yield "🔒 ASSEGNATO";
             }
             case "RISOLTO" -> (ruolo == Ruolo.EXTERNAL_USER) ? "✅ RISOLTO" : stato;
             default -> stato;
         };
+
+
     }
 }

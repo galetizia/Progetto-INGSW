@@ -17,7 +17,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-// Abilita integrazione JUnit e Mockito
 @ExtendWith(MockitoExtension.class)
 class IssueServiceTest {
 

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.controller.GestioneUtentiController">
+<HBox alignment="CENTER" prefHeight="680.0" spacing="30.0" style="-fx-background-color: #0b0914;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.bugboard26frontend.controller.GestioneUtentiController">
 
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />

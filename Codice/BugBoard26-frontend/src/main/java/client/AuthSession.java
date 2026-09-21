@@ -1,6 +1,10 @@
 package client;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import model.AuthUser;
+
+import java.time.Instant;
 
 /**
  * Classe che implementa il pattern Singleton per gestire lo stato della sessione utente
@@ -54,6 +58,22 @@ public class AuthSession {
      * @return true se un utente è regolarmente loggato, altrimenti false.
      */
     public boolean isLoggedIn() {
-        return this.token != null;
+        if(this.token == null) return false;
+        try {
+            DecodedJWT jwt = JWT.decode(this.token);
+            Instant exp = jwt.getExpiresAtAsInstant();
+            if(exp == null) {
+                return true;
+            }
+            if(exp.isBefore(Instant.now())) {
+                clearSession();
+                return false;
+            }
+            return true;
+
+        } catch(Exception _) {
+            clearSession();
+            return false;
+        }
     }
 }
