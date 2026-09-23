@@ -121,7 +121,7 @@ public class UserHomeController {
      * e richiede l'aggiornamento dei dati tramite l'helper.
      */
     @FXML
-    public void onElencoIssueButtonClick(){
+    protected void onElencoIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
         if(Validator.sessionInvalid(stage)) return;
 

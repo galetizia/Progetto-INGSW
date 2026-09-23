@@ -95,7 +95,7 @@ public class AdminHomeController {
      * innesca il caricamento protetto dei dati aggiornati dal server.
      */
     @FXML
-    public void onElencoIssueButtonClick(){
+    protected void onElencoIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
         if(Validator.sessionInvalid(stage)) return;
 
@@ -138,7 +138,8 @@ public class AdminHomeController {
      * Configura una callback affinché, alla chiusura del modulo, la tabella delle issue
      * si ricarichi automaticamente per mostrare la nuova issue appena inserita.
      */
-    public void onSegnalaIssueButtonClick(){
+    @FXML
+    protected void onSegnalaIssueButtonClick(){
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
         if(Validator.sessionInvalid(stage)) return;
 
@@ -179,7 +180,7 @@ public class AdminHomeController {
      * la tabella delle issue attive che quella dell'archivio, azzerando poi la selezione.
      */
     @FXML
-    public void handleArchiviaIssue() {
+    protected void handleArchiviaIssue() {
         Stage stage = (Stage) colonnaSinistra.getScene().getWindow();
         if(Validator.sessionInvalid(stage)) return;
 

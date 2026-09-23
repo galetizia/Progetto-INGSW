@@ -22,12 +22,12 @@ public class LoginController {
     private PasswordField passwordField;
 
     AuthClient authClient;
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     public void setAuthClient(AuthClient authClient){
         this.authClient = authClient;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     /**
      * Gestisce il flusso del click sul pulsante di Login.
