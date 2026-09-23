@@ -53,7 +53,8 @@ public class GestioneUtentiController {
      * Metodo invocato automaticamente da JavaFX al termine del caricamento del file FXML.
      * Inizializza la tabella degli utenti, imposta i filtri visivi e aggancia i listener di selezione.
      */
-    @FXML void initialize() {
+    @FXML
+    public void initialize() {
         UserTableHelper.configuraTabella(utentiTable);
         FiltroEOrdinaHelper.configuraFiltroUtenti(utentiTable, masterData, filtroChoiceBox);
 
