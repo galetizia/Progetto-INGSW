@@ -57,7 +57,6 @@ class IssueServiceTest {
 
         // Verifica che il salvataggio sul DB sia stato invocato esattamente 1 volta
         verify(issueRepository, times(1)).save(issue);
-
     }
 
     @Test

@@ -82,10 +82,11 @@ public class AuthUserService {
      */
     public String login (String email, String password) {
 
-        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Email/Password non valide"));
+        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() ->
+                new IllegalArgumentException("Email non valida"));
 
         if(!passwordEncoder.matches(password,user.getPassword())) {
-            throw new IllegalArgumentException("Email/Password non valide");
+            throw new IllegalArgumentException("Password non valida");
         }
         if(!user.getStatoAccount()){
             throw new IllegalArgumentException("Account esistente ma non attivo");
@@ -105,7 +106,8 @@ public class AuthUserService {
      */
     public void changePassword (String email, String oldPassword, String newPassword) {
 
-        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Email non valida"));
+        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() ->
+                new IllegalArgumentException("Email non valida"));
 
         if(!passwordEncoder.matches(oldPassword,user.getPassword())) {
             throw new IllegalArgumentException("Inserire la vecchia password corretta");

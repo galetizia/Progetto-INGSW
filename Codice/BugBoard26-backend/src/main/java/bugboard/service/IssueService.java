@@ -187,7 +187,8 @@ public class IssueService {
             Issue issue = issueRepository.findById(issueId)
                     .orElseThrow(() -> new RuntimeException("Issue non trovata"));
 
-            AuthUser user = authUserRepository.findByEmail(emailUser).orElseThrow(() -> new RuntimeException("Utente non trovato"));
+            AuthUser user = authUserRepository.findByEmail(emailUser).orElseThrow(() ->
+                    new RuntimeException("Utente non trovato"));
 
             issue.setStato(StatoIssue.ASSEGNATO);
             issue.setAssignee(user);
