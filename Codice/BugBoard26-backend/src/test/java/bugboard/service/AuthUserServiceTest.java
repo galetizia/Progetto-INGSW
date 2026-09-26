@@ -161,8 +161,8 @@ class AuthUserServiceTest {
 
 
     @Test
-    @DisplayName("FAIL: Email/Password non valide")
-    void testLogin_CredenzialiNonValide() {
+    @DisplayName("FAIL: Password non valida")
+    void testLogin_PasswordNonValida() {
         String email = "test7@bugboard.com";
         AuthUser user = new AuthUser();
         user.setEmail(email);
@@ -177,7 +177,17 @@ class AuthUserServiceTest {
         IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () ->
                 authUserService.login(email, "password"));
 
-        assertEquals("Email/Password non valide", exc.getMessage());
+        assertEquals("Password non valida", exc.getMessage());
     }
 
+    @Test
+    @DisplayName("FAIL: Email non presente nel DB")
+    void testLogin_EmailNonPresente() {
+        String email = "test8@bugboard.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+        IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () ->
+                authUserService.login(email, "password"));
+
+        assertEquals("Email non valida", exc.getMessage());
+    }
 }

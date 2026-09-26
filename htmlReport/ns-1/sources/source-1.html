@@ -1,0 +1,317 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AuthUserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">bugboard.service</a>
+</div>
+
+<h1>Coverage Summary for Class: AuthUserService (bugboard.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AuthUserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38,5%
+  </span>
+  <span class="absValue">
+    (5/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (8/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38,8%
+  </span>
+  <span class="absValue">
+    (19/49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package bugboard.service;
+&nbsp;
+&nbsp;import bugboard.model.AuthUser;
+&nbsp;import bugboard.repository.AuthUserRepository;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * Gestisce la logica di business relativa agli utenti (registrazione, autenticazione, gestione dell&#39;account e statistiche).
+&nbsp; */
+&nbsp;@Service
+&nbsp;public class AuthUserService {
+&nbsp;
+&nbsp;    private final AuthUserRepository authUserRepository;
+&nbsp;    private final PasswordEncoder passwordEncoder;
+&nbsp;    private final JwtService jwtService;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Inizializza il servizio passando le dipendenze necessarie per l&#39;accesso ai dati e la sicurezza.
+&nbsp;     *
+&nbsp;     * @param authUserRepository La repository per interagire con la tabella degli utenti.
+&nbsp;     * @param passwordEncoder    L&#39;encoder per cifrare e verificare le password.
+&nbsp;     * @param jwtService         Il service per la creazione dei token di sessione.
+&nbsp;     */
+<b class="fc">&nbsp;    public AuthUserService(AuthUserRepository authUserRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {</b>
+<b class="fc">&nbsp;        this.authUserRepository = authUserRepository;</b>
+<b class="fc">&nbsp;        this.passwordEncoder = passwordEncoder;</b>
+<b class="fc">&nbsp;        this.jwtService = jwtService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Registra un nuovo account nel database, verificando prima che l&#39;indirizzo email non sia già in uso.
+&nbsp;     *
+&nbsp;     * @param email    L&#39;indirizzo email del nuovo utente.
+&nbsp;     * @param password La password in chiaro che verrà cifrata prima del salvataggio.
+&nbsp;     * @param ruolo    Il ruolo da assegnare.
+&nbsp;     * @throws IllegalArgumentException Se l&#39;email fornita è già presente nel database.
+&nbsp;     */
+&nbsp;    public void registerAuthUser(String email, String password, String ruolo) {
+<b class="nc">&nbsp;        if (authUserRepository.existsByEmail(email)) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Email già in uso&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String hashedPass = passwordEncoder.encode(password);</b>
+<b class="nc">&nbsp;        AuthUser newUser = new AuthUser(hashedPass, email);</b>
+&nbsp;
+<b class="nc">&nbsp;        newUser.setRuolo(bugboard.enums.Ruolo.valueOf(ruolo));</b>
+&nbsp;
+<b class="nc">&nbsp;        authUserRepository.save(newUser);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Abilita o disabilita l&#39;account di un utente specifico.
+&nbsp;     *
+&nbsp;     * @param id L&#39;identificativo dell&#39;utente.
+&nbsp;     * @throws IllegalArgumentException Se l&#39;ID fornito non corrisponde a nessun utente.
+&nbsp;     */
+&nbsp;    public void cambiaStatoUtente(int id) {
+<b class="nc">&nbsp;        AuthUser user = authUserRepository.findById(id)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Utente non trovato&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        user.setStatoAccount(!user.getStatoAccount());</b>
+&nbsp;
+<b class="nc">&nbsp;        authUserRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifica le credenziali di accesso e lo stato dell&#39;account per consentire l&#39;ingresso nel sistema.
+&nbsp;     *
+&nbsp;     * @param email    L&#39;email dell&#39;utente che tenta il login.
+&nbsp;     * @param password La password in chiaro da confrontare con l&#39;hash salvato nel database.
+&nbsp;     * @return Il token JWT generato in caso di autenticazione riuscita.
+&nbsp;     * @throws IllegalArgumentException Se le credenziali sono errate o se l&#39;account è disabilitato.
+&nbsp;     */
+&nbsp;    public String login (String email, String password) {
+&nbsp;
+<b class="fc">&nbsp;        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -&gt;</b>
+<b class="fc">&nbsp;                new IllegalArgumentException(&quot;Email non valida&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;        if(!passwordEncoder.matches(password,user.getPassword())) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Password non valida&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if(!user.getStatoAccount()){</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Account esistente ma non attivo&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return jwtService.generateToken(user, user.getRuolo().name());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Aggiorna la password dell&#39;utente assicurandosi che conosca quella attualmente impostata.
+&nbsp;     *
+&nbsp;     * @param email       L&#39;email dell&#39;utente che richiede il cambio.
+&nbsp;     * @param oldPassword La password attuale.
+&nbsp;     * @param newPassword La nuova password da impostare.
+&nbsp;     * @throws IllegalArgumentException Se l&#39;utente non esiste, la vecchia password è errata o la nuova coincide con la precedente.
+&nbsp;     */
+&nbsp;    public void changePassword (String email, String oldPassword, String newPassword) {
+&nbsp;
+<b class="fc">&nbsp;        AuthUser user = authUserRepository.findByEmail(email).orElseThrow(() -&gt;</b>
+<b class="fc">&nbsp;                new IllegalArgumentException(&quot;Email non valida&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;        if(!passwordEncoder.matches(oldPassword,user.getPassword())) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;Inserire la vecchia password corretta&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if(newPassword.equals(oldPassword)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(&quot;La nuova password non può essere uguale alla precedente&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        user.setPassword(passwordEncoder.encode(newPassword));</b>
+<b class="fc">&nbsp;        authUserRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calcola il tempo medio di risoluzione delle issue per ciascun utente.
+&nbsp;     *
+&nbsp;     * @return Una mappa contenente l&#39;email come chiave e il tempo medio calcolato (in ore).
+&nbsp;     */
+&nbsp;    public Map&lt;String, Double&gt; getTimePerUser(){
+<b class="nc">&nbsp;        List&lt;Object[]&gt; timePerUser = authUserRepository.findAllTimePerUser();</b>
+<b class="nc">&nbsp;        Map&lt;String, Double&gt; map = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Object[] obj : timePerUser){</b>
+<b class="nc">&nbsp;            String email = (String) obj[0];</b>
+<b class="nc">&nbsp;            Double count = (obj[1] != null) ? ((Number) obj[1]).doubleValue() : 0.0;</b>
+<b class="nc">&nbsp;            map.put(email, count);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return map;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera il numero totale di issue attualmente assegnate e in corso per ciascun utente.
+&nbsp;     *
+&nbsp;     * @return Una mappa avente l&#39;email come chiave e il conteggio delle issue.
+&nbsp;     */
+&nbsp;    public Map&lt;String, Integer&gt; getIssuesPerUser(){
+<b class="nc">&nbsp;        List&lt;Object[]&gt; issuesPerUser = authUserRepository.findAllIssuesPerUser();</b>
+<b class="nc">&nbsp;        return insertInMap(issuesPerUser);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera il numero totale di issue risolte da ciascun utente.
+&nbsp;     *
+&nbsp;     * @return Una mappa avente l&#39;email come chiave e il conteggio delle issue risolte.
+&nbsp;     */
+&nbsp;    public Map&lt;String, Integer&gt; getRisoltePerUser(){
+<b class="nc">&nbsp;        List&lt;Object[]&gt; issuesPerUser = authUserRepository.findAllRisoltePerUser();</b>
+<b class="nc">&nbsp;        return insertInMap(issuesPerUser);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Metodo di supporto per convertire la lista di risultati grezzi dal database in una mappa strutturata.
+&nbsp;     *
+&nbsp;     * @param list La lista di array di oggetti restituita dalla query nativa.
+&nbsp;     * @return La mappa elaborata e tipizzata per le statistiche numeriche.
+&nbsp;     */
+&nbsp;    private Map&lt;String, Integer&gt; insertInMap(List&lt;Object[]&gt; list){
+<b class="nc">&nbsp;        Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Object[] obj : list){</b>
+<b class="nc">&nbsp;            String email = (String) obj[0];</b>
+<b class="nc">&nbsp;            Integer count = ((Number) obj[1]).intValue();</b>
+<b class="nc">&nbsp;            map.put(email, count);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return map;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera l&#39;elenco di tutti gli utenti salvati nel database.
+&nbsp;     *
+&nbsp;     * @return La lista completa degli utenti.
+&nbsp;     */
+<b class="nc">&nbsp;    public List&lt;AuthUser&gt; getAllUsers() {return authUserRepository.findAll();}</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recupera un utente specifico tramite il suo indirizzo email.
+&nbsp;     *
+&nbsp;     * @param email L&#39;indirizzo email da cercare.
+&nbsp;     * @return L&#39;oggetto AuthUser trovato.
+&nbsp;     * @throws IllegalArgumentException Se non esiste alcun utente con l&#39;email fornita.
+&nbsp;     */
+&nbsp;    public AuthUser getUserByEmail(String email) {
+<b class="nc">&nbsp;        return authUserRepository.findByEmail(email)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Utente non trovato&quot;));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-09-26 12:43</div>
+</div>
+</body>
+</html>
