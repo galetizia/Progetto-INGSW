@@ -1,0 +1,1 @@
+al momento della presentazione cambiare da localhost al ip publico di aws e popolare db
