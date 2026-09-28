@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class IssueClient {
 
-    private static final String BASE_URL = "http://localhost:8080/api/issues/";
+    private static final String BASE_URL = "http://15.161.228.163:8080/api/issues/";
 
     private final HttpClient client = ApiClient.getClient();
 
