@@ -93,23 +93,46 @@ Per eseguire BugBoard26 sono necessari:
 Clonare il repository tramite:
 
     git clone <URL_DEL_REPOSITORY>
-    cd BugBoard26
+    cd Progetto-INGSW
 
 ### 2. Configurazione
 
 Prima di avviare l'applicazione, è necessario configurare le variabili d'ambiente utilizzate dal back-end.
 
-Creare un file `.env` nella directory `BugBoard26-backend`, prendendo come riferimento il file `.env.example` presente nel repository.
+Creare un file `.env` nella directory `Codice/BugBoard26-backend`, prendendo come riferimento il file `.env.example` presente nel repository.
 
 Il file deve contenere le variabili necessarie per la configurazione del database e dell'applicazione.
 
 > **Nota:** il file `.env` può contenere credenziali e altre informazioni sensibili e non deve essere pubblicato nel repository.
 
-### 3. Avvio del back-end
+### 3. Configurazione delle chiavi JWT
+
+Per la gestione dell'autenticazione tramite JWT, il back-end utilizza una coppia di chiavi crittografiche RSA.
+
+Le chiavi possono essere generate tramite OpenSSL utilizzando i seguenti comandi:
+
+    openssl genrsa -out private_key.pem 2048
+    openssl rsa -in private_key.pem -pubout -out public_key.pem
+
+All'interno della directory delle risorse del back-end deve essere presente la cartella:
+
+    Codice/BugBoard26-backend/Keys/
+
+La cartella deve contenere le chiavi RSA necessarie all'applicazione:
+
+    Keys/
+    ├── private_key.pem
+    └── public_key.pem
+
+Le chiavi devono essere generate e configurate prima dell'avvio del back-end.
+
+> **Nota:** la chiave privata è un'informazione sensibile e non deve essere pubblicata nel repository o condivisa tramite sistemi di versionamento.
+
+### 4. Avvio del back-end
 
 Accedere alla directory del back-end:
 
-    cd BugBoard26-backend
+    cd Codice/BugBoard26-backend
 
 Avviare il back-end e il database PostgreSQL tramite Docker Compose:
 
@@ -121,7 +144,7 @@ Per verificare che i container siano stati avviati correttamente:
 
 Una volta avviati correttamente i servizi, il back-end sarà disponibile all'indirizzo configurato nell'applicazione.
 
-### 4. Avvio del front-end
+### 5. Avvio del front-end
 
 Accedere alla directory del front-end:
 
