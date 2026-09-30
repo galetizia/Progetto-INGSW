@@ -86,11 +86,15 @@ public class CreazioneUtenteController {
             Validator.backEndValidator(() -> {
                 boolean success = authClient.registerUser(email, password, ruoloScelto);
 
-                if (success) chiudiFinestra();
+                if (success) {
+                    MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo!", "Utente creato con successo.");
+                    chiudiFinestra();
+                }
                 else MyAlert.mostraAlert(Alert.AlertType.ERROR, "Errore!", "Impossibile creare l'utente. Controlla che l'email non sia già in uso.");
             });
+
         }
-        MyAlert.mostraAlert(Alert.AlertType.INFORMATION, "Successo!", "Utente creato con successo.");
+
     }
 
     /**

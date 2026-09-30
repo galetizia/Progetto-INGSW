@@ -140,8 +140,6 @@ public class UserTableHelper {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
-                } else if (item == 0.0) {
-                    setText("-");
                 } else {
                     int minutiTot = (int) Math.round(item * 60);
                     int h = minutiTot / 60;
