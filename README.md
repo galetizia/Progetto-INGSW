@@ -130,6 +130,14 @@ Le chiavi devono essere generate e configurate prima dell'avvio del back-end.
 
 ### 4. Avvio del back-end
 
+Il back-end di BugBoard26 è già stato configurato e distribuito su
+un'istanza **AWS**, pertanto è possibile utilizzare direttamente
+l'ambiente già predisposto senza effettuare ulteriori configurazioni.
+
+In alternativa, è possibile eseguire il back-end localmente tramite
+Docker Compose.
+
+
 Accedere alla directory del back-end:
 
     cd Codice/BugBoard26-backend
