@@ -84,7 +84,7 @@ Il front-end comunica con il back-end attraverso API REST, mentre il back-end si
 
 Per eseguire BugBoard26 sono necessari:
 
-- **JDK 17** o versione compatibile;
+- **JDK 23** o versione compatibile;
 - **Maven**;
 - **Docker** e **Docker Compose**.
 
@@ -150,12 +150,13 @@ Accedere alla directory del front-end:
 
     cd ../BugBoard26-frontend
 
-Il front-end viene fornito come file `.jar`, presente nella directory `target`.
+Il front-end viene fornito come file `.jar`, presente nella directory `release`.
 
-Per avviare l'applicazione è sufficiente eseguire il file `.jar` tramite doppio clic.
+Per avviare l'applicazione è sufficiente eseguire il file `.jar` tramite doppio clic, dopo aver configurato Java 23 come applicazione predefinita
+per l'apertura dei file `.jar`.
 
 In alternativa, è possibile avviare il client da terminale tramite:
 
-    java -jar target/<nome-file>.jar
+    java -jar release/BugBoard26.jar
 
 Una volta avviato, il client JavaFX si collega al back-end attraverso le API REST.
